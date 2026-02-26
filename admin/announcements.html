@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Announcements | Zest Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="logo-shield"><span class="logo-z">Z</span></div>
+      <div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;">THE ZEST</div>
+        <div class="admin-logo-text">Command Center</div>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Main</div>
+      <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
+      <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
+      <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
+      <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
+      <div class="admin-nav-section">Settings</div>
+      <a href="announcements.html" class="admin-nav-item active"><span class="admin-nav-icon">📢</span> Announcements</a>
+      <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-header">
+      <div class="admin-page-title">Announcements & Reminders</div>
+      <div class="admin-header-right">
+        <div class="admin-badge">Private Board</div>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <div class="admin-two-col">
+
+        <!-- CHALKBOARD LIVE VIEW -->
+        <div>
+          <div class="admin-card" style="padding:0;overflow:hidden;margin-bottom:1.5rem;">
+            <div style="padding:1.25rem 1.75rem;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div class="admin-card-title">📋 Today's Chalkboard</div>
+              <div class="admin-card-subtitle">Internal announcements visible in Dashboard</div>
+            </div>
+            <div class="chalkboard" style="border-radius:0;border:none;margin:0;min-height:280px;">
+              <div class="chalkboard-title">THE ZEST — PRIVATE NOTES</div>
+              <div class="chalk-text" id="liveBoard">
+                <div style="color:rgba(255,255,255,0.3);">No announcements yet. Add one →</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Admission Toggle -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <div class="admin-card-title">Admission Status</div>
+                <div class="admin-card-subtitle">Toggle the "Admissions Open" badge on the website</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,0.06);">
+              <div>
+                <div style="font-weight:600;color:white;">School Wing Admissions</div>
+                <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);">Shows badge on homepage hero</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="schoolAdmission" onchange="saveSettings()" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;">
+              <div>
+                <div style="font-weight:600;color:white;">The Armour Academy Admissions</div>
+                <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);">Shows badge on defense page</div>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="defenseAdmission" onchange="saveSettings()" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD ANNOUNCEMENT FORM -->
+        <div>
+          <div class="admin-card" style="margin-bottom:1.5rem;">
+            <div class="admin-card-header">
+              <div class="admin-card-title">➕ Add Announcement</div>
+            </div>
+            <div class="admin-form">
+              <div class="form-group">
+                <label>Announcement Text *</label>
+                <input type="text" id="annText" placeholder="e.g. Mock test on Saturday at 6 AM" />
+              </div>
+              <div class="admin-form-row">
+                <div class="form-group">
+                  <label>Category</label>
+                  <select id="annCategory">
+                    <option>📚 Academic</option>
+                    <option>💰 Fees</option>
+                    <option>🧪 Test / Exam</option>
+                    <option>👥 Parents Meeting</option>
+                    <option>📅 Schedule Change</option>
+                    <option>🏆 Result / Achievement</option>
+                    <option>🔔 General</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Priority</label>
+                  <select id="annPriority">
+                    <option value="normal">Normal</option>
+                    <option value="high">⚠ High Priority</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn-admin-primary" onclick="addAnnouncement()">Post Announcement</button>
+            </div>
+          </div>
+
+          <!-- ANNOUNCEMENT LIST -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div class="admin-card-title">All Announcements</div>
+              <button onclick="clearAll()" style="font-size:0.78rem;color:rgba(239,68,68,0.6);background:none;border:none;cursor:pointer;">Clear All</button>
+            </div>
+            <div id="annList">
+              <div style="color:rgba(255,255,255,0.3);text-align:center;padding:2rem;font-size:0.88rem;">No announcements yet.</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  if (sessionStorage.getItem('zest_admin_auth') !== 'true') window.location.href = 'index.html';
+
+  let announcements = JSON.parse(localStorage.getItem('zest_announcements') || '[]');
+
+  function renderAnnouncements() {
+    const list = document.getElementById('annList');
+    const board = document.getElementById('liveBoard');
+
+    if (announcements.length === 0) {
+      list.innerHTML = '<div style="color:rgba(255,255,255,0.3);text-align:center;padding:2rem;font-size:0.88rem;">No announcements yet.</div>';
+      board.innerHTML = '<div style="color:rgba(255,255,255,0.3);">No announcements yet.</div>';
+      return;
+    }
+
+    // List view
+    list.innerHTML = announcements.slice().reverse().map((a, i) => `
+      <div style="display:flex;align-items:flex-start;gap:0.75rem;padding:0.9rem 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <div style="flex:1;">
+          <div style="font-size:0.82rem;color:rgba(255,255,255,0.4);margin-bottom:0.2rem;">${a.category} · ${a.date}</div>
+          <div style="font-size:0.9rem;color:white;font-weight:${a.priority === 'high' ? '700' : '400'};">${a.priority === 'high' ? '⚠ ' : ''}${a.text}</div>
+        </div>
+        <button onclick="deleteAnn(${announcements.length - 1 - i})" style="color:rgba(239,68,68,0.5);background:none;border:none;cursor:pointer;font-size:0.9rem;flex-shrink:0;">✕</button>
+      </div>
+    `).join('');
+
+    // Chalkboard view
+    board.innerHTML = announcements.slice(-6).map(a => `
+      <div class="chalk-item"><span class="chalk-bullet">→</span> ${a.text}</div>
+    `).join('');
+  }
+
+  function addAnnouncement() {
+    const text = document.getElementById('annText').value.trim();
+    if (!text) { alert('Please enter announcement text'); return; }
+
+    const ann = {
+      text,
+      category: document.getElementById('annCategory').value,
+      priority: document.getElementById('annPriority').value,
+      date: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    };
+
+    announcements.push(ann);
+    localStorage.setItem('zest_announcements', JSON.stringify(announcements));
+    document.getElementById('annText').value = '';
+    renderAnnouncements();
+  }
+
+  function deleteAnn(index) {
+    announcements.splice(index, 1);
+    localStorage.setItem('zest_announcements', JSON.stringify(announcements));
+    renderAnnouncements();
+  }
+
+  function clearAll() {
+    if (!confirm('Clear all announcements?')) return;
+    announcements = [];
+    localStorage.setItem('zest_announcements', JSON.stringify(announcements));
+    renderAnnouncements();
+  }
+
+  function saveSettings() {
+    const settings = {
+      schoolAdmission: document.getElementById('schoolAdmission').checked,
+      defenseAdmission: document.getElementById('defenseAdmission').checked
+    };
+    localStorage.setItem('zest_settings', JSON.stringify(settings));
+  }
+
+  // Load settings
+  const settings = JSON.parse(localStorage.getItem('zest_settings') || '{}');
+  if (settings.schoolAdmission !== undefined) document.getElementById('schoolAdmission').checked = settings.schoolAdmission;
+  if (settings.defenseAdmission !== undefined) document.getElementById('defenseAdmission').checked = settings.defenseAdmission;
+
+  function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
+  renderAnnouncements();
+</script>
+</body>
+</html>

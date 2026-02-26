@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | Zest Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body class="admin-body">
+
+  <!-- Sidebar -->
+  <div class="admin-layout">
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-logo">
+        <div class="logo-shield"><span class="logo-z">Z</span></div>
+        <div>
+          <div class="logo-main" style="color: white; font-family: 'Playfair Display', serif; font-size: 0.95rem; font-weight: 700; letter-spacing: 0.08em;">THE ZEST</div>
+          <div class="admin-logo-text">Command Center</div>
+        </div>
+      </div>
+
+      <nav class="admin-nav">
+        <div class="admin-nav-section">Main</div>
+        <a href="dashboard.html" class="admin-nav-item active">
+          <span class="admin-nav-icon">📊</span> Dashboard
+        </a>
+        <a href="attendance.html" class="admin-nav-item">
+          <span class="admin-nav-icon">✅</span> Attendance
+        </a>
+        <a href="fees.html" class="admin-nav-item">
+          <span class="admin-nav-icon">💰</span> Fee Records
+        </a>
+        <a href="students.html" class="admin-nav-item">
+          <span class="admin-nav-icon">🎓</span> Student Logs
+        </a>
+
+        <div class="admin-nav-section">Settings</div>
+        <a href="announcements.html" class="admin-nav-item">
+          <span class="admin-nav-icon">📢</span> Announcements
+        </a>
+        <a href="index.html" class="admin-nav-item" onclick="logout(event)">
+          <span class="admin-nav-icon">🚪</span> Logout
+        </a>
+
+        <div class="admin-nav-section">Site</div>
+        <a href="../index.html" target="_blank" class="admin-nav-item">
+          <span class="admin-nav-icon">🌐</span> View Website
+        </a>
+      </nav>
+    </aside>
+
+    <main class="admin-main">
+      <header class="admin-header">
+        <div>
+          <div class="admin-page-title">Dashboard</div>
+          <div style="font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-top: 0.15rem;" id="currentDate"></div>
+        </div>
+        <div class="admin-header-right">
+          <div class="admin-badge">System Online</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Ashish Sir</div>
+        </div>
+      </header>
+
+      <div class="admin-content">
+
+        <!-- STAT CARDS -->
+        <div class="admin-stats-grid">
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">🎓</div>
+            <div class="admin-stat-value" id="totalStudents">—</div>
+            <div class="admin-stat-label">Total Students</div>
+            <div class="admin-stat-change up" id="studentsChange">Loading...</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">✅</div>
+            <div class="admin-stat-value" id="attendancePct">—</div>
+            <div class="admin-stat-label">Today's Attendance</div>
+            <div class="admin-stat-change neutral" id="attendanceDetail">Loading...</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">💰</div>
+            <div class="admin-stat-value" id="feeCollected">—</div>
+            <div class="admin-stat-label">Monthly Fees Collected</div>
+            <div class="admin-stat-change up" id="feePending">Loading...</div>
+          </div>
+          <div class="admin-stat-card">
+            <div class="admin-stat-icon">📬</div>
+            <div class="admin-stat-value" id="newEnquiries">—</div>
+            <div class="admin-stat-label">New Enquiries</div>
+            <div class="admin-stat-change up">This week</div>
+          </div>
+        </div>
+
+        <!-- TWO COLUMN LAYOUT -->
+        <div class="admin-two-col">
+
+          <!-- Recent Students -->
+          <div class="admin-card">
+            <div class="admin-card-header">
+              <div>
+                <div class="admin-card-title">Recent Registrations</div>
+                <div class="admin-card-subtitle">Latest students added</div>
+              </div>
+              <a href="students.html" style="font-size: 0.8rem; color: rgba(235,168,33,0.7);">View All →</a>
+            </div>
+            <table class="admin-table" id="recentStudentsTable">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Grade</th>
+                  <th>Batch</th>
+                  <th>Fees</th>
+                </tr>
+              </thead>
+              <tbody id="recentStudentsBody">
+                <tr><td colspan="4" style="color: rgba(255,255,255,0.3); text-align: center; padding: 2rem;">Loading student data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Right column -->
+          <div>
+            <!-- Chalkboard Announcements -->
+            <div class="admin-card" style="padding: 0; overflow: hidden; margin-bottom: 1.5rem;">
+              <div style="padding: 1.25rem 1.75rem; border-bottom: 1px solid rgba(255,255,255,0.06);">
+                <div class="admin-card-title">Internal Announcements</div>
+                <div class="admin-card-subtitle">Private notes & reminders</div>
+              </div>
+              <div class="chalkboard" style="border-radius: 0; border: none; margin: 0;">
+                <div class="chalkboard-title">📋 Today's Notes</div>
+                <div class="chalk-text" id="announcementBoard">
+                  <div class="chalk-item"><span class="chalk-bullet">→</span> Check attendance for 5 AM batch</div>
+                  <div class="chalk-item"><span class="chalk-bullet">→</span> Fee reminder — 3 pending this month</div>
+                  <div class="chalk-item"><span class="chalk-bullet">→</span> NDA batch mock test — Saturday</div>
+                  <div class="chalk-item"><span class="chalk-bullet">→</span> Parent meeting — Sunday 10 AM</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="admin-card">
+              <div class="admin-card-header">
+                <div class="admin-card-title">Quick Actions</div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <a href="attendance.html" class="btn-admin-primary" style="text-align: center; text-decoration: none; display: block;">
+                  ✅ Mark Today's Attendance
+                </a>
+                <a href="students.html" class="btn-admin-secondary" style="text-align: center; text-decoration: none; display: block;">
+                  ➕ Add New Student
+                </a>
+                <a href="fees.html" class="btn-admin-secondary" style="text-align: center; text-decoration: none; display: block;">
+                  💰 Record Fee Payment
+                </a>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Fee Status Overview -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <div class="admin-card-title">Fee Status Overview — Current Month</div>
+              <div class="admin-card-subtitle" id="currentMonth"></div>
+            </div>
+            <a href="fees.html" style="font-size: 0.8rem; color: rgba(235,168,33,0.7);">Manage Fees →</a>
+          </div>
+          <table class="admin-table" id="feeOverviewTable">
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Grade</th>
+                <th>Amount</th>
+                <th>Due Date</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="feeOverviewBody">
+              <tr><td colspan="5" style="color: rgba(255,255,255,0.3); text-align: center; padding: 2rem;">Loading fee data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // ─── AUTH CHECK ───
+    if (sessionStorage.getItem('zest_admin_auth') !== 'true') {
+      window.location.href = 'index.html';
+    }
+
+    // ─── INIT ───
+    const now = new Date();
+    document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('currentMonth').textContent = now.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+
+    // ─── LOAD DATA FROM localStorage (demo — replace with Google Sheets API) ───
+    function loadDashboard() {
+      const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
+      const fees = JSON.parse(localStorage.getItem('zest_fees') || '[]');
+      const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
+
+      // Stats
+      document.getElementById('totalStudents').textContent = students.length || '0';
+      document.getElementById('studentsChange').textContent = students.length + ' registered students';
+
+      const today = now.toISOString().split('T')[0];
+      const todayAtt = attendance[today] || {};
+      const presentCount = Object.values(todayAtt).filter(v => v === 'present').length;
+      const totalCount = students.length || 1;
+      const pct = students.length ? Math.round((presentCount / students.length) * 100) : 0;
+      document.getElementById('attendancePct').textContent = pct + '%';
+      document.getElementById('attendanceDetail').textContent = `${presentCount} / ${students.length} present`;
+
+      const monthFees = fees.filter(f => {
+        const d = new Date(f.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && f.status === 'paid';
+      });
+      const totalFee = monthFees.reduce((sum, f) => sum + (parseFloat(f.amount) || 0), 0);
+      document.getElementById('feeCollected').textContent = '₹' + totalFee.toLocaleString('en-IN');
+
+      const pendingFees = fees.filter(f => f.status === 'pending').length;
+      document.getElementById('feePending').textContent = pendingFees + ' pending payments';
+
+      // Enquiries from localStorage
+      document.getElementById('newEnquiries').textContent = localStorage.getItem('zest_enquiries') || '0';
+
+      // Recent students table
+      const tbody = document.getElementById('recentStudentsBody');
+      if (students.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="color: rgba(255,255,255,0.3); text-align: center; padding: 2rem;">No students yet. <a href="students.html" style="color: var(--gold);">Add first student →</a></td></tr>';
+      } else {
+        tbody.innerHTML = students.slice(-5).reverse().map(s => `
+          <tr>
+            <td><div style="font-weight: 600;">${s.name}</div><div style="font-size: 0.75rem; color: rgba(255,255,255,0.4);">${s.phone || ''}</div></td>
+            <td>${s.grade || '—'}</td>
+            <td>${s.batch || '—'}</td>
+            <td><span class="status-badge ${s.feeStatus || 'pending'}">${s.feeStatus || 'Pending'}</span></td>
+          </tr>
+        `).join('');
+      }
+
+      // Fee overview
+      const feeTbody = document.getElementById('feeOverviewBody');
+      const currentFees = fees.filter(f => {
+        const d = new Date(f.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+      });
+      if (currentFees.length === 0) {
+        feeTbody.innerHTML = '<tr><td colspan="5" style="color: rgba(255,255,255,0.3); text-align: center; padding: 2rem;">No fee records for this month. <a href="fees.html" style="color: var(--gold);">Add record →</a></td></tr>';
+      } else {
+        feeTbody.innerHTML = currentFees.map(f => `
+          <tr>
+            <td>${f.studentName}</td>
+            <td>${f.grade || '—'}</td>
+            <td>₹${parseFloat(f.amount || 0).toLocaleString('en-IN')}</td>
+            <td>${f.dueDate || '—'}</td>
+            <td><span class="status-badge ${f.status || 'pending'}">${f.status || 'Pending'}</span></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    loadDashboard();
+
+    function logout(e) {
+      e.preventDefault();
+      sessionStorage.removeItem('zest_admin_auth');
+      sessionStorage.removeItem('zest_admin_time');
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
