@@ -10,6 +10,36 @@
 </head>
 <body>
 
+  <!-- ANNOUNCEMENT BANNER - driven by admin panel announcements -->
+  <div id="annBanner" style="display:none;background:linear-gradient(90deg,#1B365D,#0F2847);border-bottom:1px solid rgba(235,168,33,.25);overflow:hidden;position:relative;z-index:1001;">
+    <div style="display:flex;align-items:center;max-width:100%;overflow:hidden;">
+      <div style="background:rgba(235,168,33,.15);padding:.5rem 1rem;flex-shrink:0;border-right:1px solid rgba(235,168,33,.2);">
+        <span style="font-size:.68rem;font-weight:800;color:#EBA821;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;">📢 Notice</span>
+      </div>
+      <div style="overflow:hidden;flex:1;">
+        <div id="annTicker" style="display:flex;align-items:center;gap:1.5rem;padding:.45rem 1.25rem;overflow-x:auto;white-space:nowrap;"></div>
+      </div>
+      <button onclick="document.getElementById('annBanner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.3);padding:.5rem .75rem;cursor:pointer;font-size:.95rem;flex-shrink:0;" title="Dismiss">✕</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      try{
+        var a=JSON.parse(localStorage.getItem('zest_announcements')||'[]');
+        if(!a.length)return;
+        var s=a.slice().reverse().slice(0,6);
+        var t=document.getElementById('annTicker');
+        var b=document.getElementById('annBanner');
+        if(!t||!b)return;
+        t.innerHTML=s.map(function(x){
+          var hi=x.priority==='high';
+          return '<span style="font-size:.78rem;font-weight:'+(hi?700:500)+';color:'+(hi?'#FCD34D':'rgba(255,255,255,.82)')+';white-space:nowrap;">'+(hi?'⚠ ':'')+x.text+' <span style="color:rgba(255,255,255,.25);font-size:.7rem;">['+x.category+']</span></span><span style="color:rgba(235,168,33,.25);margin:0 .5rem;">|</span>';
+        }).join('');
+        b.style.display='block';
+      }catch(e){}
+    })();
+  </script>
+
   <nav class="navbar" id="navbar">
     <div class="nav-container">
       <a href="index.html" class="nav-logo">
@@ -127,7 +157,7 @@
     <div class="section-container">
       <div class="footer-bottom" style="border-top:none; padding-top: 2rem;">
         <p>© 2025 The Zest Classes | Dighi, Pune</p>
-        <a href="admin/index.html" class="footer-admin-link">⚙</a>
+        
       </div>
     </div>
   </footer>
