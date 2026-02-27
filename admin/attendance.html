@@ -8,21 +8,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    select { appearance: none; -webkit-appearance: none; background-color: #0F1E3D !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 0.9rem center !important; background-size: 12px !important; padding-right: 2.5rem !important; color: #fff !important; border: 1.5px solid rgba(255,255,255,0.12) !important; border-radius: 10px !important; font-family: Outfit,sans-serif !important; cursor: pointer; }
-    select option { background: #0F1E3D !important; color: #fff !important; }
-    select:focus { border-color: #EBA821 !important; outline: none !important; }
+    select { appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer; }
+    select option { background:#0F1E3D!important;color:#fff!important; }
+    select:focus { border-color:#EBA821!important;outline:none!important; }
+    .att-summary { display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap; }
+    .att-pill { padding:.5rem 1.25rem;border-radius:50px;font-size:.82rem;font-weight:600; }
+    .att-pill.present { background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3); }
+    .att-pill.absent  { background:rgba(239,68,68,.12);color:#FCA5A5;border:1px solid rgba(239,68,68,.25); }
+    .att-pill.total   { background:rgba(235,168,33,.12);color:#EBA821;border:1px solid rgba(235,168,33,.25); }
+    .att-btn-group { display:flex;gap:.5rem; }
+    .att-btn { padding:.35rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s; }
+    .att-btn.p  { background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3); }
+    .att-btn.p.active,.att-btn.p:hover { background:rgba(16,185,129,.4);border-color:#10B981; }
+    .att-btn.a  { background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2); }
+    .att-btn.a.active,.att-btn.a:hover { background:rgba(239,68,68,.35);border-color:#EF4444; }
+    .att-btn.l  { background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2); }
+    .att-btn.l.active,.att-btn.l:hover { background:rgba(235,168,33,.35);border-color:#EBA821; }
+    .save-toast { position:fixed;bottom:2rem;right:2rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none; }
   </style>
 </head>
 <body class="admin-body">
-
 <div class="admin-layout">
-  <aside class="admin-sidebar" id="adminSidebar">
+  <aside class="admin-sidebar">
     <div class="admin-logo">
-      <div class="logo-shield" style="background: transparent; box-shadow: none;">
-  <img src="images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
-</div>
+      <div class="logo-shield" style="background:transparent;box-shadow:none;">
+        <img src="images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;" />
+      </div>
       <div>
-        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;">THE ZEST</div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
         <div class="admin-logo-text">Command Center</div>
       </div>
     </div>
@@ -32,8 +45,14 @@
       <a href="attendance.html" class="admin-nav-item active"><span class="admin-nav-icon">✅</span> Attendance</a>
       <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
       <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
+      <div class="admin-nav-section">Academic</div>
+      <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results & Marks</a>
+      <a href="batches.html" class="admin-nav-item"><span class="admin-nav-icon">🗓</span> Batch Manager</a>
+      <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
+      <a href="custom-categories.html" class="admin-nav-item"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
       <div class="admin-nav-section">Settings</div>
       <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
+      <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
       <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
       <div class="admin-nav-section">Site</div>
       <a href="../index.html" target="_blank" class="admin-nav-item"><span class="admin-nav-icon">🌐</span> View Website</a>
@@ -43,207 +62,158 @@
   <main class="admin-main">
     <header class="admin-header">
       <div>
-        <div class="admin-page-title">Attendance Tracker</div>
-        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.15rem;" id="attendanceDate"></div>
+        <div class="admin-page-title">Daily Attendance</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;" id="attDateLabel"></div>
       </div>
       <div class="admin-header-right">
-        <div class="admin-badge">Live Entry</div>
-        <button class="btn-admin-primary" onclick="saveAttendance()" style="padding: 0.6rem 1.25rem; font-size: 0.85rem;">💾 Save Attendance</button>
+        <input type="date" id="attDate" onchange="loadAttendance()"
+          style="padding:.6rem 1rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;color:white;outline:none;" />
+        <button class="btn-admin-primary" onclick="saveAttendance()" style="padding:.6rem 1.25rem;font-size:.85rem;">💾 Save</button>
       </div>
     </header>
 
     <div class="admin-content">
-
-      <!-- Batch Filter + Date -->
-      <div class="admin-card" style="margin-bottom: 1.5rem;">
-        <div style="display: flex; gap: 1.5rem; align-items: flex-end; flex-wrap: wrap;">
-          <div class="admin-form" style="flex: 1; min-width: 200px;">
-            <label>Select Date</label>
-            <input type="date" id="attendanceDateInput" />
-          </div>
-          <div class="admin-form" style="flex: 1; min-width: 200px;">
-            <label>Filter by Batch</label>
-            <select id="batchFilter" onchange="filterStudents()">
-              <option value="all">All Batches</option>
-              <option value="5 AM Morning Batch">5 AM Morning Batch</option>
-              <option value="Regular Morning">Regular Morning Batch</option>
-              <option value="Evening I">Evening Batch I</option>
-              <option value="Evening II">Evening Batch II</option>
-            </select>
-          </div>
-          <div class="admin-form" style="flex: 1; min-width: 200px;">
-            <label>Filter by Grade</label>
-            <select id="gradeFilter" onchange="filterStudents()">
-              <option value="all">All Grades</option>
-              <option value="8th">8th Standard</option>
-              <option value="9th">9th Standard</option>
-              <option value="10th">10th Standard</option>
-              <option value="NDA">NDA Batch</option>
-              <option value="CDS">CDS Batch</option>
-            </select>
-          </div>
+      <!-- Filters -->
+      <div class="admin-card" style="padding:1.25rem 1.75rem;margin-bottom:1rem;">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+          <select id="batchFilter" onchange="loadAttendance()" style="padding:.65rem 1rem;">
+            <option value="all">All Batches</option>
+            <option>5 AM Morning Batch</option>
+            <option>Regular Morning</option>
+            <option>Evening I</option>
+            <option>Evening II</option>
+            <option>NDA / Defense</option>
+          </select>
+          <select id="gradeFilter" onchange="loadAttendance()" style="padding:.65rem 1rem;">
+            <option value="all">All Grades</option>
+            <option>8th Standard</option>
+            <option>9th Standard</option>
+            <option>10th Standard</option>
+                <option>11th Standard (Science)</option>
+                <option>11th Standard (Commerce)</option>
+                <option>12th Standard (Science)</option>
+                <option>12th Standard (Commerce)</option>
+            <option>NDA Aspirant</option>
+            <option>CDS Aspirant</option>
+            <option>AFCAT Aspirant</option>
+            <option>INET Aspirant</option>
+          </select>
+          <button onclick="markAll('present')" class="att-btn p">✅ Mark All Present</button>
+          <button onclick="markAll('absent')" class="att-btn a">❌ Mark All Absent</button>
         </div>
       </div>
 
-      <!-- Stats Row -->
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
-        <div class="admin-stat-card" style="padding: 1.25rem;">
-          <div class="admin-stat-value" id="totalCount">0</div>
-          <div class="admin-stat-label">Total Students</div>
-        </div>
-        <div class="admin-stat-card" style="padding: 1.25rem; border-color: rgba(16,185,129,0.3);">
-          <div class="admin-stat-value" style="color: var(--green);" id="presentCount">0</div>
-          <div class="admin-stat-label">Present</div>
-        </div>
-        <div class="admin-stat-card" style="padding: 1.25rem; border-color: rgba(239,68,68,0.3);">
-          <div class="admin-stat-value" style="color: #EF4444;" id="absentCount">0</div>
-          <div class="admin-stat-label">Absent</div>
+      <!-- Summary -->
+      <div class="att-summary" id="attSummary"></div>
+
+      <!-- Student List -->
+      <div class="admin-card" id="attList">
+        <div style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">
+          No students registered yet. <a href="students.html" style="color:var(--gold);">Add students →</a>
         </div>
       </div>
-
-      <!-- Bulk Actions -->
-      <div class="admin-card" style="margin-bottom: 1rem; padding: 1rem 1.75rem;">
-        <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-          <span style="font-size: 0.85rem; color: rgba(255,255,255,0.5);">Bulk:</span>
-          <button class="btn-admin-secondary" style="padding: 0.5rem 1rem; font-size: 0.82rem;" onclick="markAll('present')">✅ Mark All Present</button>
-          <button class="btn-admin-secondary" style="padding: 0.5rem 1rem; font-size: 0.82rem;" onclick="markAll('absent')">❌ Mark All Absent</button>
-        </div>
-      </div>
-
-      <!-- Attendance List -->
-      <div class="admin-card">
-        <div class="admin-card-header">
-          <div>
-            <div class="admin-card-title">Student Attendance</div>
-            <div class="admin-card-subtitle">Toggle each student's status</div>
-          </div>
-        </div>
-        <div id="attendanceList">
-          <div style="text-align: center; padding: 3rem; color: rgba(255,255,255,0.3);">
-            No students found. <a href="students.html" style="color: var(--gold);">Add students first →</a>
-          </div>
-        </div>
-      </div>
-
-      <div id="saveMsg" style="display:none; margin-top: 1rem; background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.3); color: var(--green); padding: 1rem 1.5rem; border-radius: 12px; font-weight: 600;">
-        ✅ Attendance saved successfully for <span id="savedDate"></span>
-      </div>
-
     </div>
   </main>
 </div>
+<div class="save-toast" id="saveToast">✅ Attendance saved!</div>
 
 <script>
   if (sessionStorage.getItem('zest_admin_auth') !== 'true') window.location.href = 'index.html';
 
-  const dateInput = document.getElementById('attendanceDateInput');
-  const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  dateInput.value = todayStr;
-  document.getElementById('attendanceDate').textContent = now.toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  const todayStr = new Date().toISOString().split('T')[0];
+  document.getElementById('attDate').value = todayStr;
+  document.getElementById('attDateLabel').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
-  let allStudents = JSON.parse(localStorage.getItem('zest_students') || '[]');
-  let attendanceData = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
-  let filteredStudents = [...allStudents];
+  let currentStatus = {}; // { studentId: 'present'|'absent'|'leave' }
 
-  function filterStudents() {
-    const batch = document.getElementById('batchFilter').value;
-    const grade = document.getElementById('gradeFilter').value;
-    filteredStudents = allStudents.filter(s => {
-      const batchMatch = batch === 'all' || (s.batch && s.batch.includes(batch));
-      const gradeMatch = grade === 'all' || (s.grade && s.grade.includes(grade));
-      return batchMatch && gradeMatch;
+  function loadAttendance() {
+    const date = document.getElementById('attDate').value;
+    const batchF = document.getElementById('batchFilter').value;
+    const gradeF = document.getElementById('gradeFilter').value;
+
+    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
+    const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
+    const savedDay = attendance[date] || {};
+
+    // Init currentStatus
+    currentStatus = {};
+    students.forEach(s => { currentStatus[s.id] = savedDay[s.id] || ''; });
+
+    let filtered = students.filter(s => {
+      const bMatch = batchF === 'all' || (s.batch || '') === batchF;
+      const gMatch = gradeF === 'all' || (s.grade || '') === gradeF;
+      return bMatch && gMatch;
     });
-    renderList();
-  }
 
-  function renderList() {
-    const list = document.getElementById('attendanceList');
-    const date = dateInput.value;
-    const dayAtt = attendanceData[date] || {};
-
-    document.getElementById('totalCount').textContent = filteredStudents.length;
-
-    if (filteredStudents.length === 0) {
-      list.innerHTML = '<div style="text-align:center;padding:3rem;color:rgba(255,255,255,0.3);">No students match filter. <a href="students.html" style="color:var(--gold);">Add students →</a></div>';
-      updateCounts();
+    const list = document.getElementById('attList');
+    if (filtered.length === 0) {
+      list.innerHTML = '<div style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No students match filters.</div>';
+      updateSummary(students);
       return;
     }
 
-    list.innerHTML = filteredStudents.map((s, i) => {
-      const status = dayAtt[s.id] || 'present';
-      return `
-        <div class="attendance-row" id="row-${s.id}">
-          <div class="student-info">
-            <div class="student-avatar">${s.name.charAt(0).toUpperCase()}</div>
-            <div>
-              <div class="student-name">${s.name}</div>
-              <div class="student-grade">${s.grade} · ${s.batch || 'General'}</div>
-            </div>
-          </div>
-          <div class="toggle-wrap">
-            <span style="font-size:0.8rem;color:rgba(255,255,255,0.4);" id="lbl-${s.id}">${status === 'present' ? '✅ Present' : '❌ Absent'}</span>
-            <label class="toggle">
-              <input type="checkbox" id="tog-${s.id}" ${status === 'present' ? 'checked' : ''} onchange="toggleStatus('${s.id}')" />
-              <span class="toggle-slider"></span>
-            </label>
+    list.innerHTML = filtered.map(s => `
+      <div class="attendance-row" id="row-${s.id}">
+        <div class="student-info">
+          <div class="student-avatar">${s.name.charAt(0).toUpperCase()}</div>
+          <div>
+            <div class="student-name">${s.name}</div>
+            <div class="student-grade">${s.grade || '—'} · ${s.batch || '—'}</div>
           </div>
         </div>
-      `;
-    }).join('');
+        <div class="att-btn-group">
+          <button class="att-btn p ${currentStatus[s.id]==='present'?'active':''}" onclick="setStatus('${s.id}','present')">✅ Present</button>
+          <button class="att-btn a ${currentStatus[s.id]==='absent'?'active':''}" onclick="setStatus('${s.id}','absent')">❌ Absent</button>
+          <button class="att-btn l ${currentStatus[s.id]==='leave'?'active':''}" onclick="setStatus('${s.id}','leave')">🏖 Leave</button>
+        </div>
+      </div>
+    `).join('');
 
-    updateCounts();
+    updateSummary(students);
   }
 
-  function toggleStatus(id) {
-    const cb = document.getElementById('tog-' + id);
-    const lbl = document.getElementById('lbl-' + id);
-    const date = dateInput.value;
-    if (!attendanceData[date]) attendanceData[date] = {};
-    attendanceData[date][id] = cb.checked ? 'present' : 'absent';
-    lbl.textContent = cb.checked ? '✅ Present' : '❌ Absent';
-    updateCounts();
+  function setStatus(id, status) {
+    currentStatus[id] = status;
+    // Update buttons
+    const row = document.getElementById('row-' + id);
+    if (!row) return;
+    row.querySelectorAll('.att-btn').forEach(b => b.classList.remove('active'));
+    if (status === 'present') row.querySelector('.att-btn.p').classList.add('active');
+    if (status === 'absent')  row.querySelector('.att-btn.a').classList.add('active');
+    if (status === 'leave')   row.querySelector('.att-btn.l').classList.add('active');
+    updateSummary(JSON.parse(localStorage.getItem('zest_students') || '[]'));
   }
 
   function markAll(status) {
-    const date = dateInput.value;
-    if (!attendanceData[date]) attendanceData[date] = {};
-    filteredStudents.forEach(s => {
-      attendanceData[date][s.id] = status;
-      const cb = document.getElementById('tog-' + s.id);
-      const lbl = document.getElementById('lbl-' + s.id);
-      if (cb) { cb.checked = (status === 'present'); }
-      if (lbl) lbl.textContent = status === 'present' ? '✅ Present' : '❌ Absent';
-    });
-    updateCounts();
+    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
+    students.forEach(s => setStatus(s.id, status));
   }
 
-  function updateCounts() {
-    const date = dateInput.value;
-    const dayAtt = attendanceData[date] || {};
-    const present = filteredStudents.filter(s => (dayAtt[s.id] || 'present') === 'present').length;
-    const absent = filteredStudents.length - present;
-    document.getElementById('presentCount').textContent = present;
-    document.getElementById('absentCount').textContent = absent;
+  function updateSummary(students) {
+    const present = Object.values(currentStatus).filter(v => v === 'present').length;
+    const absent  = Object.values(currentStatus).filter(v => v === 'absent').length;
+    const leave   = Object.values(currentStatus).filter(v => v === 'leave').length;
+    document.getElementById('attSummary').innerHTML = `
+      <span class="att-pill total">👥 ${students.length} Total</span>
+      <span class="att-pill present">✅ ${present} Present</span>
+      <span class="att-pill absent">❌ ${absent} Absent</span>
+      <span class="att-pill" style="background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2);">🏖 ${leave} Leave</span>
+    `;
   }
 
   function saveAttendance() {
-    localStorage.setItem('zest_attendance', JSON.stringify(attendanceData));
-    const msg = document.getElementById('saveMsg');
-    const dateLabel = new Date(dateInput.value).toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('savedDate').textContent = dateLabel;
-    msg.style.display = 'block';
-    setTimeout(() => msg.style.display = 'none', 4000);
+    const date = document.getElementById('attDate').value;
+    const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
+    attendance[date] = { ...currentStatus };
+    localStorage.setItem('zest_attendance', JSON.stringify(attendance));
+    const t = document.getElementById('saveToast');
+    t.style.display = 'block';
+    setTimeout(() => t.style.display = 'none', 2500);
   }
 
-  dateInput.addEventListener('change', renderList);
-  renderList();
+  function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
 
-  function logout(e) {
-    e.preventDefault();
-    sessionStorage.removeItem('zest_admin_auth');
-    window.location.href = 'index.html';
-  }
+  loadAttendance();
 </script>
 </body>
 </html>

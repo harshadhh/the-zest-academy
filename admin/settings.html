@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings | Zest Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .toast{position:fixed;bottom:2rem;right:2rem;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none;}
+    .toast.ok{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;}
+    .toast.err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#FCA5A5;}
+    .settings-section{margin-bottom:2rem;}
+    .setting-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
+    .setting-row:last-child{border-bottom:none;}
+    .setting-label{font-weight:600;color:white;font-size:.92rem;}
+    .setting-desc{font-size:.75rem;color:rgba(255,255,255,.38);margin-top:.2rem;}
+    .pw-strength{height:4px;border-radius:2px;margin-top:.4rem;transition:all .3s;}
+    .danger-zone{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:16px;padding:1.5rem;}
+  </style>
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="logo-shield" style="background:transparent;box-shadow:none;"><img src="images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;"/></div>
+      <div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
+        <div class="admin-logo-text">Command Center</div>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Main</div>
+      <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
+      <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
+      <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
+      <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
+      <div class="admin-nav-section">Academic</div>
+      <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results &amp; Marks</a>
+      <a href="batches.html" class="admin-nav-item"><span class="admin-nav-icon">🗓</span> Batch Manager</a>
+      <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
+      <a href="custom-categories.html" class="admin-nav-item"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
+      <div class="admin-nav-section">Settings</div>
+      <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
+      <a href="settings.html" class="admin-nav-item active"><span class="admin-nav-icon">⚙️</span> Settings</a>
+      <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
+      <div class="admin-nav-section">Site</div>
+      <a href="../index.html" target="_blank" class="admin-nav-item"><span class="admin-nav-icon">🌐</span> View Website</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-header">
+      <div>
+        <div class="admin-page-title">Settings</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Institute details, password, preferences</div>
+      </div>
+      <div class="admin-header-right"><div class="admin-badge">System Config</div></div>
+    </header>
+
+    <div class="admin-content">
+      <div class="admin-two-col">
+
+        <!-- LEFT COLUMN -->
+        <div>
+
+          <!-- Institute Info -->
+          <div class="admin-card settings-section">
+            <div class="admin-card-header">
+              <div>
+                <div class="admin-card-title">🏫 Institute Details</div>
+                <div class="admin-card-subtitle">Shown across the website and admin panel</div>
+              </div>
+              <button class="btn-admin-primary" onclick="saveInstitute()" style="padding:.5rem 1rem;font-size:.82rem;">💾 Save</button>
+            </div>
+            <div class="admin-form" style="margin-top:.5rem;">
+              <div class="admin-form-row">
+                <div class="form-group"><label>Institute Name</label><input type="text" id="instName" placeholder="The Zest Classes"/></div>
+                <div class="form-group"><label>Tagline</label><input type="text" id="instTagline" placeholder="Educate. Encourage. Empower."/></div>
+              </div>
+              <div class="admin-form-row">
+                <div class="form-group"><label>Admin Name</label><input type="text" id="adminName" placeholder="Ashish Sir"/></div>
+                <div class="form-group"><label>Phone Number</label><input type="tel" id="instPhone" placeholder="+91 XXXXX XXXXX"/></div>
+              </div>
+              <div class="admin-form-row">
+                <div class="form-group"><label>Email</label><input type="email" id="instEmail" placeholder="info@thezestclasses.com"/></div>
+                <div class="form-group"><label>WhatsApp Number</label><input type="tel" id="instWA" placeholder="+91 XXXXX XXXXX"/></div>
+              </div>
+              <div class="form-group"><label>Address</label><input type="text" id="instAddress" placeholder="The Zest Classes, Dighi, Pune – 411015"/></div>
+              <div class="admin-form-row">
+                <div class="form-group"><label>Google Maps URL</label><input type="url" id="instMaps" placeholder="https://maps.google.com/..."/></div>
+                <div class="form-group"><label>Instagram URL</label><input type="url" id="instInsta" placeholder="https://instagram.com/..."/></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Batch Timings -->
+          <div class="admin-card settings-section">
+            <div class="admin-card-header">
+              <div>
+                <div class="admin-card-title">⏰ Default Batch Timings</div>
+                <div class="admin-card-subtitle">Displayed on the public website</div>
+              </div>
+              <button class="btn-admin-primary" onclick="saveTimings()" style="padding:.5rem 1rem;font-size:.82rem;">💾 Save</button>
+            </div>
+            <div class="admin-form" style="margin-top:.5rem;">
+              <div class="admin-form-row">
+                <div class="form-group"><label>5 AM Batch</label><input type="text" id="t1" placeholder="5:00 AM – 7:00 AM (10th Std)"/></div>
+                <div class="form-group"><label>Morning Batch</label><input type="text" id="t2" placeholder="7:00 AM – 9:00 AM"/></div>
+              </div>
+              <div class="admin-form-row">
+                <div class="form-group"><label>Evening I</label><input type="text" id="t3" placeholder="4:00 PM – 6:00 PM"/></div>
+                <div class="form-group"><label>Evening II</label><input type="text" id="t4" placeholder="6:00 PM – 8:00 PM"/></div>
+              </div>
+              <div class="admin-form-row">
+                <div class="form-group"><label>11th / 12th Batch</label><input type="text" id="t5" placeholder="e.g. 3:00 PM – 5:00 PM (Coming Soon)"/></div>
+                <div class="form-group"><label>Defense Batch</label><input type="text" id="t6" placeholder="e.g. 7:00 AM – 10:00 AM"/></div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div>
+
+          <!-- Change Password -->
+          <div class="admin-card settings-section">
+            <div class="admin-card-header">
+              <div>
+                <div class="admin-card-title">🔐 Change Admin Password</div>
+                <div class="admin-card-subtitle">Used to login to this admin panel</div>
+              </div>
+            </div>
+            <div class="admin-form" style="margin-top:.5rem;">
+              <div class="form-group">
+                <label>Current Password *</label>
+                <input type="password" id="curPass" placeholder="Enter current password"/>
+              </div>
+              <div class="form-group">
+                <label>New Password *</label>
+                <input type="password" id="newPass" placeholder="Min 8 characters" oninput="checkStrength(this.value)"/>
+                <div id="pwStrengthBar" class="pw-strength" style="width:0%;background:#EF4444;"></div>
+                <div id="pwStrengthText" style="font-size:.72rem;color:rgba(255,255,255,.4);margin-top:.3rem;"></div>
+              </div>
+              <div class="form-group">
+                <label>Confirm New Password *</label>
+                <input type="password" id="confPass" placeholder="Re-enter new password"/>
+              </div>
+              <button class="btn-admin-primary" onclick="changePassword()" style="width:100%;margin-top:.25rem;">🔐 Update Password</button>
+              <div id="pwMsg" style="display:none;margin-top:.75rem;padding:.7rem 1rem;border-radius:10px;font-size:.85rem;font-weight:600;"></div>
+            </div>
+          </div>
+
+          <!-- Display Preferences -->
+          <div class="admin-card settings-section">
+            <div class="admin-card-header">
+              <div class="admin-card-title">🎨 Display Preferences</div>
+              <div class="admin-card-subtitle">Admin panel behaviour</div>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Show 11th & 12th Standard</div><div class="setting-desc">Add 11th &amp; 12th as grade options across panel</div></div>
+              <label class="toggle"><input type="checkbox" id="show1112" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Show "Coming Soon" badge</div><div class="setting-desc">Display "Coming Soon" next to 11th &amp; 12th on website</div></div>
+              <label class="toggle"><input type="checkbox" id="cs1112" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Low Seat Warnings</div><div class="setting-desc">Alert when a batch reaches 90% capacity</div></div>
+              <label class="toggle"><input type="checkbox" id="seatWarn" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Fee Overdue Alerts</div><div class="setting-desc">Highlight overdue fees on dashboard</div></div>
+              <label class="toggle"><input type="checkbox" id="feeAlert" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
+            </div>
+          </div>
+
+          <!-- Danger Zone -->
+          <div class="danger-zone">
+            <div class="admin-card-title" style="color:#FCA5A5;margin-bottom:.5rem;">⚠ Danger Zone</div>
+            <div class="admin-card-subtitle" style="margin-bottom:1rem;">These actions are permanent and cannot be undone.</div>
+            <div style="display:flex;flex-direction:column;gap:.75rem;">
+              <button onclick="clearData('zest_attendance')" style="background:rgba(239,68,68,.08);color:#FCA5A5;border:1px solid rgba(239,68,68,.2);padding:.7rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;cursor:pointer;text-align:left;">🗑 Clear All Attendance Data</button>
+              <button onclick="clearData('zest_announcements')" style="background:rgba(239,68,68,.08);color:#FCA5A5;border:1px solid rgba(239,68,68,.2);padding:.7rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;cursor:pointer;text-align:left;">🗑 Clear All Announcements</button>
+              <button onclick="clearData('zest_results')" style="background:rgba(239,68,68,.08);color:#FCA5A5;border:1px solid rgba(239,68,68,.2);padding:.7rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;cursor:pointer;text-align:left;">🗑 Clear All Results & Marks</button>
+              <button onclick="nukeAll()" style="background:rgba(239,68,68,.15);color:#EF4444;border:1px solid rgba(239,68,68,.3);padding:.7rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;text-align:left;">💀 RESET ALL DATA (Full Wipe)</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  if(sessionStorage.getItem('zest_admin_auth')!=='true') window.location.href='index.html';
+
+  const SETTINGS_KEY = 'zest_site_settings';
+  const PREFS_KEY = 'zest_prefs';
+
+  // ── Load saved settings ──
+  function loadAll() {
+    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
+    const p = JSON.parse(localStorage.getItem(PREFS_KEY)||'{}');
+    // Institute
+    ['instName','instTagline','adminName','instPhone','instEmail','instWA','instAddress','instMaps','instInsta'].forEach(id=>{
+      const el=document.getElementById(id); if(el&&s[id]) el.value=s[id];
+    });
+    // Timings
+    ['t1','t2','t3','t4','t5','t6'].forEach(id=>{ const el=document.getElementById(id); if(el&&s[id]) el.value=s[id]; });
+    // Prefs
+    if(p.show1112!==undefined) document.getElementById('show1112').checked=p.show1112;
+    if(p.cs1112!==undefined) document.getElementById('cs1112').checked=p.cs1112;
+    if(p.seatWarn!==undefined) document.getElementById('seatWarn').checked=p.seatWarn;
+    if(p.feeAlert!==undefined) document.getElementById('feeAlert').checked=p.feeAlert;
+  }
+
+  function saveInstitute() {
+    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
+    ['instName','instTagline','adminName','instPhone','instEmail','instWA','instAddress','instMaps','instInsta'].forEach(id=>{
+      s[id] = document.getElementById(id).value.trim();
+    });
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    toast('✅ Institute details saved!','ok');
+  }
+
+  function saveTimings() {
+    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
+    ['t1','t2','t3','t4','t5','t6'].forEach(id=>{ s[id]=document.getElementById(id).value.trim(); });
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    toast('✅ Timings saved!','ok');
+  }
+
+  function savePref() {
+    localStorage.setItem(PREFS_KEY, JSON.stringify({
+      show1112: document.getElementById('show1112').checked,
+      cs1112: document.getElementById('cs1112').checked,
+      seatWarn: document.getElementById('seatWarn').checked,
+      feeAlert: document.getElementById('feeAlert').checked
+    }));
+    toast('✅ Preference saved!','ok');
+  }
+
+  function checkStrength(pw) {
+    const bar = document.getElementById('pwStrengthBar');
+    const txt = document.getElementById('pwStrengthText');
+    if(!pw) { bar.style.width='0%'; txt.textContent=''; return; }
+    let score=0;
+    if(pw.length>=8) score++;
+    if(pw.length>=12) score++;
+    if(/[A-Z]/.test(pw)) score++;
+    if(/[0-9]/.test(pw)) score++;
+    if(/[^A-Za-z0-9]/.test(pw)) score++;
+    const levels = [{w:'20%',c:'#EF4444',t:'Weak'},{w:'40%',c:'#F97316',t:'Fair'},{w:'60%',c:'#EBA821',t:'Moderate'},{w:'80%',c:'#84CC16',t:'Strong'},{w:'100%',c:'#10B981',t:'Very Strong'}];
+    const l = levels[Math.min(score-1,4)] || levels[0];
+    bar.style.width=l.w; bar.style.background=l.c;
+    txt.textContent=l.t; txt.style.color=l.c;
+  }
+
+  function changePassword() {
+    const cur = document.getElementById('curPass').value;
+    const nw = document.getElementById('newPass').value;
+    const conf = document.getElementById('confPass').value;
+    const msgEl = document.getElementById('pwMsg');
+    const savedPw = localStorage.getItem('zest_admin_password') || 'ZestAdmin2025';
+
+    if(cur !== savedPw) { showPwMsg('❌ Current password is incorrect.','err'); return; }
+    if(nw.length < 8) { showPwMsg('❌ New password must be at least 8 characters.','err'); return; }
+    if(nw !== conf) { showPwMsg('❌ Passwords do not match.','err'); return; }
+
+    localStorage.setItem('zest_admin_password', nw);
+    document.getElementById('curPass').value='';
+    document.getElementById('newPass').value='';
+    document.getElementById('confPass').value='';
+    document.getElementById('pwStrengthBar').style.width='0%';
+    document.getElementById('pwStrengthText').textContent='';
+    showPwMsg('✅ Password updated successfully! Use new password next login.','ok');
+    toast('✅ Password changed!','ok');
+  }
+
+  function showPwMsg(msg, type) {
+    const el = document.getElementById('pwMsg');
+    el.textContent=msg;
+    el.style.display='block';
+    el.style.background = type==='ok'?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)';
+    el.style.border = type==='ok'?'1px solid rgba(16,185,129,.3)':'1px solid rgba(239,68,68,.3)';
+    el.style.color = type==='ok'?'#6EE7B7':'#FCA5A5';
+    setTimeout(()=>el.style.display='none',4000);
+  }
+
+  function clearData(key) {
+    const labels = {
+      'zest_attendance':'all attendance data',
+      'zest_announcements':'all announcements',
+      'zest_results':'all results & marks'
+    };
+    if(!confirm('Are you sure you want to delete '+labels[key]+'? This cannot be undone.')) return;
+    localStorage.removeItem(key);
+    toast('🗑 Cleared: '+(labels[key]||key),'ok');
+  }
+
+  function nukeAll() {
+    if(!confirm('⚠ THIS WILL DELETE EVERYTHING — students, fees, attendance, results, announcements, all data. Are you absolutely sure?')) return;
+    if(!confirm('FINAL WARNING: All data will be permanently lost. Type OK in the next prompt to confirm.')) return;
+    const confirm2 = prompt('Type DELETE to confirm full reset:');
+    if(confirm2 !== 'DELETE') { toast('Reset cancelled.','err'); return; }
+    const keysToKeep = ['zest_admin_auth','zest_admin_password'];
+    Object.keys(localStorage).filter(k=>k.startsWith('zest_')&&!keysToKeep.includes(k)).forEach(k=>localStorage.removeItem(k));
+    toast('💀 Full reset complete. All data cleared.','ok');
+  }
+
+  function toast(msg,type='ok') {
+    const t=document.getElementById('toast');
+    t.textContent=msg; t.className='toast '+type;
+    t.style.display='block'; clearTimeout(window._tt);
+    window._tt=setTimeout(()=>t.style.display='none',3500);
+  }
+  function logout(e){e.preventDefault();sessionStorage.removeItem('zest_admin_auth');window.location.href='index.html';}
+  loadAll();
+</script>
+</body>
+</html>

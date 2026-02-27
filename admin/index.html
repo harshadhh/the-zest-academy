@@ -198,8 +198,8 @@
       const errorBox = document.getElementById('errorBox');
       const card = document.getElementById('loginCard');
 
-      // ⚠️ CHANGE THIS PASSWORD
-      const ADMIN_PASSWORD = 'ZestAdmin2025';
+      // Password stored in localStorage (changed via Settings page)
+      const ADMIN_PASSWORD = localStorage.getItem('zest_admin_password') || 'ZestAdmin2025';
 
       if (pass === ADMIN_PASSWORD) {
         sessionStorage.setItem('zest_admin_auth', 'true');
