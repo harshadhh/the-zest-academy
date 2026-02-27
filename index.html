@@ -12,8 +12,28 @@
 </head>
 <body>
 
-  <!-- ANNOUNCEMENT BANNER - driven by admin panel announcements -->
-  <div id="annBanner" style="display:none;background:linear-gradient(90deg,#1B365D,#0F2847);border-bottom:1px solid rgba(235,168,33,.25);overflow:hidden;position:relative;z-index:1001;">
+  <!-- ANNOUNCEMENT BANNER - slides in after 3s, hides after 5s -->
+  <style>
+    #annBanner {
+      background: linear-gradient(90deg,#1B365D,#0F2847);
+      border-bottom: 1px solid rgba(235,168,33,.25);
+      overflow: hidden;
+      position: relative;
+      z-index: 1001;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+    }
+    #annBanner.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+    #annBanner.hiding {
+      max-height: 0;
+      opacity: 0;
+    }
+  </style>
+  <div id="annBanner">
     <div style="display:flex;align-items:center;max-width:100%;overflow:hidden;">
       <div style="background:rgba(235,168,33,.15);padding:.5rem 1rem;flex-shrink:0;border-right:1px solid rgba(235,168,33,.2);">
         <span style="font-size:.68rem;font-weight:800;color:#EBA821;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;">📢 Notice</span>
@@ -21,28 +41,43 @@
       <div style="overflow:hidden;flex:1;">
         <div id="annTicker" style="display:flex;align-items:center;gap:1.5rem;padding:.45rem 1.25rem;overflow-x:auto;white-space:nowrap;"></div>
       </div>
-      <button onclick="document.getElementById('annBanner').style.display='none'" style="background:none;border:none;color:rgba(255,255,255,.3);padding:.5rem .75rem;cursor:pointer;font-size:.95rem;flex-shrink:0;" title="Dismiss">✕</button>
+      <button onclick="hideBanner()" style="background:none;border:none;color:rgba(255,255,255,.3);padding:.5rem .75rem;cursor:pointer;font-size:.95rem;flex-shrink:0;" title="Dismiss">✕</button>
     </div>
   </div>
   <script>
     (function(){
-      try{
-        var a=JSON.parse(localStorage.getItem('zest_announcements')||'[]');
-        if(!a.length)return;
-        var s=a.slice().reverse().slice(0,6);
-        var t=document.getElementById('annTicker');
-        var b=document.getElementById('annBanner');
-        if(!t||!b)return;
-        t.innerHTML=s.map(function(x){
-          var hi=x.priority==='high';
-          return '<span style="font-size:.78rem;font-weight:'+(hi?700:500)+';color:'+(hi?'#FCD34D':'rgba(255,255,255,.82)')+';white-space:nowrap;">'+(hi?'⚠ ':'')+x.text+' <span style="color:rgba(255,255,255,.25);font-size:.7rem;">['+x.category+']</span></span><span style="color:rgba(235,168,33,.25);margin:0 .5rem;">|</span>';
+      try {
+        var a = JSON.parse(localStorage.getItem('zest_announcements') || '[]');
+        if (!a.length) return;
+        var s = a.slice().reverse().slice(0, 6);
+        var t = document.getElementById('annTicker');
+        var b = document.getElementById('annBanner');
+        if (!t || !b) return;
+        t.innerHTML = s.map(function(x){
+          var hi = x.priority === 'high';
+          return '<span style="font-size:.78rem;font-weight:'+(hi?700:500)+';color:'+(hi?'#FCD34D':'rgba(255,255,255,.82)')+';white-space:nowrap;">'+(hi?'\u26a0 ':'')+x.text+' <span style="color:rgba(255,255,255,.25);font-size:.7rem;">['+x.category+']</span></span><span style="color:rgba(235,168,33,.25);margin:0 .5rem;">|</span>';
         }).join('');
-        b.style.display='block';
-      }catch(e){}
-    })();
-  </script>
 
-  <!-- ═══════════════════════════════════════════════
+        // Slide IN after 3 seconds
+        setTimeout(function(){
+          b.classList.add('visible');
+          // Slide OUT after 3s visible (total 8s from page load)
+          setTimeout(function(){
+            hideBanner();
+          }, 5000);
+        }, 3000);
+
+      } catch(e) {}
+    })();
+
+    function hideBanner(){
+      var b = document.getElementById('annBanner');
+      if (!b) return;
+      b.classList.remove('visible');
+      b.classList.add('hiding');
+    }
+  </script>
+<!-- ═══════════════════════════════════════════════
        STICKY NAVIGATION
   ═══════════════════════════════════════════════ -->
   <nav class="navbar" id="navbar">
