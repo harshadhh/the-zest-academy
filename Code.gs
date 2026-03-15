@@ -3,27 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Attendance | Zest Admin</title>
+  <title>Enquiries | Zest Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
     select { appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer; }
     select option { background:#0F1E3D!important;color:#fff!important; }
-    select:focus { border-color:#EBA821!important;outline:none!important; }
-    .att-summary { display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap; }
-    .att-pill { padding:.5rem 1.25rem;border-radius:50px;font-size:.82rem;font-weight:600; }
-    .att-pill.present { background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3); }
-    .att-pill.absent  { background:rgba(239,68,68,.12);color:#FCA5A5;border:1px solid rgba(239,68,68,.25); }
-    .att-pill.total   { background:rgba(235,168,33,.12);color:#EBA821;border:1px solid rgba(235,168,33,.25); }
-    .att-btn-group { display:flex;gap:.5rem; }
-    .att-btn { padding:.35rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s; }
-    .att-btn.p  { background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3); }
-    .att-btn.p.active,.att-btn.p:hover { background:rgba(16,185,129,.4);border-color:#10B981; }
-    .att-btn.a  { background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2); }
-    .att-btn.a.active,.att-btn.a:hover { background:rgba(239,68,68,.35);border-color:#EF4444; }
-    .att-btn.l  { background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2); }
-    .att-btn.l.active,.att-btn.l:hover { background:rgba(235,168,33,.35);border-color:#EBA821; }
+    .enq-status { padding:.2rem .7rem;border-radius:6px;font-size:.72rem;font-weight:700; }
+    .enq-status.new { background:rgba(59,130,246,.15);color:#93C5FD; }
+    .enq-status.contacted { background:rgba(235,168,33,.12);color:#EBA821; }
+    .enq-status.converted { background:rgba(16,185,129,.12);color:#6EE7B7; }
+    .enq-status.closed { background:rgba(255,255,255,.07);color:rgba(255,255,255,.4); }
     .save-toast { position:fixed;bottom:2rem;right:2rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none; }
   </style>
 </head>
@@ -31,8 +22,7 @@
 <div class="admin-layout">
   <aside class="admin-sidebar">
     <div class="admin-logo">
-      <div class="logo-shield" style="background:transparent;box-shadow:none;">
-        <img src="../images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;" />
+      <div style="width:40px;height:40px;position:relative;flex-shrink:0;"><img src="../images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;border-radius:8px;" onerror="this.style.display='none';this.parentElement.querySelector('.logo-fb').style.display='flex'" /><div class="logo-fb" style="display:none;width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#EBA821,#C98A10);align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:900;color:#0F1E3D;">Z</div></div>
       </div>
       <div>
         <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
@@ -42,14 +32,13 @@
     <nav class="admin-nav">
       <div class="admin-nav-section">Main</div>
       <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
-      <a href="attendance.html" class="admin-nav-item active"><span class="admin-nav-icon">✅</span> Attendance</a>
+      <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
       <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
       <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
       <div class="admin-nav-section">Academic</div>
       <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results & Marks</a>
       <a href="batches.html" class="admin-nav-item"><span class="admin-nav-icon">🗓</span> Batch Manager</a>
-      <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
-      <a href="custom-categories.html" class="admin-nav-item"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
+      <a href="enquiries.html" class="admin-nav-item active"><span class="admin-nav-icon">📩</span> Enquiries</a>
       <div class="admin-nav-section">Settings</div>
       <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
       <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
@@ -62,158 +51,199 @@
   <main class="admin-main">
     <header class="admin-header">
       <div>
-        <div class="admin-page-title">Daily Attendance</div>
-        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;" id="attDateLabel"></div>
+        <div class="admin-page-title">Enquiries & Leads</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Track all admission inquiries and follow-ups</div>
       </div>
       <div class="admin-header-right">
-        <input type="date" id="attDate" onchange="loadAttendance()"
-          style="padding:.6rem 1rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;color:white;outline:none;" />
-        <button class="btn-admin-primary" onclick="saveAttendance()" style="padding:.6rem 1.25rem;font-size:.85rem;">💾 Save</button>
+        <button class="btn-admin-secondary" onclick="exportEnqCSV()" style="padding:.6rem 1rem;font-size:.82rem;">📥 Export</button>
+        <button class="btn-admin-primary" onclick="toggleForm()" style="padding:.6rem 1.25rem;font-size:.85rem;">➕ Add Enquiry</button>
       </div>
     </header>
 
     <div class="admin-content">
-      <!-- Filters -->
-      <div class="admin-card" style="padding:1.25rem 1.75rem;margin-bottom:1rem;">
-        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-          <select id="batchFilter" onchange="loadAttendance()" style="padding:.65rem 1rem;">
-            <option value="all">All Batches</option>
-            <option>5 AM Morning Batch</option>
-            <option>Regular Morning</option>
-            <option>Evening I</option>
-            <option>Evening II</option>
-            <option>NDA / Defense</option>
-          </select>
-          <select id="gradeFilter" onchange="loadAttendance()" style="padding:.65rem 1rem;">
-            <option value="all">All Grades</option>
-            <option>8th Standard</option>
-            <option>9th Standard</option>
-            <option>10th Standard</option>
+
+      <!-- STATS -->
+      <div class="admin-stats-grid" style="margin-bottom:1.5rem;">
+        <div class="admin-stat-card"><div class="admin-stat-icon">📩</div><div class="admin-stat-value" id="totalEnq">0</div><div class="admin-stat-label">Total Enquiries</div></div>
+        <div class="admin-stat-card" style="border-color:rgba(59,130,246,.25)"><div class="admin-stat-icon">🆕</div><div class="admin-stat-value" style="color:#93C5FD" id="newEnq">0</div><div class="admin-stat-label">New (Not Contacted)</div></div>
+        <div class="admin-stat-card" style="border-color:rgba(235,168,33,.25)"><div class="admin-stat-icon">📞</div><div class="admin-stat-value" style="color:var(--gold)" id="contactedEnq">0</div><div class="admin-stat-label">Contacted</div></div>
+        <div class="admin-stat-card" style="border-color:rgba(16,185,129,.25)"><div class="admin-stat-icon">✅</div><div class="admin-stat-value" style="color:var(--green)" id="convertedEnq">0</div><div class="admin-stat-label">Converted to Student</div></div>
+      </div>
+
+      <!-- ADD FORM -->
+      <div class="admin-card" id="addEnqForm" style="display:none;margin-bottom:1.5rem;border-color:rgba(235,168,33,.3);">
+        <div class="admin-card-header">
+          <div class="admin-card-title">Log New Enquiry</div>
+          <button onclick="toggleForm()" style="color:rgba(255,255,255,.4);font-size:1.2rem;background:none;border:none;cursor:pointer;">✕</button>
+        </div>
+        <div class="admin-form">
+          <div class="admin-form-row">
+            <div class="form-group"><label>Student Name *</label><input type="text" id="eStudentName" placeholder="Prospective student's name" /></div>
+            <div class="form-group"><label>Parent / Guardian Name</label><input type="text" id="eParentName" placeholder="Parent name" /></div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group"><label>Phone Number *</label><input type="tel" id="ePhone" placeholder="+91 XXXXX XXXXX" /></div>
+            <div class="form-group"><label>Email (optional)</label><input type="email" id="eEmail" placeholder="email@example.com" /></div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group"><label>Interested In</label>
+              <select id="eInterest">
+                <option value="">Select Program</option>
+                <option>8th Standard</option><option>9th Standard</option><option>10th Standard</option>
                 <option>11th Standard (Science)</option>
                 <option>11th Standard (Commerce)</option>
                 <option>12th Standard (Science)</option>
                 <option>12th Standard (Commerce)</option>
-            <option>NDA Aspirant</option>
-            <option>CDS Aspirant</option>
-            <option>AFCAT Aspirant</option>
-            <option>INET Aspirant</option>
+                <option>NDA Preparation</option><option>CDS Preparation</option><option>AFCAT / INET</option><option>General Inquiry</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Source / How They Found Us</label>
+              <select id="eSource">
+                <option>Walk-In</option><option>Google Search</option><option>WhatsApp</option><option>Referral</option><option>Social Media</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Message / Notes</label><textarea id="eMessage" placeholder="Any notes about this enquiry..." style="width:100%;padding:.75rem 1rem;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.88rem;color:white;outline:none;resize:vertical;min-height:80px;"></textarea></div>
+          <div style="display:flex;gap:1rem;margin-top:.5rem;">
+            <button class="btn-admin-primary" onclick="addEnquiry()">✅ Log Enquiry</button>
+            <button class="btn-admin-secondary" onclick="toggleForm()">Cancel</button>
+          </div>
+        </div>
+        <div id="enqMsg" style="display:none;margin-top:1rem;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--green);padding:.75rem 1rem;border-radius:10px;font-size:.88rem;font-weight:600;">✅ Enquiry logged!</div>
+      </div>
+
+      <!-- FILTER -->
+      <div class="admin-card" style="padding:1.25rem 1.75rem;margin-bottom:1rem;">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="searchEnq" oninput="renderEnquiries()" placeholder="🔍 Search by name or phone..."
+            style="flex:1;min-width:180px;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.88rem;color:white;outline:none;" />
+          <select id="statusEnqFilter" onchange="renderEnquiries()" style="padding:.65rem 1rem;">
+            <option value="all">All Statuses</option>
+            <option value="new">New</option>
+            <option value="contacted">Contacted</option>
+            <option value="converted">Converted</option>
+            <option value="closed">Closed</option>
           </select>
-          <button onclick="markAll('present')" class="att-btn p">✅ Mark All Present</button>
-          <button onclick="markAll('absent')" class="att-btn a">❌ Mark All Absent</button>
         </div>
       </div>
 
-      <!-- Summary -->
-      <div class="att-summary" id="attSummary"></div>
-
-      <!-- Student List -->
-      <div class="admin-card" id="attList">
-        <div style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">
-          No students registered yet. <a href="students.html" style="color:var(--gold);">Add students →</a>
-        </div>
+      <!-- TABLE -->
+      <div class="admin-card">
+        <table class="admin-table">
+          <thead>
+            <tr><th>Student</th><th>Phone</th><th>Interest</th><th>Source</th><th>Status</th><th>Date</th><th>Action</th></tr>
+          </thead>
+          <tbody id="enqBody">
+            <tr><td colspan="7" style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No enquiries yet. Click "Add Enquiry" to log one.</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </main>
 </div>
-<div class="save-toast" id="saveToast">✅ Attendance saved!</div>
+<div class="save-toast" id="saveToast"></div>
 
 <script>
   if (!sessionStorage.getItem('zest_admin_auth')) window.location.href = 'index.html';
 
-  const todayStr = new Date().toISOString().split('T')[0];
-  document.getElementById('attDate').value = todayStr;
-  document.getElementById('attDateLabel').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let enquiries = JSON.parse(localStorage.getItem('zest_enquiries') || '[]');
 
-  let currentStatus = {}; // { studentId: 'present'|'absent'|'leave' }
+  function toggleForm() {
+    const f = document.getElementById('addEnqForm');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
+  }
 
-  function loadAttendance() {
-    const date = document.getElementById('attDate').value;
-    const batchF = document.getElementById('batchFilter').value;
-    const gradeF = document.getElementById('gradeFilter').value;
+  function addEnquiry() {
+    const studentName = document.getElementById('eStudentName').value.trim();
+    const parentName = document.getElementById('eParentName').value.trim();
+    const phone = document.getElementById('ePhone').value.trim();
+    const email = document.getElementById('eEmail').value.trim();
+    const interest = document.getElementById('eInterest').value;
+    const source = document.getElementById('eSource').value;
+    const message = document.getElementById('eMessage').value.trim();
 
-    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
-    const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
-    const savedDay = attendance[date] || {};
+    if (!studentName || !phone) { alert('Please fill Student Name and Phone.'); return; }
 
-    // Init currentStatus
-    currentStatus = {};
-    students.forEach(s => { currentStatus[s.id] = savedDay[s.id] || ''; });
+    enquiries.push({
+      id: 'E' + Date.now(), studentName, parentName, phone, email, interest, source, message,
+      status: 'new', date: new Date().toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'})
+    });
+    localStorage.setItem('zest_enquiries', JSON.stringify(enquiries));
 
-    let filtered = students.filter(s => {
-      const bMatch = batchF === 'all' || (s.batch || '') === batchF;
-      const gMatch = gradeF === 'all' || (s.grade || '') === gradeF;
-      return bMatch && gMatch;
+    ['eStudentName','eParentName','ePhone','eEmail','eMessage'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('enqMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('enqMsg').style.display = 'none', 2500);
+    renderEnquiries();
+  }
+
+  function updateStatus(id, status) {
+    const enq = enquiries.find(e => e.id === id);
+    if (enq) { enq.status = status; localStorage.setItem('zest_enquiries', JSON.stringify(enquiries)); renderEnquiries(); }
+  }
+
+  function deleteEnq(id) {
+    if (!confirm('Delete this enquiry?')) return;
+    enquiries = enquiries.filter(e => e.id !== id);
+    localStorage.setItem('zest_enquiries', JSON.stringify(enquiries));
+    renderEnquiries();
+  }
+
+  function renderEnquiries() {
+    const search = (document.getElementById('searchEnq').value || '').toLowerCase();
+    const statusF = document.getElementById('statusEnqFilter').value;
+    let filtered = enquiries.filter(e => {
+      const ms = !search || (e.studentName||'').toLowerCase().includes(search) || (e.phone||'').includes(search);
+      const mst = statusF === 'all' || e.status === statusF;
+      return ms && mst;
     });
 
-    const list = document.getElementById('attList');
+    // Update stats
+    document.getElementById('totalEnq').textContent = enquiries.length;
+    document.getElementById('newEnq').textContent = enquiries.filter(e => e.status === 'new').length;
+    document.getElementById('contactedEnq').textContent = enquiries.filter(e => e.status === 'contacted').length;
+    document.getElementById('convertedEnq').textContent = enquiries.filter(e => e.status === 'converted').length;
+
+    const tbody = document.getElementById('enqBody');
     if (filtered.length === 0) {
-      list.innerHTML = '<div style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No students match filters.</div>';
-      updateSummary(students);
-      return;
+      tbody.innerHTML = '<tr><td colspan="7" style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No enquiries found.</td></tr>'; return;
     }
-
-    list.innerHTML = filtered.map(s => `
-      <div class="attendance-row" id="row-${s.id}">
-        <div class="student-info">
-          <div class="student-avatar">${s.name.charAt(0).toUpperCase()}</div>
-          <div>
-            <div class="student-name">${s.name}</div>
-            <div class="student-grade">${s.grade || '—'} · ${s.batch || '—'}</div>
-          </div>
-        </div>
-        <div class="att-btn-group">
-          <button class="att-btn p ${currentStatus[s.id]==='present'?'active':''}" onclick="setStatus('${s.id}','present')">✅ Present</button>
-          <button class="att-btn a ${currentStatus[s.id]==='absent'?'active':''}" onclick="setStatus('${s.id}','absent')">❌ Absent</button>
-          <button class="att-btn l ${currentStatus[s.id]==='leave'?'active':''}" onclick="setStatus('${s.id}','leave')">🏖 Leave</button>
-        </div>
-      </div>
+    tbody.innerHTML = [...filtered].reverse().map(e => `
+      <tr>
+        <td>
+          <div style="font-weight:600;">${e.studentName}</div>
+          <div style="font-size:.75rem;color:rgba(255,255,255,.4);">${e.parentName || ''}</div>
+        </td>
+        <td><a href="tel:${e.phone}" style="color:rgba(235,168,33,.8);">${e.phone}</a></td>
+        <td style="font-size:.82rem;">${e.interest || '—'}</td>
+        <td style="font-size:.82rem;">${e.source || '—'}</td>
+        <td>
+          <select onchange="updateStatus('${e.id}', this.value)" style="padding:.25rem .5rem;font-size:.75rem;border-radius:6px;">
+            <option value="new" ${e.status==='new'?'selected':''}>🆕 New</option>
+            <option value="contacted" ${e.status==='contacted'?'selected':''}>📞 Contacted</option>
+            <option value="converted" ${e.status==='converted'?'selected':''}>✅ Converted</option>
+            <option value="closed" ${e.status==='closed'?'selected':''}>❌ Closed</option>
+          </select>
+        </td>
+        <td style="font-size:.82rem;">${e.date || '—'}</td>
+        <td>
+          <a href="tel:${e.phone}" style="margin-right:.4rem;background:rgba(16,185,129,.1);color:#6EE7B7;border:1px solid rgba(16,185,129,.2);padding:.3rem .6rem;border-radius:6px;font-size:.75rem;text-decoration:none;">📞</a>
+          <button onclick="deleteEnq('${e.id}')" style="background:rgba(239,68,68,.1);color:#EF4444;border:1px solid rgba(239,68,68,.2);padding:.3rem .6rem;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">✕</button>
+        </td>
+      </tr>
     `).join('');
-
-    updateSummary(students);
   }
 
-  function setStatus(id, status) {
-    currentStatus[id] = status;
-    // Update buttons
-    const row = document.getElementById('row-' + id);
-    if (!row) return;
-    row.querySelectorAll('.att-btn').forEach(b => b.classList.remove('active'));
-    if (status === 'present') row.querySelector('.att-btn.p').classList.add('active');
-    if (status === 'absent')  row.querySelector('.att-btn.a').classList.add('active');
-    if (status === 'leave')   row.querySelector('.att-btn.l').classList.add('active');
-    updateSummary(JSON.parse(localStorage.getItem('zest_students') || '[]'));
-  }
-
-  function markAll(status) {
-    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
-    students.forEach(s => setStatus(s.id, status));
-  }
-
-  function updateSummary(students) {
-    const present = Object.values(currentStatus).filter(v => v === 'present').length;
-    const absent  = Object.values(currentStatus).filter(v => v === 'absent').length;
-    const leave   = Object.values(currentStatus).filter(v => v === 'leave').length;
-    document.getElementById('attSummary').innerHTML = `
-      <span class="att-pill total">👥 ${students.length} Total</span>
-      <span class="att-pill present">✅ ${present} Present</span>
-      <span class="att-pill absent">❌ ${absent} Absent</span>
-      <span class="att-pill" style="background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2);">🏖 ${leave} Leave</span>
-    `;
-  }
-
-  function saveAttendance() {
-    const date = document.getElementById('attDate').value;
-    const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
-    attendance[date] = { ...currentStatus };
-    localStorage.setItem('zest_attendance', JSON.stringify(attendance));
-    const t = document.getElementById('saveToast');
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 2500);
+  function exportEnqCSV() {
+    if (enquiries.length === 0) { alert('No enquiries to export'); return; }
+    const h = ['Student','Parent','Phone','Email','Interest','Source','Status','Date','Message'];
+    const rows = enquiries.map(e => [e.studentName,e.parentName,e.phone,e.email,e.interest,e.source,e.status,e.date,e.message]);
+    const csv = [h,...rows].map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download = `zest-enquiries-${new Date().toISOString().split('T')[0]}.csv`; a.click();
   }
 
   function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
-
-  loadAttendance();
+  renderEnquiries();
 </script>
 <script src="zest-sync.js"></script>
 </body>

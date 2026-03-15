@@ -1,102 +1,202 @@
-# The Zest Admin Panel — Setup & Security Guide
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faculty | The Zest Classes Dighi Pune</title>
+  <link rel="icon" href="images/favicon.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
 
----
+  <!-- ANNOUNCEMENT BANNER - slides in after 3s, hides after 5s -->
+  <style>
+    #annBanner {
+      background: linear-gradient(90deg,#1B365D,#0F2847);
+      border-bottom: 1px solid rgba(235,168,33,.25);
+      overflow: hidden;
+      position: relative;
+      z-index: 1001;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+    }
+    #annBanner.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+    #annBanner.hiding {
+      max-height: 0;
+      opacity: 0;
+    }
+  </style>
+  <div id="annBanner">
+    <div style="display:flex;align-items:center;max-width:100%;overflow:hidden;">
+      <div style="background:rgba(235,168,33,.15);padding:.5rem 1rem;flex-shrink:0;border-right:1px solid rgba(235,168,33,.2);">
+        <span style="font-size:.68rem;font-weight:800;color:#EBA821;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;">📢 Notice</span>
+      </div>
+      <div style="overflow:hidden;flex:1;">
+        <div id="annTicker" style="display:flex;align-items:center;gap:1.5rem;padding:.45rem 1.25rem;overflow-x:auto;white-space:nowrap;"></div>
+      </div>
+      <button onclick="hideBanner()" style="background:none;border:none;color:rgba(255,255,255,.3);padding:.5rem .75rem;cursor:pointer;font-size:.95rem;flex-shrink:0;" title="Dismiss">✕</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      try {
+        var a = JSON.parse(localStorage.getItem('zest_announcements') || '[]');
+        if (!a.length) return;
+        var s = a.slice().reverse().slice(0, 6);
+        var t = document.getElementById('annTicker');
+        var b = document.getElementById('annBanner');
+        if (!t || !b) return;
+        t.innerHTML = s.map(function(x){
+          var hi = x.priority === 'high';
+          return '<span style="font-size:.78rem;font-weight:'+(hi?700:500)+';color:'+(hi?'#FCD34D':'rgba(255,255,255,.82)')+';white-space:nowrap;">'+(hi?'\u26a0 ':'')+x.text+' <span style="color:rgba(255,255,255,.25);font-size:.7rem;">['+x.category+']</span></span><span style="color:rgba(235,168,33,.25);margin:0 .5rem;">|</span>';
+        }).join('');
 
-## 🔐 SECURITY CHANGES
+        // Slide IN after 3 seconds
+        setTimeout(function(){
+          b.classList.add('visible');
+          // Slide OUT after 3s visible (total 8s from page load)
+          setTimeout(function(){
+            hideBanner();
+          }, 5000);
+        }, 3000);
 
-### What changed?
-Your admin password is now **never stored in plain text** anywhere.
-- Previously: Password was visible in browser DevTools as plain text (`ZestAdmin2025`)
-- Now: Password is converted to a **SHA-256 hash** before being checked. Even if someone opens DevTools, they see only a hash like `8c6976e5b5410415bde908...` — this cannot be reversed to find the original password.
+      } catch(e) {}
+    })();
 
-### Default Password
-The default password is still: **`ZestAdmin2025`**
-➡️ **Change it immediately** via Admin → Settings → Change Password
+    function hideBanner(){
+      var b = document.getElementById('annBanner');
+      if (!b) return;
+      b.classList.remove('visible');
+      b.classList.add('hiding');
+    }
+  </script>
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-shield" style="background: transparent; box-shadow: none;">
+        <img src="images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+         </div>
+        <div class="logo-text">
+          <span class="logo-main">THE ZEST</span>
+          <span class="logo-sub">Classes & Academy</span>
+        </div>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="school-wing.html">School Wing</a></li>
+        <li><a href="defense-academy.html">The Armour</a></li>
+        <li><a href="faculty.html" class="active">Faculty</a></li>
+        <li><a href="admissions.html">Admissions</a></li>
+        <li><a href="admissions.html" class="btn-nav-cta">Free Assessment</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
 
-### How to change password safely
-1. Go to `admin/settings.html`
-2. Enter current password, new password (min 10 chars), confirm
-3. The old password is verified by hash, new one is saved as hash
-4. All other sessions are expired automatically
+  <section class="page-hero" style="min-height: 50vh;">
+    <div class="hero-container">
+      <div class="page-hero-content">
+        <p class="section-eyebrow" style="color: #EBA821;">Meet the Mentor</p>
+        <h1>The Mind Behind<br /><em>The Zest</em></h1>
+        <p>Excellence is not a coincidence — it's the product of a mentor who cares deeply, teaches deliberately, and leads by example every single day.</p>
+      </div>
+    </div>
+  </section>
 
----
+  <section class="faculty-section">
+    <div class="section-container">
+      <div class="faculty-profile">
+        <div class="faculty-image-frame">
+          <img src="images/ashish-sir.jpg" alt="Ashish Sir — Founder, The Zest Classes" onerror="this.style.display='none'" />
+          <div class="faculty-img-placeholder">
+            <span>👨‍🏫</span>
+            <p>Ashish Sir's Photo</p>
+          </div>
+          <div class="faculty-badge">Founder & Lead Mentor</div>
+        </div>
+        <div class="faculty-bio">
+          <h2>Ashish Sir</h2>
+          <p class="faculty-title">Founder · The Zest Classes & The Armour Academy</p>
+          <p class="faculty-desc">With over a decade of dedicated teaching experience, Ashish Sir has become one of Dighi's most trusted educators — a mentor who combines academic rigor with genuine personal investment in every student's success.</p>
+          <p class="faculty-desc">His unique approach bridges school excellence and defense preparation: students who build discipline in his classroom often go on to wear uniforms. He believes that every student who walks into The Zest can achieve extraordinary results — given the right system and the right push.</p>
 
-## 🔗 GOOGLE SHEETS LIVE SYNC (One-time setup)
+          <div class="faculty-stats">
+            <div class="f-stat"><span>1100+</span><small>Students Mentored</small></div>
+            <div class="f-stat"><span>10+</span><small>Years Experience</small></div>
+            <div class="f-stat"><span>4.9★</span><small>Google Rating</small></div>
+            <div class="f-stat"><span>NDA</span><small>Selections</small></div>
+          </div>
 
-This lets data entered on laptop show on mobile instantly, and vice versa.
+          <div class="faculty-quote">
+            <blockquote>"Discipline before dawn. Excellence every day. That's the Zest standard."</blockquote>
+            <cite>— Ashish Sir</cite>
+          </div>
 
-### Step 1 — Create Google Sheet
-1. Go to [sheets.google.com](https://sheets.google.com)
-2. Create a new blank spreadsheet
-3. Copy the **Sheet ID** from the URL: `docs.google.com/spreadsheets/d/`**`THIS_PART`**`/edit`
+          <a href="admissions.html" class="btn-primary" style="display:inline-block; margin-top: 1.5rem;">Book a Session with Ashish Sir →</a>
+        </div>
+      </div>
 
-### Step 2 — Set up Apps Script
-1. Go to [script.google.com](https://script.google.com)
-2. Click **New Project**
-3. Delete any existing code
-4. Copy the entire contents of `admin/Code.gs` (from your zip file) and paste it
-5. In the script, find this line:
-   ```
-   return SpreadsheetApp.getActiveSpreadsheet();
-   ```
-   This works if the script is **bound** to your sheet. To bind it:
-   - Open your Google Sheet → Extensions → Apps Script
-   - Paste the Code.gs content there instead
+      <!-- Philosophy -->
+      <div class="philosophy-section">
+        <div class="section-header">
+          <p class="section-eyebrow">Our Teaching Philosophy</p>
+          <h2 class="section-title">Why Students <em>Succeed Here</em></h2>
+        </div>
+        <div class="philosophy-grid">
+          <div class="philosophy-card">
+            <div class="phil-num">01</div>
+            <h4>Concept First</h4>
+            <p>Rote learning has no place here. Every topic is taught from first principles — when students understand why, the what becomes effortless.</p>
+          </div>
+          <div class="philosophy-card">
+            <div class="phil-num">02</div>
+            <h4>Individual Attention</h4>
+            <p>Small, controlled batches mean every student is known by name, strength, and weakness. No child is lost in the crowd.</p>
+          </div>
+          <div class="philosophy-card">
+            <div class="phil-num">03</div>
+            <h4>Accountability Systems</h4>
+            <p>Regular tests, progress tracking, and parent communication create a system where consistent effort is non-negotiable.</p>
+          </div>
+          <div class="philosophy-card">
+            <div class="phil-num">04</div>
+            <h4>Character & Discipline</h4>
+            <p>Beyond marks, we build the habits and mindset that make students successful in every area of life — academic, professional, and personal.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-### Step 3 — Set Sheet ID in Script Properties
-1. In Apps Script → Project Settings → Script Properties
-2. Add property: **Key** = `sheet_id`, **Value** = your Sheet ID from Step 1
+  <section class="cta-banner">
+    <div class="section-container">
+      <div class="cta-banner-inner">
+        <div>
+          <h2>Learn Directly from <em>Ashish Sir</em></h2>
+          <p>Book a free assessment session and experience the Zest difference firsthand.</p>
+        </div>
+        <div class="cta-banner-buttons">
+          <a href="admissions.html" class="btn-primary">Book Free Assessment</a>
+          <a href="https://wa.me/919XXXXXXXXX" class="btn-whatsapp" target="_blank">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
-### Step 4 — Deploy as Web App
-1. Click **Deploy** → **New Deployment**
-2. Type: **Web App**
-3. Execute as: **Me**
-4. Who has access: **Anyone**
-5. Click **Deploy** → Copy the Web App URL (starts with `https://script.google.com/macros/s/...`)
-
-### Step 5 — Connect in Admin Panel
-1. Open your website's admin panel → Settings
-2. Paste the Web App URL into the "Google Apps Script URL" field
-3. Click **Test & Connect**
-4. You should see "🟢 Connected"
-
-### Step 6 — Push existing data
-Click **📤 Push Local → Sheets** to upload all existing data to the spreadsheet.
-
----
-
-## 📱 REAL-TIME ACROSS DEVICES
-
-Once connected:
-- Data entered on **laptop** → automatically saved to Google Sheets → visible on **mobile** after refresh
-- Data entered on **mobile** → saved to Google Sheets → visible on **laptop** after refresh
-- Dashboard stats update from the live Sheets data every time you load the page
-
-**Auto-sync on every save:** Each time you add a student, fee record, announcement etc., it syncs to Sheets immediately.
-
----
-
-## 🗂 WHAT EACH SHEET TAB CONTAINS
-
-| Tab | What's stored |
-|-----|--------------|
-| Students | All student records |
-| Attendance | Daily attendance per student |
-| Fees | All fee payment records |
-| Results | Test scores & marks |
-| Announcements | Public announcements |
-| Enquiries | Admission enquiries/leads |
-| Batches | Batch schedules |
-
----
-
-## ⚠️ IMPORTANT NOTES
-
-1. **Never share the Web App URL** — it's your private API endpoint
-2. **Change the default password** before going live
-3. If you redeploy the Apps Script, the URL changes — update it in Settings
-4. The panel works offline too — data saves locally and syncs when connection returns
-
----
-
-*The Zest Classes · Dighi, Pune · Admin Panel v2.0*
+  <footer class="footer">
+    <div class="section-container">
+      <div class="footer-bottom" style="border-top:none; padding-top: 2rem;">
+        <p>© 2025 The Zest Classes | Dighi, Pune</p>
+        
+      
+        <a href="admin/index.html" style="opacity:0.15;font-size:0.7rem;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:0.05em;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.5" onmouseout="this.style.opacity=0.15">⚙ admin</a></div>
+    </div>
+  </footer>
+  <script src="js/script.js"></script>
+</body>
+</html>
