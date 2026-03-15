@@ -8,9 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="../css/style.css"/>
   <style>
-    select{appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer;}
-    select option{background:#0F1E3D!important;color:#fff!important;}
-    select:focus{border-color:#EBA821!important;outline:none!important;}
     .toast{position:fixed;bottom:2rem;right:2rem;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none;}
     .toast.ok{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;}
     .toast.err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#FCA5A5;}
@@ -20,17 +17,24 @@
     .setting-label{font-weight:600;color:white;font-size:.92rem;}
     .setting-desc{font-size:.75rem;color:rgba(255,255,255,.38);margin-top:.2rem;}
     .danger-zone{background:rgba(239,68,68,.04);border:1px solid rgba(239,68,68,.15);border-radius:16px;padding:1.5rem;}
-    .sync-card{background:linear-gradient(135deg,rgba(59,130,246,.08),rgba(16,185,129,.06));border:1px solid rgba(59,130,246,.25);border-radius:16px;padding:1.75rem;margin-bottom:1.5rem;}
-    .sync-status-pill{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .85rem;border-radius:50px;font-size:.75rem;font-weight:700;}
+    .pill{display:inline-flex;align-items:center;gap:.4rem;padding:.35rem .85rem;border-radius:50px;font-size:.75rem;font-weight:700;}
     .pill-live{background:rgba(16,185,129,.12);color:#6EE7B7;border:1px solid rgba(16,185,129,.25);}
     .pill-local{background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2);}
     .pill-off{background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2);}
-    .inline-msg{margin-top:.65rem;padding:.6rem .85rem;border-radius:8px;font-size:.82rem;font-weight:600;display:none;}
+    .inline-msg{margin-top:.75rem;padding:.65rem .9rem;border-radius:8px;font-size:.83rem;font-weight:600;display:none;line-height:1.5;}
     .inline-msg.ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);color:#6EE7B7;}
     .inline-msg.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:#FCA5A5;}
-    .step-num{width:24px;height:24px;border-radius:50%;background:rgba(235,168,33,.15);color:#EBA821;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;flex-shrink:0;margin-right:.5rem;}
-    .step-row{display:flex;align-items:flex-start;margin-bottom:.75rem;font-size:.85rem;color:rgba(255,255,255,.7);line-height:1.5;}
-    code{background:rgba(255,255,255,.08);padding:.15rem .45rem;border-radius:5px;font-family:monospace;font-size:.82rem;color:#EBA821;}
+    .step-num{width:22px;height:22px;border-radius:50%;background:rgba(235,168,33,.15);color:#EBA821;display:inline-flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:800;flex-shrink:0;margin-right:.6rem;margin-top:.15rem;}
+    .step-row{display:flex;align-items:flex-start;margin-bottom:.6rem;font-size:.82rem;color:rgba(255,255,255,.65);line-height:1.55;}
+    code{background:rgba(255,255,255,.08);padding:.12rem .42rem;border-radius:5px;font-family:monospace;font-size:.8rem;color:#EBA821;}
+    .url-field-wrap{position:relative;}
+    .url-field-wrap input{width:100%;padding-right:5rem;}
+    .url-copy-btn{position:absolute;right:.5rem;top:50%;transform:translateY(-50%);background:rgba(235,168,33,.1);border:1px solid rgba(235,168,33,.2);color:#EBA821;border-radius:6px;padding:.25rem .6rem;font-size:.72rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;}
+    .url-copy-btn:hover{background:rgba(235,168,33,.2);}
+    .saved-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.72rem;color:rgba(16,185,129,.7);font-weight:600;margin-left:.5rem;}
+    .connection-status-bar{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-radius:12px;margin-bottom:1.25rem;border:1px solid;}
+    .csb-live{background:rgba(16,185,129,.06);border-color:rgba(16,185,129,.2);}
+    .csb-off{background:rgba(239,68,68,.05);border-color:rgba(239,68,68,.15);}
   </style>
 </head>
 <body class="admin-body">
@@ -67,49 +71,103 @@
     <header class="admin-header">
       <div>
         <div class="admin-page-title">Settings</div>
-        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Sync, security, institute info</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Google Sheets sync · Password · Preferences</div>
       </div>
       <div class="admin-header-right">
-        <span id="syncStatusBadge" class="sync-status-pill pill-local">🟡 Local Only</span>
+        <span id="syncStatusBadge" class="pill pill-local">🟡 Local Only</span>
       </div>
     </header>
 
     <div class="admin-content">
       <div class="admin-two-col">
 
-        <!-- LEFT COLUMN -->
+        <!-- ═══════════ LEFT COLUMN ═══════════ -->
         <div>
 
-          <!-- ══ GOOGLE SHEETS SYNC ══ -->
-          <div class="sync-card">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem;">
+          <!-- ══ GOOGLE SHEETS CONNECTION ══ -->
+          <div class="admin-card" style="margin-bottom:1.5rem;border-color:rgba(59,130,246,.25);">
+            <div class="admin-card-header" style="margin-bottom:1rem;">
               <div>
-                <div class="admin-card-title" style="font-size:1rem;">🔗 Google Sheets Live Sync</div>
-                <div class="admin-card-subtitle">All data syncs in real-time across devices</div>
+                <div class="admin-card-title">🔗 Google Sheets Live Sync</div>
+                <div class="admin-card-subtitle">Paste both URLs once — saved forever, works on every device</div>
               </div>
-              <span id="liveIndicator" class="sync-status-pill pill-off">● Not Connected</span>
+              <span class="pill pill-off" id="liveIndicator">● Not Connected</span>
             </div>
 
-            <!-- Setup guide -->
-            <div id="setupGuide" style="margin-bottom:1.25rem;">
-              <div style="font-size:.8rem;font-weight:700;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">First-time setup (do this once)</div>
-              <div class="step-row"><span class="step-num">1</span>Open <a href="https://script.google.com" target="_blank" style="color:#EBA821;">script.google.com</a> → New Project → paste <code>Code.gs</code> from the zip</div>
-              <div class="step-row"><span class="step-num">2</span>Click <strong style="color:#fff;">Deploy → New Deployment → Web App</strong>. Set Execute as: <code>Me</code>, Access: <code>Anyone</code>. Copy the URL.</div>
-              <div class="step-row"><span class="step-num">3</span>Create a Google Sheet, copy its ID from the URL (long string between /d/ and /edit), paste in Script Properties as <code>sheet_id</code>.</div>
-              <div class="step-row"><span class="step-num">4</span>Paste the Web App URL below and click Connect.</div>
+            <!-- Live connection status bar -->
+            <div class="connection-status-bar csb-off" id="statusBar">
+              <div>
+                <div style="font-size:.82rem;font-weight:600;color:rgba(255,255,255,.7);" id="statusBarText">Not connected to Google Sheets</div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.35);margin-top:.15rem;" id="statusBarSub">Data saves locally on this device only</div>
+              </div>
+              <div id="statusBarIcon" style="font-size:1.4rem;">🔌</div>
             </div>
 
+            <!-- The two URL fields -->
             <div class="admin-form">
+
               <div class="form-group">
-                <label>Google Apps Script Web App URL</label>
-                <input type="url" id="apiUrlInput" placeholder="https://script.google.com/macros/s/AKfy.../exec" style="width:100%;font-size:.85rem;"/>
-                <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.3rem;">Paste the URL from Deploy → Manage Deployments</div>
+                <label style="display:flex;align-items:center;gap:.4rem;">
+                  Google Apps Script URL
+                  <span id="scriptSavedBadge" class="saved-badge" style="display:none;">✓ Saved</span>
+                </label>
+                <div class="url-field-wrap">
+                  <input type="url" id="scriptUrl"
+                    placeholder="https://script.google.com/macros/s/AKfyc.../exec"
+                    oninput="onUrlChange()"
+                    style="font-size:.83rem;font-family:monospace;"/>
+                  <button class="url-copy-btn" onclick="copyField('scriptUrl')">Copy</button>
+                </div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.35rem;">
+                  Get this from: Apps Script → Deploy → Manage Deployments → Web App URL
+                </div>
               </div>
-              <div style="display:flex;gap:.75rem;flex-wrap:wrap;">
-                <button class="btn-admin-primary" onclick="testAndConnect()" style="padding:.6rem 1.25rem;font-size:.85rem;" id="connectBtn">🔌 Test & Connect</button>
-                <button onclick="disconnectSync()" style="padding:.6rem 1rem;font-size:.82rem;background:rgba(239,68,68,.08);color:#FCA5A5;border:1px solid rgba(239,68,68,.2);border-radius:8px;font-family:'Outfit',sans-serif;cursor:pointer;">Disconnect</button>
+
+              <div class="form-group">
+                <label style="display:flex;align-items:center;gap:.4rem;">
+                  Google Sheet ID
+                  <span id="sheetSavedBadge" class="saved-badge" style="display:none;">✓ Saved</span>
+                </label>
+                <div class="url-field-wrap">
+                  <input type="text" id="sheetId"
+                    placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgVE2upms"
+                    oninput="onUrlChange()"
+                    style="font-size:.83rem;font-family:monospace;"/>
+                  <button class="url-copy-btn" onclick="copyField('sheetId')">Copy</button>
+                </div>
+                <div style="font-size:.72rem;color:rgba(255,255,255,.3);margin-top:.35rem;">
+                  Get this from: Google Sheet URL → the long ID between <code>/d/</code> and <code>/edit</code>
+                </div>
+              </div>
+
+              <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-top:.25rem;">
+                <button class="btn-admin-primary" onclick="saveAndConnect()" id="connectBtn" style="padding:.65rem 1.4rem;font-size:.88rem;">
+                  💾 Save & Connect
+                </button>
+                <button onclick="testConnection()" id="testBtn" style="padding:.65rem 1.1rem;font-size:.85rem;background:rgba(59,130,246,.1);color:#93C5FD;border:1px solid rgba(59,130,246,.2);border-radius:10px;font-family:'Outfit',sans-serif;cursor:pointer;font-weight:600;">
+                  🔄 Re-Test
+                </button>
+                <button onclick="disconnectSync()" style="padding:.65rem 1rem;font-size:.82rem;background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);border-radius:10px;font-family:'Outfit',sans-serif;cursor:pointer;">
+                  Disconnect
+                </button>
               </div>
               <div class="inline-msg" id="connectMsg"></div>
+            </div>
+
+            <!-- Setup steps (collapsible) -->
+            <div style="margin-top:1.25rem;">
+              <button onclick="toggleGuide()" style="background:none;border:none;color:rgba(235,168,33,.7);font-family:'Outfit',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;padding:0;display:flex;align-items:center;gap:.4rem;" id="guideToggle">
+                📖 Show setup guide ▼
+              </button>
+              <div id="setupGuide" style="display:none;margin-top:1rem;padding:1rem;background:rgba(255,255,255,.03);border-radius:10px;border:1px solid rgba(255,255,255,.06);">
+                <div style="font-size:.78rem;font-weight:700;color:rgba(255,255,255,.45);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.75rem;">First-time setup — do this once</div>
+                <div class="step-row"><span class="step-num">1</span>Open your Google Sheet → click <strong style="color:#fff;">Extensions → Apps Script</strong></div>
+                <div class="step-row"><span class="step-num">2</span>Delete any existing code. Paste the entire contents of <code>Code.gs</code> from the zip. Save (Ctrl+S).</div>
+                <div class="step-row"><span class="step-num">3</span>In Apps Script → click the gear icon (⚙) → <strong style="color:#fff;">Project Settings → Script Properties</strong> → Add property: key = <code>sheet_id</code>, value = your Sheet ID (from the Google Sheet URL)</div>
+                <div class="step-row"><span class="step-num">4</span>Click <strong style="color:#fff;">Deploy → New Deployment</strong>. Type = Web App. Execute as = <strong style="color:#fff;">Me</strong>. Access = <strong style="color:#fff;">Anyone</strong>. Click Deploy. Copy the URL.</div>
+                <div class="step-row"><span class="step-num">5</span>Paste the Script URL and Sheet ID in the fields above → click <strong style="color:#fff;">Save & Connect</strong>.</div>
+                <div class="step-row"><span class="step-num">6</span>Click <strong style="color:#fff;">📤 Push Local → Sheets</strong> below to upload all existing data.</div>
+              </div>
             </div>
           </div>
 
@@ -117,70 +175,67 @@
           <div class="admin-card" style="margin-bottom:1.5rem;">
             <div class="admin-card-header">
               <div class="admin-card-title">📤 Data Sync</div>
-              <div class="admin-card-subtitle">Manual push/pull between local and Google Sheets</div>
+              <div class="admin-card-subtitle">Manually push all local data to Sheets, or pull latest from Sheets</div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.5rem;">
-              <button onclick="pushAll()" id="pushBtn" style="padding:.85rem;background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.25);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;">
-                📤 Push Local → Sheets<div style="font-size:.7rem;opacity:.6;font-weight:400;margin-top:.2rem;">Upload everything local</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-top:.75rem;">
+              <button onclick="pushAll()" id="pushBtn" style="padding:.9rem;background:rgba(235,168,33,.08);color:#EBA821;border:1px solid rgba(235,168,33,.2);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;line-height:1.4;">
+                📤 Push Local → Sheets<div style="font-size:.7rem;opacity:.55;font-weight:400;margin-top:.2rem;">Uploads all local data</div>
               </button>
-              <button onclick="pullAll()" id="pullBtn" style="padding:.85rem;background:rgba(59,130,246,.08);color:#93C5FD;border:1px solid rgba(59,130,246,.2);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s;">
-                📥 Pull Sheets → Local<div style="font-size:.7rem;opacity:.6;font-weight:400;margin-top:.2rem;">Fetch latest from Sheets</div>
+              <button onclick="pullAll()" id="pullBtn" style="padding:.9rem;background:rgba(59,130,246,.07);color:#93C5FD;border:1px solid rgba(59,130,246,.18);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;font-weight:600;cursor:pointer;line-height:1.4;">
+                📥 Pull Sheets → Local<div style="font-size:.7rem;opacity:.55;font-weight:400;margin-top:.2rem;">Fetches latest from Sheets</div>
               </button>
             </div>
             <div class="inline-msg" id="syncMsg"></div>
           </div>
 
-          <!-- ══ INSTITUTE INFO ══ -->
+          <!-- ══ PREFERENCES ══ -->
           <div class="admin-card">
             <div class="admin-card-header">
-              <div>
-                <div class="admin-card-title">🏫 Institute Details</div>
-                <div class="admin-card-subtitle">Shown on website and admin panel</div>
-              </div>
-              <button class="btn-admin-primary" onclick="saveInstitute()" style="padding:.5rem 1rem;font-size:.82rem;">💾 Save</button>
+              <div class="admin-card-title">🎛 Preferences</div>
             </div>
-            <div class="admin-form" style="margin-top:.5rem;">
-              <div class="admin-form-row">
-                <div class="form-group"><label>Institute Name</label><input type="text" id="instName" placeholder="The Zest Classes"/></div>
-                <div class="form-group"><label>Admin Name</label><input type="text" id="adminName" placeholder="Ashish Sir"/></div>
-              </div>
-              <div class="admin-form-row">
-                <div class="form-group"><label>Phone</label><input type="tel" id="instPhone" placeholder="+91 XXXXX XXXXX"/></div>
-                <div class="form-group"><label>WhatsApp</label><input type="tel" id="instWA" placeholder="+91 XXXXX XXXXX"/></div>
-              </div>
-              <div class="form-group"><label>Address</label><input type="text" id="instAddress" placeholder="Dighi, Pune – 411015"/></div>
+            <div class="setting-row">
+              <div><div class="setting-label">11th &amp; 12th Standard</div><div class="setting-desc">Show in all grade dropdowns across panel</div></div>
+              <label class="toggle"><input type="checkbox" id="show1112" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Low Seat Alerts</div><div class="setting-desc">Warn on dashboard when a batch exceeds 90% capacity</div></div>
+              <label class="toggle"><input type="checkbox" id="seatWarn" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
+            </div>
+            <div class="setting-row">
+              <div><div class="setting-label">Fee Overdue Alerts</div><div class="setting-desc">Highlight overdue fee records on dashboard</div></div>
+              <label class="toggle"><input type="checkbox" id="feeAlert" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
             </div>
           </div>
 
         </div>
 
-        <!-- RIGHT COLUMN -->
+        <!-- ═══════════ RIGHT COLUMN ═══════════ -->
         <div>
 
-          <!-- ══ SECURITY ══ -->
+          <!-- ══ CHANGE PASSWORD ══ -->
           <div class="admin-card" style="border-color:rgba(235,168,33,.2);margin-bottom:1.5rem;">
             <div class="admin-card-header">
               <div>
                 <div class="admin-card-title">🔐 Change Admin Password</div>
-                <div class="admin-card-subtitle">Password is hashed — never stored in plain text</div>
+                <div class="admin-card-subtitle">Hashed with SHA-256 — never stored in plain text</div>
               </div>
             </div>
-            <div style="background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:10px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.78rem;color:#93C5FD;line-height:1.6;">
-              🔒 <strong>How it's secured:</strong> Your password is converted to a SHA-256 hash before being checked. The actual password is <strong>never stored anywhere</strong> — not in the code, not in browser storage. Even if someone opens DevTools they cannot see your password.
+            <div style="background:rgba(59,130,246,.05);border:1px solid rgba(59,130,246,.13);border-radius:10px;padding:.75rem 1rem;margin-bottom:1.1rem;font-size:.78rem;color:#93C5FD;line-height:1.6;">
+              🔒 Your password is converted to a one-way hash before saving. Even if someone opens DevTools, they only see a string like <code>8c6976e5b541...</code> — impossible to reverse.
             </div>
             <div class="admin-form">
               <div class="form-group">
                 <label>Current Password *</label>
                 <div style="position:relative;">
-                  <input type="password" id="curPass" placeholder="Enter current password" style="width:100%;padding-right:2.5rem;"/>
-                  <button onclick="togglePw('curPass')" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:1rem;">👁</button>
+                  <input type="password" id="curPass" placeholder="Enter current password" style="width:100%;padding-right:2.75rem;"/>
+                  <button onclick="togglePw('curPass')" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:1rem;padding:.2rem;">👁</button>
                 </div>
               </div>
               <div class="form-group">
-                <label>New Password * (min 10 chars)</label>
+                <label>New Password * <span style="font-weight:400;color:rgba(255,255,255,.3);">(min 10 chars)</span></label>
                 <div style="position:relative;">
-                  <input type="password" id="newPass" placeholder="Strong password recommended" oninput="checkStrength(this.value)" style="width:100%;padding-right:2.5rem;"/>
-                  <button onclick="togglePw('newPass')" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:1rem;">👁</button>
+                  <input type="password" id="newPass" placeholder="Use something strong" oninput="checkStrength(this.value)" style="width:100%;padding-right:2.75rem;"/>
+                  <button onclick="togglePw('newPass')" style="position:absolute;right:.75rem;top:50%;transform:translateY(-50%);background:none;border:none;color:rgba(255,255,255,.3);cursor:pointer;font-size:1rem;padding:.2rem;">👁</button>
                 </div>
                 <div id="pwBar" class="pw-strength"></div>
                 <div id="pwTxt" style="font-size:.72rem;margin-top:.25rem;"></div>
@@ -189,38 +244,20 @@
                 <label>Confirm New Password *</label>
                 <input type="password" id="confPass" placeholder="Re-enter new password" style="width:100%;"/>
               </div>
-              <button class="btn-admin-primary" onclick="changePassword()" id="pwBtn" style="width:100%;">🔐 Update Password</button>
+              <button class="btn-admin-primary" onclick="changePassword()" id="pwBtn" style="width:100%;margin-top:.25rem;">🔐 Update Password</button>
               <div class="inline-msg" id="pwMsg"></div>
-            </div>
-          </div>
-
-          <!-- ══ PREFERENCES ══ -->
-          <div class="admin-card" style="margin-bottom:1.5rem;">
-            <div class="admin-card-header">
-              <div class="admin-card-title">🎛 Preferences</div>
-            </div>
-            <div class="setting-row">
-              <div><div class="setting-label">11th &amp; 12th Standard</div><div class="setting-desc">Show in all grade dropdowns</div></div>
-              <label class="toggle"><input type="checkbox" id="show1112" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
-            </div>
-            <div class="setting-row">
-              <div><div class="setting-label">Low Seat Alerts</div><div class="setting-desc">Warn when batch &gt;90% full</div></div>
-              <label class="toggle"><input type="checkbox" id="seatWarn" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
-            </div>
-            <div class="setting-row">
-              <div><div class="setting-label">Fee Overdue Alerts</div><div class="setting-desc">Highlight on dashboard</div></div>
-              <label class="toggle"><input type="checkbox" id="feeAlert" onchange="savePref()" checked/><span class="toggle-slider"></span></label>
             </div>
           </div>
 
           <!-- ══ DANGER ZONE ══ -->
           <div class="danger-zone">
             <div class="admin-card-title" style="color:#FCA5A5;margin-bottom:.35rem;">⚠ Danger Zone</div>
-            <div class="admin-card-subtitle" style="margin-bottom:1rem;">Permanent. Cannot be undone.</div>
+            <div class="admin-card-subtitle" style="margin-bottom:1rem;">All actions below are permanent and cannot be undone.</div>
             <div style="display:flex;flex-direction:column;gap:.65rem;">
-              <button onclick="clearData('zest_attendance','all attendance')" style="background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;cursor:pointer;text-align:left;">🗑 Clear All Attendance</button>
+              <button onclick="clearData('zest_attendance','all attendance records')" style="background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;cursor:pointer;text-align:left;">🗑 Clear All Attendance</button>
               <button onclick="clearData('zest_announcements','all announcements')" style="background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;cursor:pointer;text-align:left;">🗑 Clear All Announcements</button>
-              <button onclick="clearData('zest_results','all results')" style="background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;cursor:pointer;text-align:left;">🗑 Clear All Results</button>
+              <button onclick="clearData('zest_results','all results & marks')" style="background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;cursor:pointer;text-align:left;">🗑 Clear All Results & Marks</button>
+              <button onclick="clearData('zest_students','all student records')" style="background:rgba(239,68,68,.07);color:#FCA5A5;border:1px solid rgba(239,68,68,.18);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;cursor:pointer;text-align:left;">🗑 Clear All Students</button>
               <button onclick="nukeAll()" style="background:rgba(239,68,68,.14);color:#EF4444;border:1px solid rgba(239,68,68,.28);padding:.65rem 1rem;border-radius:10px;font-family:'Outfit',sans-serif;font-size:.83rem;font-weight:700;cursor:pointer;text-align:left;">💀 FULL RESET — Wipe Everything</button>
             </div>
           </div>
@@ -230,108 +267,202 @@
     </div>
   </main>
 </div>
+
 <div class="toast" id="toast"></div>
 <script src="zest-sync.js"></script>
 <script>
   if (!sessionStorage.getItem('zest_admin_auth')) window.location.href = 'index.html';
 
-  // ── Init ──────────────────────────────────────────────────────────
   ZestSync.initSyncBadge();
-  loadAll();
-  checkLiveStatus();
 
-  function loadAll() {
-    const s = JSON.parse(localStorage.getItem('zest_site_settings') || '{}');
-    const p = JSON.parse(localStorage.getItem('zest_prefs') || '{}');
-    ['instName','adminName','instPhone','instWA','instAddress'].forEach(id => {
-      if (s[id]) document.getElementById(id).value = s[id];
-    });
-    if (p.show1112 !== undefined) document.getElementById('show1112').checked = p.show1112;
-    if (p.seatWarn !== undefined) document.getElementById('seatWarn').checked  = p.seatWarn;
-    if (p.feeAlert !== undefined) document.getElementById('feeAlert').checked  = p.feeAlert;
-    const url = localStorage.getItem('zest_api_url') || '';
-    document.getElementById('apiUrlInput').value = url;
+  // ── Load saved values on page open ────────────────────────────────
+  function loadSaved() {
+    const scriptUrl = localStorage.getItem('zest_api_url') || '';
+    const sheetId   = localStorage.getItem('zest_sheet_id') || '';
+    const prefs     = JSON.parse(localStorage.getItem('zest_prefs') || '{}');
+
+    document.getElementById('scriptUrl').value = scriptUrl;
+    document.getElementById('sheetId').value   = sheetId;
+
+    if (scriptUrl) document.getElementById('scriptSavedBadge').style.display = 'inline-flex';
+    if (sheetId)   document.getElementById('sheetSavedBadge').style.display  = 'inline-flex';
+
+    if (prefs.show1112 !== undefined) document.getElementById('show1112').checked = prefs.show1112;
+    if (prefs.seatWarn !== undefined) document.getElementById('seatWarn').checked = prefs.seatWarn;
+    if (prefs.feeAlert !== undefined) document.getElementById('feeAlert').checked = prefs.feeAlert;
+
+    // Check live status if URL is already saved
+    if (scriptUrl) checkLiveStatus(scriptUrl);
   }
 
-  function checkLiveStatus() {
-    const url = localStorage.getItem('zest_api_url');
+  // ── Hide saved badges when user edits ────────────────────────────
+  function onUrlChange() {
+    document.getElementById('scriptSavedBadge').style.display = 'none';
+    document.getElementById('sheetSavedBadge').style.display  = 'none';
+  }
+
+  // ── Check live connection ─────────────────────────────────────────
+  function checkLiveStatus(url) {
+    if (!url) return;
     const pill = document.getElementById('liveIndicator');
-    if (!url) { pill.textContent = '● Not Connected'; pill.className = 'sync-status-pill pill-off'; return; }
-    fetch(url).then(r => r.json()).then(d => {
-      if (d.ok) { pill.textContent = '🟢 Connected'; pill.className = 'sync-status-pill pill-live'; }
-      else throw 0;
-    }).catch(() => { pill.textContent = '🔴 Error'; pill.className = 'sync-status-pill pill-off'; });
+    const bar  = document.getElementById('statusBar');
+    const barTxt = document.getElementById('statusBarText');
+    const barSub = document.getElementById('statusBarSub');
+    const barIcon = document.getElementById('statusBarIcon');
+
+    pill.textContent = '⏳ Checking...';
+    pill.className   = 'pill pill-local';
+
+    fetch(url)
+      .then(r => r.json())
+      .then(d => {
+        if (d.ok) {
+          pill.textContent = '🟢 Connected';
+          pill.className   = 'pill pill-live';
+          bar.className    = 'connection-status-bar csb-live';
+          barTxt.textContent  = 'Live sync active — data syncs across all devices';
+          barSub.textContent  = 'Every save goes to Google Sheets in real-time';
+          barIcon.textContent = '✅';
+          document.getElementById('syncStatusBadge').textContent = '🟢 Live Sync';
+          document.getElementById('syncStatusBadge').className   = 'pill pill-live';
+        } else throw new Error('API error');
+      })
+      .catch(() => {
+        pill.textContent = '🔴 Not Reachable';
+        pill.className   = 'pill pill-off';
+        bar.className    = 'connection-status-bar csb-off';
+        barTxt.textContent = 'Could not reach the script URL';
+        barSub.textContent = 'Check deployment settings or re-deploy the script';
+        barIcon.textContent = '⚠️';
+      });
   }
 
-  // ── Google Sheets Connect ─────────────────────────────────────────
-  async function testAndConnect() {
-    const url = document.getElementById('apiUrlInput').value.trim();
+  // ── Save & Connect ────────────────────────────────────────────────
+  async function saveAndConnect() {
+    const scriptUrl = document.getElementById('scriptUrl').value.trim();
+    const sheetId   = document.getElementById('sheetId').value.trim();
     const btn = document.getElementById('connectBtn');
     const msg = document.getElementById('connectMsg');
-    if (!url) { showInline(msg, '⚠ Paste the Web App URL first', 'err'); return; }
-    btn.textContent = '⏳ Testing...'; btn.disabled = true;
+
+    if (!scriptUrl) { showInline(msg, '⚠ Paste the Google Apps Script URL first', 'err'); return; }
+    if (!sheetId)   { showInline(msg, '⚠ Paste the Google Sheet ID first', 'err'); return; }
+
+    btn.textContent = '⏳ Saving & testing...'; btn.disabled = true;
+
     try {
-      const res = await fetch(url);
+      // Test the connection first
+      const res  = await fetch(scriptUrl);
       const data = await res.json();
-      if (data.ok) {
-        localStorage.setItem('zest_api_url', url);
-        sessionStorage.setItem('zest_auth_mode', 'live');
-        showInline(msg, '✅ Connected! Live sync is now active. All data will sync across devices.', 'ok');
-        document.getElementById('liveIndicator').textContent = '🟢 Connected';
-        document.getElementById('liveIndicator').className = 'sync-status-pill pill-live';
-        document.getElementById('syncStatusBadge').textContent = '🟢 Live Sync';
-        toast('✅ Google Sheets connected!', 'ok');
-      } else { throw new Error(data.error || 'API returned error'); }
+
+      if (!data.ok) throw new Error(data.error || 'Script returned an error');
+
+      // ✅ Connection works — save both permanently
+      localStorage.setItem('zest_api_url',   scriptUrl);
+      localStorage.setItem('zest_sheet_id',  sheetId);
+      sessionStorage.setItem('zest_auth_mode', 'live');
+
+      // Show saved badges
+      document.getElementById('scriptSavedBadge').style.display = 'inline-flex';
+      document.getElementById('sheetSavedBadge').style.display  = 'inline-flex';
+
+      // Update status
+      document.getElementById('liveIndicator').textContent = '🟢 Connected';
+      document.getElementById('liveIndicator').className   = 'pill pill-live';
+      document.getElementById('statusBar').className       = 'connection-status-bar csb-live';
+      document.getElementById('statusBarText').textContent = 'Live sync active — data syncs across all devices';
+      document.getElementById('statusBarSub').textContent  = 'Both URLs saved permanently in your browser';
+      document.getElementById('statusBarIcon').textContent = '✅';
+      document.getElementById('syncStatusBadge').textContent = '🟢 Live Sync';
+      document.getElementById('syncStatusBadge').className   = 'pill pill-live';
+
+      showInline(msg, '✅ Both URLs saved permanently! Live sync is now active. Data will sync in real-time across laptop, phone, and any device.', 'ok');
+      toast('✅ Connected to Google Sheets!', 'ok');
+
     } catch(e) {
-      showInline(msg, '❌ Could not connect: ' + e.message + '. Make sure the script is deployed correctly.', 'err');
+      showInline(msg, '❌ Could not connect: ' + (e.message || 'unknown error') + '. Make sure the Script is deployed as Web App with access set to "Anyone".', 'err');
     }
-    btn.textContent = '🔌 Test & Connect'; btn.disabled = false;
+
+    btn.textContent = '💾 Save & Connect'; btn.disabled = false;
   }
 
+  // ── Re-test existing connection ───────────────────────────────────
+  function testConnection() {
+    const url = localStorage.getItem('zest_api_url');
+    if (!url) { toast('No URL saved yet. Paste URLs and click Save & Connect first.', 'err'); return; }
+    checkLiveStatus(url);
+    toast('Testing connection...', 'ok');
+  }
+
+  // ── Disconnect ────────────────────────────────────────────────────
   function disconnectSync() {
-    if (!confirm('Disconnect from Google Sheets? Data will only save locally.')) return;
+    if (!confirm('Disconnect from Google Sheets? Data will only save locally on this device.')) return;
     localStorage.removeItem('zest_api_url');
+    localStorage.removeItem('zest_sheet_id');
     sessionStorage.setItem('zest_auth_mode', 'local');
+    document.getElementById('scriptUrl').value = '';
+    document.getElementById('sheetId').value   = '';
+    document.getElementById('scriptSavedBadge').style.display = 'none';
+    document.getElementById('sheetSavedBadge').style.display  = 'none';
     document.getElementById('liveIndicator').textContent = '● Not Connected';
-    document.getElementById('liveIndicator').className = 'sync-status-pill pill-off';
+    document.getElementById('liveIndicator').className   = 'pill pill-off';
+    document.getElementById('statusBar').className = 'connection-status-bar csb-off';
+    document.getElementById('statusBarText').textContent = 'Not connected to Google Sheets';
+    document.getElementById('statusBarSub').textContent  = 'Data saves locally on this device only';
+    document.getElementById('statusBarIcon').textContent = '🔌';
     document.getElementById('syncStatusBadge').textContent = '🟡 Local Only';
-    document.getElementById('apiUrlInput').value = '';
-    toast('Disconnected. Saving locally.', 'ok');
+    document.getElementById('syncStatusBadge').className   = 'pill pill-local';
+    toast('Disconnected. All data saving locally.', 'ok');
+  }
+
+  // ── Toggle setup guide ────────────────────────────────────────────
+  function toggleGuide() {
+    const guide  = document.getElementById('setupGuide');
+    const toggle = document.getElementById('guideToggle');
+    const open   = guide.style.display === 'none';
+    guide.style.display  = open ? 'block' : 'none';
+    toggle.textContent   = open ? '📖 Hide setup guide ▲' : '📖 Show setup guide ▼';
+  }
+
+  // ── Copy field value to clipboard ────────────────────────────────
+  function copyField(id) {
+    const val = document.getElementById(id).value;
+    if (!val) return;
+    navigator.clipboard.writeText(val).then(() => toast('Copied to clipboard!', 'ok'));
   }
 
   // ── Push / Pull ───────────────────────────────────────────────────
   async function pushAll() {
     const btn = document.getElementById('pushBtn');
     const msg = document.getElementById('syncMsg');
-    if (!ZestSync.isLive()) { showInline(msg, '⚠ Not connected to Google Sheets. Connect first.', 'err'); return; }
-    btn.textContent = '⏳ Pushing...'; btn.disabled = true;
+    if (!ZestSync.isLive()) { showInline(msg, '⚠ Not connected to Google Sheets. Save & Connect first.', 'err'); return; }
+    btn.style.opacity = '.6'; btn.textContent = '⏳ Pushing...'; btn.disabled = true;
     try {
       const r = await ZestSync.pushAllToSheets();
       showInline(msg, `✅ Pushed ${r.pushed} collections to Google Sheets successfully!`, 'ok');
-      toast('✅ All data pushed to Sheets!', 'ok');
+      toast('✅ Data pushed to Sheets!', 'ok');
     } catch(e) {
       showInline(msg, '❌ Push failed: ' + e.message, 'err');
     }
-    btn.textContent = '📤 Push Local → Sheets'; btn.disabled = false;
+    btn.style.opacity = '1'; btn.innerHTML = '📤 Push Local → Sheets<div style="font-size:.7rem;opacity:.55;font-weight:400;margin-top:.2rem;">Uploads all local data</div>'; btn.disabled = false;
   }
 
   async function pullAll() {
     const btn = document.getElementById('pullBtn');
     const msg = document.getElementById('syncMsg');
-    if (!ZestSync.isLive()) { showInline(msg, '⚠ Not connected to Google Sheets. Connect first.', 'err'); return; }
-    if (!confirm('Pull data from Google Sheets? This will overwrite your local data with the latest from Sheets.')) return;
-    btn.textContent = '⏳ Pulling...'; btn.disabled = true;
+    if (!ZestSync.isLive()) { showInline(msg, '⚠ Not connected to Google Sheets. Save & Connect first.', 'err'); return; }
+    if (!confirm('Pull from Google Sheets? This overwrites local data with the latest from Sheets.')) return;
+    btn.style.opacity = '.6'; btn.textContent = '⏳ Pulling...'; btn.disabled = true;
     try {
       const r = await ZestSync.pullAllFromSheets();
-      showInline(msg, `✅ Pulled ${r.pulled} collections from Google Sheets. Reload any open pages.`, 'ok');
+      showInline(msg, `✅ Pulled ${r.pulled} collections from Google Sheets. Reload any open pages to see updates.`, 'ok');
       toast('✅ Data pulled from Sheets!', 'ok');
     } catch(e) {
       showInline(msg, '❌ Pull failed: ' + e.message, 'err');
     }
-    btn.textContent = '📥 Pull Sheets → Local'; btn.disabled = false;
+    btn.style.opacity = '1'; btn.innerHTML = '📥 Pull Sheets → Local<div style="font-size:.7rem;opacity:.55;font-weight:400;margin-top:.2rem;">Fetches latest from Sheets</div>'; btn.disabled = false;
   }
 
-  // ── Password Change (secure SHA-256) ─────────────────────────────
+  // ── Password Change ───────────────────────────────────────────────
   async function changePassword() {
     const cur  = document.getElementById('curPass').value;
     const nw   = document.getElementById('newPass').value;
@@ -339,36 +470,45 @@
     const msg  = document.getElementById('pwMsg');
     const btn  = document.getElementById('pwBtn');
 
-    if (!cur || !nw || !conf) { showInline(msg, '⚠ All fields are required', 'err'); return; }
+    if (!cur || !nw || !conf) { showInline(msg, '⚠ All three fields are required', 'err'); return; }
     if (nw.length < 10) { showInline(msg, '⚠ New password must be at least 10 characters', 'err'); return; }
-    if (nw !== conf) { showInline(msg, '⚠ Passwords do not match', 'err'); return; }
+    if (nw !== conf) { showInline(msg, '⚠ New passwords do not match', 'err'); return; }
 
     btn.textContent = '⏳ Verifying...'; btn.disabled = true;
 
     try {
-      const curHash = await ZestSync.sha256(cur);
-      // Verify current password
+      const curHash    = await ZestSync.sha256(cur);
       const storedHash = localStorage.getItem('zest_pw_hash') || '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
-      if (curHash !== storedHash && !ZestSync.isLive()) {
-        showInline(msg, '❌ Current password is incorrect', 'err'); return;
+
+      // Verify current password locally first
+      if (!ZestSync.isLive() && curHash !== storedHash) {
+        showInline(msg, '❌ Current password is incorrect', 'err');
+        btn.textContent = '🔐 Update Password'; btn.disabled = false;
+        return;
       }
+
       if (ZestSync.isLive()) {
-        // Verify against server
+        // Also verify against server
         const res = await fetch(ZestSync.apiUrl(), {
           method: 'POST', headers: {'Content-Type':'application/json'},
           body: JSON.stringify({ action: 'login', data: { hash: curHash } })
         });
         const d = await res.json();
-        if (!d.ok) { showInline(msg, '❌ Current password is incorrect', 'err'); return; }
+        if (!d.ok) {
+          showInline(msg, '❌ Current password is incorrect', 'err');
+          btn.textContent = '🔐 Update Password'; btn.disabled = false;
+          return;
+        }
       }
+
       await ZestSync.changePassword(nw);
-      document.getElementById('curPass').value = '';
-      document.getElementById('newPass').value = '';
+      document.getElementById('curPass').value  = '';
+      document.getElementById('newPass').value  = '';
       document.getElementById('confPass').value = '';
       document.getElementById('pwBar').style.width = '0%';
       document.getElementById('pwTxt').textContent = '';
-      showInline(msg, '✅ Password updated! Use the new password next time you log in.', 'ok');
-      toast('🔐 Password changed successfully!', 'ok');
+      showInline(msg, '✅ Password updated successfully! Use the new password next time you log in.', 'ok');
+      toast('🔐 Password changed!', 'ok');
     } catch(e) {
       showInline(msg, '❌ Error: ' + e.message, 'err');
     }
@@ -382,22 +522,21 @@
     let s=0;
     if(pw.length>=10)s++; if(pw.length>=14)s++;
     if(/[A-Z]/.test(pw))s++; if(/[0-9]/.test(pw))s++; if(/[^A-Za-z0-9]/.test(pw))s++;
-    const lvl=[{w:'20%',c:'#EF4444',t:'Weak — too short'},{w:'40%',c:'#F97316',t:'Fair'},{w:'60%',c:'#EBA821',t:'Moderate'},{w:'80%',c:'#84CC16',t:'Strong'},{w:'100%',c:'#10B981',t:'Very Strong ✓'}];
-    const l=lvl[Math.min(s-1,4)]||lvl[0];
+    const lvl=[
+      {w:'20%',c:'#EF4444',t:'Weak'},
+      {w:'40%',c:'#F97316',t:'Fair'},
+      {w:'60%',c:'#EBA821',t:'Moderate'},
+      {w:'80%',c:'#84CC16',t:'Strong'},
+      {w:'100%',c:'#10B981',t:'Very Strong ✓'}
+    ];
+    const l = lvl[Math.min(s-1,4)] || lvl[0];
     bar.style.width=l.w; bar.style.background=l.c;
     txt.textContent=l.t; txt.style.color=l.c;
   }
 
   function togglePw(id) { const i=document.getElementById(id); i.type=i.type==='password'?'text':'password'; }
 
-  // ── Institute settings ────────────────────────────────────────────
-  function saveInstitute() {
-    const s = JSON.parse(localStorage.getItem('zest_site_settings')||'{}');
-    ['instName','adminName','instPhone','instWA','instAddress'].forEach(id => s[id] = document.getElementById(id).value.trim());
-    localStorage.setItem('zest_site_settings', JSON.stringify(s));
-    toast('✅ Institute details saved!', 'ok');
-  }
-
+  // ── Preferences ───────────────────────────────────────────────────
   function savePref() {
     localStorage.setItem('zest_prefs', JSON.stringify({
       show1112: document.getElementById('show1112').checked,
@@ -407,31 +546,43 @@
     toast('✅ Preference saved!', 'ok');
   }
 
-  // ── Danger zone ───────────────────────────────────────────────────
+  // ── Danger Zone ───────────────────────────────────────────────────
   function clearData(key, label) {
     if (!confirm('Delete ' + label + '? This cannot be undone.')) return;
     localStorage.removeItem(key);
     toast('🗑 Cleared: ' + label, 'ok');
   }
+
   function nukeAll() {
-    if (!confirm('⚠ DELETE EVERYTHING? Students, fees, attendance — all data.')) return;
-    if (!confirm('FINAL WARNING — this cannot be undone. Click OK to confirm full wipe.')) return;
-    const inp = prompt('Type DELETE to confirm:');
-    if (inp !== 'DELETE') { toast('Cancelled.', 'ok'); return; }
-    Object.keys(localStorage).filter(k => k.startsWith('zest_') && k !== 'zest_api_url' && k !== 'zest_pw_hash').forEach(k => localStorage.removeItem(k));
-    toast('💀 All data wiped.', 'ok');
+    if (!confirm('⚠ DELETE EVERYTHING — students, fees, attendance, results, all data?')) return;
+    if (!confirm('FINAL WARNING — this is permanent. Are you absolutely sure?')) return;
+    const inp = prompt('Type  DELETE  to confirm full wipe:');
+    if (inp !== 'DELETE') { toast('Wipe cancelled.', 'ok'); return; }
+    // Keep only the sync URLs and password hash — wipe everything else
+    const keep = ['zest_api_url', 'zest_sheet_id', 'zest_pw_hash'];
+    Object.keys(localStorage)
+      .filter(k => k.startsWith('zest_') && !keep.includes(k))
+      .forEach(k => localStorage.removeItem(k));
+    toast('💀 All data wiped. Sync settings and password kept.', 'ok');
   }
 
   // ── Helpers ───────────────────────────────────────────────────────
   function showInline(el, msg, type) {
-    el.textContent = msg; el.className = 'inline-msg ' + type; el.style.display = 'block';
-    setTimeout(() => el.style.display = 'none', 6000);
+    el.textContent = msg;
+    el.className   = 'inline-msg ' + type;
+    el.style.display = 'block';
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.style.display = 'none', 7000);
   }
+
   function toast(msg, type='ok') {
     const t = document.getElementById('toast');
-    t.textContent=msg; t.className='toast '+type; t.style.display='block';
-    clearTimeout(window._tt); window._tt=setTimeout(()=>t.style.display='none',3500);
+    t.textContent = msg; t.className = 'toast ' + type; t.style.display = 'block';
+    clearTimeout(window._tt); window._tt = setTimeout(() => t.style.display = 'none', 3500);
   }
+
+  // ── Init ──────────────────────────────────────────────────────────
+  loadSaved();
 </script>
 </body>
 </html>

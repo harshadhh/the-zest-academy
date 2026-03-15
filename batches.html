@@ -3,33 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Announcements | Zest Admin</title>
+  <title>Fee Records | Zest Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    select { appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer; }
-    select option{background:#0F1E3D!important;color:#fff!important;}
-    select:focus{border-color:#EBA821!important;outline:none!important;}
-    .ann-item{display:flex;align-items:flex-start;gap:.75rem;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.05);}
-    .ann-item:last-child{border-bottom:none;}
-    .ann-meta{font-size:.78rem;color:rgba(255,255,255,.35);margin-bottom:.3rem;}
-    .ann-text{font-size:.92rem;color:#fff;line-height:1.5;}
-    .ann-text.high{font-weight:700;color:#FCD34D;}
-    .ann-del{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:rgba(239,68,68,.7);border-radius:6px;padding:.3rem .6rem;font-size:.8rem;cursor:pointer;flex-shrink:0;font-family:'Outfit',sans-serif;}
-    .ann-del:hover{background:rgba(239,68,68,.2);color:#EF4444;}
-    .toast{position:fixed;bottom:2rem;right:2rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none;}
-    .badge-cnt{display:inline-flex;align-items:center;justify-content:center;background:rgba(235,168,33,.15);color:#EBA821;border-radius:50px;padding:.15rem .6rem;font-size:.75rem;font-weight:700;margin-left:.5rem;}
-    .info-box{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.25);color:#93C5FD;padding:.85rem 1.1rem;border-radius:10px;font-size:.82rem;line-height:1.6;margin-bottom:1.5rem;}
+    /* Force dark selects everywhere in admin */
+    select { appearance: none; -webkit-appearance: none; background-color: #0F1E3D !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 0.9rem center !important; background-size: 12px !important; padding-right: 2.5rem !important; color: #fff !important; border: 1.5px solid rgba(255,255,255,0.12) !important; border-radius: 10px !important; font-family: Outfit,sans-serif !important; cursor: pointer; }
+    select option { background: #0F1E3D !important; color: #fff !important; }
+    select:focus { border-color: #EBA821 !important; outline: none !important; }
   </style>
 </head>
 <body class="admin-body">
+
 <div class="admin-layout">
   <aside class="admin-sidebar">
     <div class="admin-logo">
-      <div class="logo-shield" style="background:transparent;box-shadow:none;"><img src="../images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;"/></div>
+      <div class="logo-shield" style="background: transparent; box-shadow: none;">
+  <img src="../images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+</div>
       <div>
-        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;">THE ZEST</div>
         <div class="admin-logo-text">Command Center</div>
       </div>
     </div>
@@ -37,7 +31,7 @@
       <div class="admin-nav-section">Main</div>
       <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
       <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
-      <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
+      <a href="fees.html" class="admin-nav-item active"><span class="admin-nav-icon">💰</span> Fee Records</a>
       <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
       <div class="admin-nav-section">Academic</div>
       <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results &amp; Marks</a>
@@ -45,179 +39,284 @@
       <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
       <a href="custom-categories.html" class="admin-nav-item"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
       <div class="admin-nav-section">Settings</div>
-      <a href="announcements.html" class="admin-nav-item active"><span class="admin-nav-icon">📢</span> Announcements</a>
+      <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
       <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
       <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
-      <div class="admin-nav-section">Site</div>
-      <a href="../index.html" target="_blank" class="admin-nav-item"><span class="admin-nav-icon">🌐</span> View Website</a>
     </nav>
   </aside>
 
   <main class="admin-main">
     <header class="admin-header">
       <div>
-        <div class="admin-page-title">Announcements <span class="badge-cnt" id="annBadge">0</span></div>
-        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Posted here → shown as live banner on the public website</div>
+        <div class="admin-page-title">Fee Records</div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.15rem;" id="feeMonthLabel"></div>
       </div>
-      <div class="admin-header-right"><div class="admin-badge">Live on Website</div></div>
+      <div class="admin-header-right">
+        <button class="btn-admin-secondary" onclick="exportFeeCSV()" style="padding:0.6rem 1rem;font-size:0.82rem;">📥 Export</button>
+        <button class="btn-admin-primary" onclick="toggleAddFee()" style="padding:0.6rem 1.25rem;font-size:0.85rem;">➕ Record Payment</button>
+      </div>
     </header>
 
     <div class="admin-content">
-      <div class="info-box">
-        ℹ️ <strong>How this works:</strong> Announcements posted here appear as a scrolling ticker/banner at the top of the public website (homepage, school wing, defence pages, etc.) — visible to all students and parents. High priority items show in yellow. Changes appear instantly.
-      </div>
 
-      <div class="admin-two-col">
-        <div>
-          <!-- Chalkboard -->
-          <div class="admin-card" style="padding:0;overflow:hidden;margin-bottom:1.5rem;">
-            <div style="padding:1.25rem 1.75rem;border-bottom:1px solid rgba(255,255,255,.06);">
-              <div class="admin-card-title">📋 Private Chalkboard</div>
-              <div class="admin-card-subtitle">Internal view of all active announcements</div>
-            </div>
-            <div class="chalkboard" style="border-radius:0;border:none;margin:0;min-height:200px;">
-              <div class="chalkboard-title">THE ZEST — ANNOUNCEMENTS</div>
-              <div class="chalk-text" id="liveBoard"><div style="color:rgba(255,255,255,.25);font-style:italic;">No announcements yet</div></div>
-            </div>
-          </div>
-          <!-- Public preview -->
-          <div class="admin-card" style="margin-bottom:1.5rem;">
-            <div class="admin-card-header">
-              <div class="admin-card-title">🌐 Public Banner Preview</div>
-              <div class="admin-card-subtitle">Exactly what visitors see on the website</div>
-            </div>
-            <div id="pubPreview" style="background:#1B365D;border-radius:10px;padding:.75rem 1.25rem;overflow:hidden;"></div>
-          </div>
-          <!-- Admission toggles -->
-          <div class="admin-card">
-            <div class="admin-card-header">
-              <div class="admin-card-title">Admission Status Badges</div>
-              <div class="admin-card-subtitle">Controls "Admissions Open" on website</div>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;border-bottom:1px solid rgba(255,255,255,.06);">
-              <div>
-                <div style="font-weight:600;color:white;font-size:.92rem;">School Wing (8th–12th Std)</div>
-                <div style="font-size:.75rem;color:rgba(255,255,255,.35);">8th, 9th, 10th, 11th, 12th batches</div>
-              </div>
-              <label class="toggle"><input type="checkbox" id="schoolAdmission" onchange="saveSettings()" checked/><span class="toggle-slider"></span></label>
-            </div>
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 0;">
-              <div>
-                <div style="font-weight:600;color:white;font-size:.92rem;">The Armour Academy</div>
-                <div style="font-size:.75rem;color:rgba(255,255,255,.35);">NDA · CDS · AFCAT · INET</div>
-              </div>
-              <label class="toggle"><input type="checkbox" id="defenseAdmission" onchange="saveSettings()" checked/><span class="toggle-slider"></span></label>
-            </div>
-          </div>
+      <!-- Summary Stats -->
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
+        <div class="admin-stat-card" style="padding:1.25rem;border-color:rgba(16,185,129,0.3);">
+          <div class="admin-stat-icon">💰</div>
+          <div class="admin-stat-value" style="color:var(--green);" id="totalCollected">₹0</div>
+          <div class="admin-stat-label">Collected This Month</div>
         </div>
-
-        <div>
-          <!-- Add form -->
-          <div class="admin-card" style="margin-bottom:1.5rem;border-color:rgba(235,168,33,.2);">
-            <div class="admin-card-header"><div class="admin-card-title">➕ Post New Announcement</div></div>
-            <div class="admin-form">
-              <div class="form-group">
-                <label>Announcement Text *</label>
-                <input type="text" id="annText" placeholder="e.g. Mock test this Saturday at 6 AM" onkeydown="if(event.key==='Enter')addAnn()" style="width:100%;"/>
-              </div>
-              <div class="admin-form-row">
-                <div class="form-group">
-                  <label>Category</label>
-                  <select id="annCat">
-                    <option>General</option><option>Test / Exam</option><option>Holiday</option>
-                    <option>Fee Reminder</option><option>Result</option><option>Admission</option><option>Event</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <label>Priority</label>
-                  <select id="annPri">
-                    <option value="normal">Normal</option>
-                    <option value="high">⚠ High Priority</option>
-                  </select>
-                </div>
-              </div>
-              <button class="btn-admin-primary" onclick="addAnn()" style="width:100%;">📢 Post Announcement</button>
-            </div>
-          </div>
-          <!-- List -->
-          <div class="admin-card">
-            <div class="admin-card-header">
-              <div><div class="admin-card-title">All Announcements</div><div class="admin-card-subtitle" id="listSub">Loading...</div></div>
-              <button onclick="clearAll()" style="font-size:.78rem;color:rgba(239,68,68,.55);background:rgba(239,68,68,.06);border:1px solid rgba(239,68,68,.15);padding:.35rem .8rem;border-radius:6px;cursor:pointer;font-family:'Outfit',sans-serif;">🗑 Clear All</button>
-            </div>
-            <div id="annList"><div style="color:rgba(255,255,255,.3);text-align:center;padding:2.5rem;">No announcements yet.</div></div>
-          </div>
+        <div class="admin-stat-card" style="padding:1.25rem;border-color:rgba(235,168,33,0.3);">
+          <div class="admin-stat-icon">⏳</div>
+          <div class="admin-stat-value" style="color:var(--gold);" id="totalPending">₹0</div>
+          <div class="admin-stat-label">Pending This Month</div>
+        </div>
+        <div class="admin-stat-card" style="padding:1.25rem;border-color:rgba(239,68,68,0.3);">
+          <div class="admin-stat-icon">🚨</div>
+          <div class="admin-stat-value" style="color:#EF4444;" id="totalOverdue">0</div>
+          <div class="admin-stat-label">Overdue Payments</div>
         </div>
       </div>
+
+      <!-- ADD FEE RECORD FORM -->
+      <div class="admin-card" id="addFeeForm" style="display:none;margin-bottom:1.5rem;border-color:rgba(16,185,129,0.3);">
+        <div class="admin-card-header">
+          <div class="admin-card-title">Record Fee Payment</div>
+          <button onclick="toggleAddFee()" style="color:rgba(255,255,255,0.4);font-size:1.2rem;background:none;border:none;cursor:pointer;">✕</button>
+        </div>
+        <div class="admin-form">
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Student Name *</label>
+              <select id="fStudentName">
+                <option value="">Select Student</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Amount (₹) *</label>
+              <input type="number" id="fAmount" placeholder="e.g. 2500" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Payment Date *</label>
+              <input type="date" id="fDate" />
+            </div>
+            <div class="form-group">
+              <label>Due Date</label>
+              <input type="date" id="fDueDate" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Status *</label>
+              <select id="fStatus">
+                <option value="paid">Paid</option>
+                <option value="pending">Pending</option>
+                <option value="overdue">Overdue</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Payment Method</label>
+              <select id="fMethod">
+                <option>Cash</option>
+                <option>UPI / PhonePe</option>
+                <option>Bank Transfer</option>
+                <option>Cheque</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Notes (optional)</label>
+            <input type="text" id="fNotes" placeholder="Any additional notes..." />
+          </div>
+          <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+            <button class="btn-admin-primary" onclick="addFeeRecord()">✅ Record Payment</button>
+            <button class="btn-admin-secondary" onclick="toggleAddFee()">Cancel</button>
+          </div>
+        </div>
+        <div id="feeMsg" style="display:none;margin-top:1rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green);padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:600;">
+          ✅ Payment recorded successfully!
+        </div>
+      </div>
+
+      <!-- FILTER -->
+      <div class="admin-card" style="padding:1.25rem 1.75rem;margin-bottom:1rem;">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+          <select id="monthFilter" onchange="renderFees()"
+            style="padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;">
+          </select>
+          <select id="statusFilter" onchange="renderFees()"
+            style="padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;">
+            <option value="all">All Statuses</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending</option>
+            <option value="overdue">Overdue</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- FEE TABLE -->
+      <div class="admin-card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Amount</th>
+              <th>Date</th>
+              <th>Due Date</th>
+              <th>Method</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="feesBody">
+            <tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No fee records yet. Click "Record Payment" to start.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </main>
 </div>
-<div class="toast" id="toast"></div>
+
 <script>
-  if(sessionStorage.getItem('zest_admin_auth')!=='true') window.location.href='index.html';
-  const getA=()=>{try{return JSON.parse(localStorage.getItem('zest_announcements')||'[]');}catch(e){return[];}};
-  const saveA=a=>localStorage.setItem('zest_announcements',JSON.stringify(a));
+  if (!sessionStorage.getItem('zest_admin_auth')) window.location.href = 'index.html';
 
-  function render(){
-    const ann=getA();
-    document.getElementById('annBadge').textContent=ann.length;
-    document.getElementById('listSub').textContent=ann.length===0?'No announcements':ann.length+' announcement'+(ann.length>1?'s':'')+' — newest first';
+  let fees = JSON.parse(localStorage.getItem('zest_fees') || '[]');
+  let students = JSON.parse(localStorage.getItem('zest_students') || '[]');
+  const now = new Date();
 
-    // Chalkboard
-    const board=document.getElementById('liveBoard');
-    board.innerHTML=ann.length===0?'<div style="color:rgba(255,255,255,.25);font-style:italic;">No announcements yet</div>'
-      :[...ann].reverse().slice(0,8).map(a=>`<div class="chalk-item"><span class="chalk-bullet">${a.priority==='high'?'⚠':'→'}</span><span style="${a.priority==='high'?'font-weight:700;color:#FCD34D;':''}">[${a.category}] ${a.text}</span></div>`).join('');
-
-    // Public banner preview
-    const pub=document.getElementById('pubPreview');
-    const shown=[...ann].reverse().slice(0,6);
-    if(shown.length===0){pub.innerHTML='<span style="color:rgba(255,255,255,.4);font-style:italic;font-size:.82rem;">No announcements — banner hidden on website</span>';return;}
-    pub.innerHTML='<div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">'+
-      '<span style="color:rgba(235,168,33,.7);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;">📢 Notice:</span>'+
-      shown.map(a=>`<span style="white-space:nowrap;padding:.2rem .75rem;border-radius:50px;font-size:.78rem;font-weight:600;background:${a.priority==='high'?'rgba(252,211,77,.15)':'rgba(255,255,255,.07)'};color:${a.priority==='high'?'#FCD34D':'rgba(255,255,255,.85)'};border:1px solid ${a.priority==='high'?'rgba(252,211,77,.3)':'rgba(255,255,255,.12)'};">${a.priority==='high'?'⚠ ':''}${a.text}</span>`).join('')+
-    '</div>';
-
-    // List
-    const list=document.getElementById('annList');
-    if(ann.length===0){list.innerHTML='<div style="color:rgba(255,255,255,.3);text-align:center;padding:2.5rem;">No announcements yet.</div>';return;}
-    list.innerHTML=[...ann].map((a,i)=>({...a,_i:i})).reverse().map(a=>`
-      <div class="ann-item">
-        <div style="flex:1;">
-          <div class="ann-meta">${a.category} · ${a.date}${a.priority==='high'?' · <span style="color:#FCD34D;font-weight:700;">HIGH PRIORITY</span>':''}</div>
-          <div class="ann-text ${a.priority==='high'?'high':''}">${a.priority==='high'?'⚠ ':''}${a.text}</div>
-        </div>
-        <button class="ann-del" onclick="delAnn(${a._i})">✕ Del</button>
-      </div>`).join('');
+  // Init month filter
+  const monthSelect = document.getElementById('monthFilter');
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = d.toLocaleDateString('en-IN', {month:'long', year:'numeric'});
+    if (i === 0) opt.selected = true;
+    monthSelect.appendChild(opt);
   }
 
-  function addAnn(){
-    const el=document.getElementById('annText');
-    const txt=el.value.trim();
-    if(!txt){el.style.borderColor='#EF4444';setTimeout(()=>el.style.borderColor='',2000);return;}
-    const ann=getA();
-    ann.push({text:txt,category:document.getElementById('annCat').value,priority:document.getElementById('annPri').value,
-      date:new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}),timestamp:Date.now()});
-    saveA(ann); el.value=''; el.focus();
-    toast('✅ Posted! Now visible on the website.'); render();
-  }
-  function delAnn(i){const a=getA();a.splice(i,1);saveA(a);toast('🗑 Deleted');render();}
-  function clearAll(){const a=getA();if(!a.length){toast('Nothing to clear');return;}if(!confirm('Clear all '+a.length+' announcements?'))return;saveA([]);toast('🗑 All cleared');render();}
-  function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window._tt);window._tt=setTimeout(()=>t.style.display='none',3000);}
+  // Set default date
+  document.getElementById('fDate').value = now.toISOString().split('T')[0];
+  document.getElementById('fMonthLabel') && (document.getElementById('fMonthLabel').textContent = now.toLocaleDateString('en-IN', {month:'long',year:'numeric'}));
+  document.getElementById('feeMonthLabel').textContent = now.toLocaleDateString('en-IN', {month:'long',year:'numeric'});
 
-  function saveSettings(){
-    localStorage.setItem('zest_settings',JSON.stringify({
-      schoolAdmission:document.getElementById('schoolAdmission').checked,
-      defenseAdmission:document.getElementById('defenseAdmission').checked
-    }));
-    toast('✅ Settings saved!');
+  // Populate student dropdown
+  function populateStudentDropdown() {
+    const sel = document.getElementById('fStudentName');
+    sel.innerHTML = '<option value="">Select Student</option>';
+    students.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.dataset.grade = s.grade || '';
+      opt.dataset.fee = s.fee || '';
+      opt.textContent = `${s.name} · ${s.grade || 'N/A'}`;
+      sel.appendChild(opt);
+    });
+    sel.addEventListener('change', function() {
+      const sel = this;
+      const opt = sel.options[sel.selectedIndex];
+      if (opt.dataset.fee) document.getElementById('fAmount').value = opt.dataset.fee;
+    });
   }
-  try{const s=JSON.parse(localStorage.getItem('zest_settings')||'{}');
-    if(s.schoolAdmission!==undefined)document.getElementById('schoolAdmission').checked=s.schoolAdmission;
-    if(s.defenseAdmission!==undefined)document.getElementById('defenseAdmission').checked=s.defenseAdmission;
-  }catch(e){}
+  populateStudentDropdown();
 
-  function logout(e){e.preventDefault();sessionStorage.removeItem('zest_admin_auth');window.location.href='index.html';}
-  render();
+  function toggleAddFee() {
+    const form = document.getElementById('addFeeForm');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function addFeeRecord() {
+    const studentName = document.getElementById('fStudentName').value;
+    const amount = document.getElementById('fAmount').value;
+    const date = document.getElementById('fDate').value;
+    const dueDate = document.getElementById('fDueDate').value;
+    const status = document.getElementById('fStatus').value;
+    const method = document.getElementById('fMethod').value;
+    const notes = document.getElementById('fNotes').value;
+
+    if (!studentName || !amount || !date) { alert('Please fill Student, Amount and Date'); return; }
+
+    const record = { id: 'F' + Date.now(), studentName, amount, date, dueDate, status, method, notes, grade: '' };
+    // attach grade
+    const stu = students.find(s => s.name === studentName);
+    if (stu) record.grade = stu.grade || '';
+
+    fees.push(record);
+    localStorage.setItem('zest_fees', JSON.stringify(fees));
+
+    document.getElementById('feeMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('feeMsg').style.display = 'none', 3000);
+    renderFees();
+  }
+
+  function renderFees() {
+    const [year, month] = (document.getElementById('monthFilter').value || '').split('-').map(Number);
+    const statusFilter = document.getElementById('statusFilter').value;
+
+    let filtered = fees.filter(f => {
+      const d = new Date(f.date);
+      const matchMonth = !year || (d.getFullYear() === year && d.getMonth() + 1 === month);
+      const matchStatus = statusFilter === 'all' || f.status === statusFilter;
+      return matchMonth && matchStatus;
+    });
+
+    // Stats for current month
+    const curMonthFees = fees.filter(f => {
+      const d = new Date(f.date);
+      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
+    });
+    const collected = curMonthFees.filter(f => f.status === 'paid').reduce((s,f) => s + parseFloat(f.amount||0), 0);
+    const pending = curMonthFees.filter(f => f.status === 'pending').reduce((s,f) => s + parseFloat(f.amount||0), 0);
+    const overdue = fees.filter(f => f.status === 'overdue').length;
+    document.getElementById('totalCollected').textContent = '₹' + collected.toLocaleString('en-IN');
+    document.getElementById('totalPending').textContent = '₹' + pending.toLocaleString('en-IN');
+    document.getElementById('totalOverdue').textContent = overdue;
+
+    const tbody = document.getElementById('feesBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No records for this period.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.reverse().map(f => `
+      <tr>
+        <td><div style="font-weight:600;">${f.studentName}</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${f.grade}</div></td>
+        <td style="font-weight:700;color:var(--green);">₹${parseFloat(f.amount||0).toLocaleString('en-IN')}</td>
+        <td>${f.date || '—'}</td>
+        <td>${f.dueDate || '—'}</td>
+        <td style="font-size:0.82rem;">${f.method || '—'}</td>
+        <td><span class="status-badge ${f.status}">${f.status}</span></td>
+        <td>
+          <button onclick="deleteFee('${f.id}')" style="background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);padding:0.3rem 0.7rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function deleteFee(id) {
+    if (!confirm('Delete this fee record?')) return;
+    fees = fees.filter(f => f.id !== id);
+    localStorage.setItem('zest_fees', JSON.stringify(fees));
+    renderFees();
+  }
+
+  function exportFeeCSV() {
+    if (fees.length === 0) { alert('No fee records to export'); return; }
+    const headers = ['Student','Grade','Amount','Date','Due Date','Method','Status','Notes'];
+    const rows = fees.map(f => [f.studentName, f.grade, f.amount, f.date, f.dueDate, f.method, f.status, f.notes]);
+    const csv = [headers,...rows].map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `zest-fees-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  }
+
+  function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
+  renderFees();
 </script>
 <script src="zest-sync.js"></script>
 </body>

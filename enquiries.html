@@ -3,217 +3,285 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Attendance | Zest Admin</title>
+  <title>Student Logs | Zest Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    select { appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer; }
-    select option { background:#0F1E3D!important;color:#fff!important; }
-    select:focus { border-color:#EBA821!important;outline:none!important; }
-    .att-summary { display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap; }
-    .att-pill { padding:.5rem 1.25rem;border-radius:50px;font-size:.82rem;font-weight:600; }
-    .att-pill.present { background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3); }
-    .att-pill.absent  { background:rgba(239,68,68,.12);color:#FCA5A5;border:1px solid rgba(239,68,68,.25); }
-    .att-pill.total   { background:rgba(235,168,33,.12);color:#EBA821;border:1px solid rgba(235,168,33,.25); }
-    .att-btn-group { display:flex;gap:.5rem; }
-    .att-btn { padding:.35rem .9rem;border-radius:8px;font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s; }
-    .att-btn.p  { background:rgba(16,185,129,.15);color:#6EE7B7;border:1px solid rgba(16,185,129,.3); }
-    .att-btn.p.active,.att-btn.p:hover { background:rgba(16,185,129,.4);border-color:#10B981; }
-    .att-btn.a  { background:rgba(239,68,68,.1);color:#FCA5A5;border:1px solid rgba(239,68,68,.2); }
-    .att-btn.a.active,.att-btn.a:hover { background:rgba(239,68,68,.35);border-color:#EF4444; }
-    .att-btn.l  { background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2); }
-    .att-btn.l.active,.att-btn.l:hover { background:rgba(235,168,33,.35);border-color:#EBA821; }
-    .save-toast { position:fixed;bottom:2rem;right:2rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none; }
+    select { appearance: none; -webkit-appearance: none; background-color: #0F1E3D !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 0.9rem center !important; background-size: 12px !important; padding-right: 2.5rem !important; color: #fff !important; border: 1.5px solid rgba(255,255,255,0.12) !important; border-radius: 10px !important; font-family: Outfit,sans-serif !important; cursor: pointer; }
+    select option { background: #0F1E3D !important; color: #fff !important; }
+    select:focus { border-color: #EBA821 !important; outline: none !important; }
   </style>
 </head>
 <body class="admin-body">
+
 <div class="admin-layout">
   <aside class="admin-sidebar">
     <div class="admin-logo">
-      <div class="logo-shield" style="background:transparent;box-shadow:none;">
-        <img src="../images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;" />
-      </div>
+      <div class="logo-shield" style="background: transparent; box-shadow: none;">
+  <img src="../images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+</div>
       <div>
-        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;">THE ZEST</div>
         <div class="admin-logo-text">Command Center</div>
       </div>
     </div>
     <nav class="admin-nav">
       <div class="admin-nav-section">Main</div>
       <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
-      <a href="attendance.html" class="admin-nav-item active"><span class="admin-nav-icon">✅</span> Attendance</a>
+      <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
       <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
-      <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
-      <div class="admin-nav-section">Academic</div>
-      <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results & Marks</a>
-      <a href="batches.html" class="admin-nav-item"><span class="admin-nav-icon">🗓</span> Batch Manager</a>
-      <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
-      <a href="custom-categories.html" class="admin-nav-item"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
+      <a href="students.html" class="admin-nav-item active"><span class="admin-nav-icon">🎓</span> Student Logs</a>
       <div class="admin-nav-section">Settings</div>
       <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
       <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
       <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
-      <div class="admin-nav-section">Site</div>
-      <a href="../index.html" target="_blank" class="admin-nav-item"><span class="admin-nav-icon">🌐</span> View Website</a>
     </nav>
   </aside>
 
   <main class="admin-main">
     <header class="admin-header">
       <div>
-        <div class="admin-page-title">Daily Attendance</div>
-        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;" id="attDateLabel"></div>
+        <div class="admin-page-title">Student Logs</div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.15rem;" id="studentCount">Loading...</div>
       </div>
       <div class="admin-header-right">
-        <input type="date" id="attDate" onchange="loadAttendance()"
-          style="padding:.6rem 1rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.85rem;color:white;outline:none;" />
-        <button class="btn-admin-primary" onclick="saveAttendance()" style="padding:.6rem 1.25rem;font-size:.85rem;">💾 Save</button>
+        <button class="btn-admin-secondary" onclick="exportCSV()" style="padding:0.6rem 1rem;font-size:0.82rem;">📥 Export CSV</button>
+        <button class="btn-admin-primary" onclick="showAddForm()" style="padding:0.6rem 1.25rem;font-size:0.85rem;">➕ Add Student</button>
       </div>
     </header>
 
     <div class="admin-content">
-      <!-- Filters -->
-      <div class="admin-card" style="padding:1.25rem 1.75rem;margin-bottom:1rem;">
-        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-          <select id="batchFilter" onchange="loadAttendance()" style="padding:.65rem 1rem;">
-            <option value="all">All Batches</option>
-            <option>5 AM Morning Batch</option>
-            <option>Regular Morning</option>
-            <option>Evening I</option>
-            <option>Evening II</option>
-            <option>NDA / Defense</option>
-          </select>
-          <select id="gradeFilter" onchange="loadAttendance()" style="padding:.65rem 1rem;">
-            <option value="all">All Grades</option>
-            <option>8th Standard</option>
-            <option>9th Standard</option>
-            <option>10th Standard</option>
+
+      <!-- ADD STUDENT FORM (hidden by default) -->
+      <div class="admin-card" id="addStudentForm" style="display:none; margin-bottom: 1.5rem; border-color: rgba(235,168,33,0.3);">
+        <div class="admin-card-header">
+          <div>
+            <div class="admin-card-title">Register New Student</div>
+            <div class="admin-card-subtitle">Fill all required fields</div>
+          </div>
+          <button onclick="hideAddForm()" style="color: rgba(255,255,255,0.4); font-size: 1.2rem; background:none; border:none; cursor:pointer;">✕</button>
+        </div>
+        <div class="admin-form">
+          <div class="admin-form-row">
+            <div class="form-group"><label>Student's Full Name *</label><input type="text" id="sName" placeholder="Enter full name" /></div>
+            <div class="form-group"><label>Parent's Name *</label><input type="text" id="sParent" placeholder="Parent / guardian name" /></div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Grade / Standard *</label>
+              <select id="sGrade">
+                <option value="">Select Grade</option>
+                <option>8th Standard</option>
+                <option>9th Standard</option>
+                <option>10th Standard</option>
                 <option>11th Standard (Science)</option>
                 <option>11th Standard (Commerce)</option>
                 <option>12th Standard (Science)</option>
                 <option>12th Standard (Commerce)</option>
+                <option>NDA Aspirant</option>
+                <option>CDS Aspirant</option>
+                <option>AFCAT Aspirant</option>
+                <option>INET Aspirant</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Board</label>
+              <select id="sBoard">
+                <option value="">Select Board</option>
+                <option>State Board</option>
+                <option>CBSE</option>
+                <option>N/A</option>
+              </select>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Batch *</label>
+              <select id="sBatch">
+                <option value="">Select Batch</option>
+                <option>5 AM Morning Batch</option>
+                <option>Regular Morning</option>
+                <option>Evening I</option>
+                <option>Evening II</option>
+                <option>11th / 12th Batch (Coming Soon)</option>
+                <option>Defense / Armour Batch</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Monthly Fee (₹) *</label>
+              <input type="number" id="sFee" placeholder="e.g. 2500" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group"><label>Phone Number *</label><input type="tel" id="sPhone" placeholder="+91 XXXXX XXXXX" /></div>
+            <div class="form-group">
+              <label>Fee Status</label>
+              <select id="sFeeStatus">
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Address / Area</label><input type="text" id="sAddress" placeholder="Area in Pune" /></div>
+          <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+            <button class="btn-admin-primary" onclick="addStudent()">✅ Register Student</button>
+            <button class="btn-admin-secondary" onclick="hideAddForm()">Cancel</button>
+          </div>
+        </div>
+        <div id="addStudentMsg" style="display:none;margin-top:1rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green);padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:600;">
+          ✅ Student registered successfully!
+        </div>
+      </div>
+
+      <!-- SEARCH + FILTER -->
+      <div class="admin-card" style="padding:1.25rem 1.75rem; margin-bottom:1rem;">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="searchInput" placeholder="🔍  Search by name, grade, or phone..." oninput="renderStudents()"
+            style="flex:1;min-width:200px;padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;" />
+          <select id="gradeFilter" onchange="renderStudents()"
+            style="padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;">
+            <option value="all">All Grades</option>
+            <option>8th Standard</option>
+            <option>9th Standard</option>
+            <option>10th Standard</option>
             <option>NDA Aspirant</option>
             <option>CDS Aspirant</option>
-            <option>AFCAT Aspirant</option>
-            <option>INET Aspirant</option>
           </select>
-          <button onclick="markAll('present')" class="att-btn p">✅ Mark All Present</button>
-          <button onclick="markAll('absent')" class="att-btn a">❌ Mark All Absent</button>
         </div>
       </div>
 
-      <!-- Summary -->
-      <div class="att-summary" id="attSummary"></div>
-
-      <!-- Student List -->
-      <div class="admin-card" id="attList">
-        <div style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">
-          No students registered yet. <a href="students.html" style="color:var(--gold);">Add students →</a>
-        </div>
+      <!-- STUDENTS TABLE -->
+      <div class="admin-card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Grade</th>
+              <th>Batch</th>
+              <th>Phone</th>
+              <th>Fee / Month</th>
+              <th>Fee Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="studentsBody">
+            <tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No students yet. Click "Add Student" to get started.</td></tr>
+          </tbody>
+        </table>
       </div>
+
     </div>
   </main>
 </div>
-<div class="save-toast" id="saveToast">✅ Attendance saved!</div>
 
 <script>
   if (!sessionStorage.getItem('zest_admin_auth')) window.location.href = 'index.html';
 
-  const todayStr = new Date().toISOString().split('T')[0];
-  document.getElementById('attDate').value = todayStr;
-  document.getElementById('attDateLabel').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  let students = JSON.parse(localStorage.getItem('zest_students') || '[]');
 
-  let currentStatus = {}; // { studentId: 'present'|'absent'|'leave' }
-
-  function loadAttendance() {
-    const date = document.getElementById('attDate').value;
-    const batchF = document.getElementById('batchFilter').value;
-    const gradeF = document.getElementById('gradeFilter').value;
-
-    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
-    const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
-    const savedDay = attendance[date] || {};
-
-    // Init currentStatus
-    currentStatus = {};
-    students.forEach(s => { currentStatus[s.id] = savedDay[s.id] || ''; });
+  function renderStudents() {
+    const search = (document.getElementById('searchInput').value || '').toLowerCase();
+    const grade  = document.getElementById('gradeFilter').value;
 
     let filtered = students.filter(s => {
-      const bMatch = batchF === 'all' || (s.batch || '') === batchF;
-      const gMatch = gradeF === 'all' || (s.grade || '') === gradeF;
-      return bMatch && gMatch;
+      const matchSearch = !search || s.name.toLowerCase().includes(search) || (s.grade || '').toLowerCase().includes(search) || (s.phone || '').includes(search);
+      const matchGrade = grade === 'all' || s.grade === grade;
+      return matchSearch && matchGrade;
     });
 
-    const list = document.getElementById('attList');
+    document.getElementById('studentCount').textContent = `${students.length} total students · ${filtered.length} shown`;
+
+    const tbody = document.getElementById('studentsBody');
     if (filtered.length === 0) {
-      list.innerHTML = '<div style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No students match filters.</div>';
-      updateSummary(students);
+      tbody.innerHTML = '<tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No students found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map((s, i) => `
+      <tr>
+        <td>
+          <div style="font-weight:600;color:white;">${s.name}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${s.parent || ''} · ${s.address || ''}</div>
+        </td>
+        <td>${s.grade || '—'}</td>
+        <td>${s.batch || '—'}</td>
+        <td><a href="tel:${s.phone}" style="color:rgba(235,168,33,0.8);">${s.phone || '—'}</a></td>
+        <td>₹${parseFloat(s.fee || 0).toLocaleString('en-IN')}</td>
+        <td><span class="status-badge ${s.feeStatus || 'pending'}">${s.feeStatus || 'Pending'}</span></td>
+        <td>
+          <button onclick="deleteStudent('${s.id}')" style="background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);padding:0.3rem 0.7rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function showAddForm() {
+    document.getElementById('addStudentForm').style.display = 'block';
+    document.getElementById('sName').focus();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  function hideAddForm() {
+    document.getElementById('addStudentForm').style.display = 'none';
+    document.getElementById('addStudentMsg').style.display = 'none';
+  }
+
+  function addStudent() {
+    const name = document.getElementById('sName').value.trim();
+    const parent = document.getElementById('sParent').value.trim();
+    const grade = document.getElementById('sGrade').value;
+    const board = document.getElementById('sBoard').value;
+    const batch = document.getElementById('sBatch').value;
+    const fee = document.getElementById('sFee').value;
+    const phone = document.getElementById('sPhone').value.trim();
+    const feeStatus = document.getElementById('sFeeStatus').value;
+    const address = document.getElementById('sAddress').value.trim();
+
+    if (!name || !grade || !phone) {
+      alert('Please fill Name, Grade and Phone Number');
       return;
     }
 
-    list.innerHTML = filtered.map(s => `
-      <div class="attendance-row" id="row-${s.id}">
-        <div class="student-info">
-          <div class="student-avatar">${s.name.charAt(0).toUpperCase()}</div>
-          <div>
-            <div class="student-name">${s.name}</div>
-            <div class="student-grade">${s.grade || '—'} · ${s.batch || '—'}</div>
-          </div>
-        </div>
-        <div class="att-btn-group">
-          <button class="att-btn p ${currentStatus[s.id]==='present'?'active':''}" onclick="setStatus('${s.id}','present')">✅ Present</button>
-          <button class="att-btn a ${currentStatus[s.id]==='absent'?'active':''}" onclick="setStatus('${s.id}','absent')">❌ Absent</button>
-          <button class="att-btn l ${currentStatus[s.id]==='leave'?'active':''}" onclick="setStatus('${s.id}','leave')">🏖 Leave</button>
-        </div>
-      </div>
-    `).join('');
+    const student = {
+      id: 'S' + Date.now(),
+      name, parent, grade, board, batch, fee, phone, feeStatus, address,
+      joinDate: new Date().toISOString().split('T')[0]
+    };
 
-    updateSummary(students);
+    students.push(student);
+    localStorage.setItem('zest_students', JSON.stringify(students));
+
+    // Clear form
+    ['sName','sParent','sPhone','sFee','sAddress'].forEach(id => document.getElementById(id).value = '');
+    ['sGrade','sBoard','sBatch','sFeeStatus'].forEach(id => document.getElementById(id).selectedIndex = 0);
+
+    document.getElementById('addStudentMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('addStudentMsg').style.display = 'none', 3000);
+
+    renderStudents();
   }
 
-  function setStatus(id, status) {
-    currentStatus[id] = status;
-    // Update buttons
-    const row = document.getElementById('row-' + id);
-    if (!row) return;
-    row.querySelectorAll('.att-btn').forEach(b => b.classList.remove('active'));
-    if (status === 'present') row.querySelector('.att-btn.p').classList.add('active');
-    if (status === 'absent')  row.querySelector('.att-btn.a').classList.add('active');
-    if (status === 'leave')   row.querySelector('.att-btn.l').classList.add('active');
-    updateSummary(JSON.parse(localStorage.getItem('zest_students') || '[]'));
+  function deleteStudent(id) {
+    if (!confirm('Are you sure you want to delete this student?')) return;
+    students = students.filter(s => s.id !== id);
+    localStorage.setItem('zest_students', JSON.stringify(students));
+    renderStudents();
   }
 
-  function markAll(status) {
-    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
-    students.forEach(s => setStatus(s.id, status));
-  }
-
-  function updateSummary(students) {
-    const present = Object.values(currentStatus).filter(v => v === 'present').length;
-    const absent  = Object.values(currentStatus).filter(v => v === 'absent').length;
-    const leave   = Object.values(currentStatus).filter(v => v === 'leave').length;
-    document.getElementById('attSummary').innerHTML = `
-      <span class="att-pill total">👥 ${students.length} Total</span>
-      <span class="att-pill present">✅ ${present} Present</span>
-      <span class="att-pill absent">❌ ${absent} Absent</span>
-      <span class="att-pill" style="background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2);">🏖 ${leave} Leave</span>
-    `;
-  }
-
-  function saveAttendance() {
-    const date = document.getElementById('attDate').value;
-    const attendance = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
-    attendance[date] = { ...currentStatus };
-    localStorage.setItem('zest_attendance', JSON.stringify(attendance));
-    const t = document.getElementById('saveToast');
-    t.style.display = 'block';
-    setTimeout(() => t.style.display = 'none', 2500);
+  function exportCSV() {
+    if (students.length === 0) { alert('No students to export'); return; }
+    const headers = ['Name','Parent','Grade','Board','Batch','Phone','Fee','Fee Status','Join Date','Address'];
+    const rows = students.map(s => [s.name, s.parent, s.grade, s.board, s.batch, s.phone, s.fee, s.feeStatus, s.joinDate, s.address]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v || ''}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `zest-students-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
   }
 
   function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
 
-  loadAttendance();
+  renderStudents();
 </script>
 <script src="zest-sync.js"></script>
 </body>

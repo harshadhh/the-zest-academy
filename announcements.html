@@ -3,27 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fee Records | Zest Admin</title>
+  <title>Results & Marks | Zest Admin</title>
   <meta name="robots" content="noindex, nofollow" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    /* Force dark selects everywhere in admin */
-    select { appearance: none; -webkit-appearance: none; background-color: #0F1E3D !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 0.9rem center !important; background-size: 12px !important; padding-right: 2.5rem !important; color: #fff !important; border: 1.5px solid rgba(255,255,255,0.12) !important; border-radius: 10px !important; font-family: Outfit,sans-serif !important; cursor: pointer; }
-    select option { background: #0F1E3D !important; color: #fff !important; }
-    select:focus { border-color: #EBA821 !important; outline: none !important; }
+    select { appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer; }
+    select option { background:#0F1E3D!important;color:#fff!important; }
+    .score-bar-wrap { background:rgba(255,255,255,.06);border-radius:50px;height:8px;width:100px;overflow:hidden; }
+    .score-bar { height:100%;border-radius:50px;transition:width .5s; }
+    .grade-badge { padding:.2rem .7rem;border-radius:6px;font-size:.75rem;font-weight:700; }
+    .grade-A { background:rgba(16,185,129,.15);color:#6EE7B7; }
+    .grade-B { background:rgba(59,130,246,.15);color:#93C5FD; }
+    .grade-C { background:rgba(235,168,33,.15);color:#EBA821; }
+    .grade-D { background:rgba(239,68,68,.12);color:#FCA5A5; }
+    .save-toast { position:fixed;bottom:2rem;right:2rem;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none; }
   </style>
 </head>
 <body class="admin-body">
-
 <div class="admin-layout">
   <aside class="admin-sidebar">
     <div class="admin-logo">
-      <div class="logo-shield" style="background: transparent; box-shadow: none;">
-  <img src="../images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
-</div>
+      <div class="logo-shield" style="background:transparent;box-shadow:none;">
+        <img src="../images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;" />
+      </div>
       <div>
-        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;">THE ZEST</div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
         <div class="admin-logo-text">Command Center</div>
       </div>
     </div>
@@ -31,10 +36,10 @@
       <div class="admin-nav-section">Main</div>
       <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
       <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
-      <a href="fees.html" class="admin-nav-item active"><span class="admin-nav-icon">💰</span> Fee Records</a>
+      <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
       <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
       <div class="admin-nav-section">Academic</div>
-      <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results &amp; Marks</a>
+      <a href="results.html" class="admin-nav-item active"><span class="admin-nav-icon">📝</span> Results & Marks</a>
       <a href="batches.html" class="admin-nav-item"><span class="admin-nav-icon">🗓</span> Batch Manager</a>
       <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
       <a href="custom-categories.html" class="admin-nav-item"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
@@ -42,281 +47,204 @@
       <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
       <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
       <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
+      <div class="admin-nav-section">Site</div>
+      <a href="../index.html" target="_blank" class="admin-nav-item"><span class="admin-nav-icon">🌐</span> View Website</a>
     </nav>
   </aside>
 
   <main class="admin-main">
     <header class="admin-header">
       <div>
-        <div class="admin-page-title">Fee Records</div>
-        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.15rem;" id="feeMonthLabel"></div>
+        <div class="admin-page-title">Results & Marks</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Test & exam scores for all students</div>
       </div>
       <div class="admin-header-right">
-        <button class="btn-admin-secondary" onclick="exportFeeCSV()" style="padding:0.6rem 1rem;font-size:0.82rem;">📥 Export</button>
-        <button class="btn-admin-primary" onclick="toggleAddFee()" style="padding:0.6rem 1.25rem;font-size:0.85rem;">➕ Record Payment</button>
+        <button class="btn-admin-secondary" onclick="exportResultsCSV()" style="padding:.6rem 1rem;font-size:.82rem;">📥 Export</button>
+        <button class="btn-admin-primary" onclick="toggleForm()" style="padding:.6rem 1.25rem;font-size:.85rem;">➕ Add Result</button>
       </div>
     </header>
 
     <div class="admin-content">
 
-      <!-- Summary Stats -->
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem;">
-        <div class="admin-stat-card" style="padding:1.25rem;border-color:rgba(16,185,129,0.3);">
-          <div class="admin-stat-icon">💰</div>
-          <div class="admin-stat-value" style="color:var(--green);" id="totalCollected">₹0</div>
-          <div class="admin-stat-label">Collected This Month</div>
-        </div>
-        <div class="admin-stat-card" style="padding:1.25rem;border-color:rgba(235,168,33,0.3);">
-          <div class="admin-stat-icon">⏳</div>
-          <div class="admin-stat-value" style="color:var(--gold);" id="totalPending">₹0</div>
-          <div class="admin-stat-label">Pending This Month</div>
-        </div>
-        <div class="admin-stat-card" style="padding:1.25rem;border-color:rgba(239,68,68,0.3);">
-          <div class="admin-stat-icon">🚨</div>
-          <div class="admin-stat-value" style="color:#EF4444;" id="totalOverdue">0</div>
-          <div class="admin-stat-label">Overdue Payments</div>
-        </div>
-      </div>
-
-      <!-- ADD FEE RECORD FORM -->
-      <div class="admin-card" id="addFeeForm" style="display:none;margin-bottom:1.5rem;border-color:rgba(16,185,129,0.3);">
+      <!-- ADD RESULT FORM -->
+      <div class="admin-card" id="addResultForm" style="display:none;margin-bottom:1.5rem;border-color:rgba(235,168,33,.3);">
         <div class="admin-card-header">
-          <div class="admin-card-title">Record Fee Payment</div>
-          <button onclick="toggleAddFee()" style="color:rgba(255,255,255,0.4);font-size:1.2rem;background:none;border:none;cursor:pointer;">✕</button>
+          <div>
+            <div class="admin-card-title">Record Test Result</div>
+            <div class="admin-card-subtitle">Enter marks for a student</div>
+          </div>
+          <button onclick="toggleForm()" style="color:rgba(255,255,255,.4);font-size:1.2rem;background:none;border:none;cursor:pointer;">✕</button>
         </div>
         <div class="admin-form">
           <div class="admin-form-row">
-            <div class="form-group">
-              <label>Student Name *</label>
-              <select id="fStudentName">
-                <option value="">Select Student</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Amount (₹) *</label>
-              <input type="number" id="fAmount" placeholder="e.g. 2500" />
-            </div>
+            <div class="form-group"><label>Student *</label><select id="rStudent"><option value="">Select Student</option></select></div>
+            <div class="form-group"><label>Test / Exam Name *</label><input type="text" id="rTest" placeholder="e.g. Unit Test 1, Mock Test 3" /></div>
           </div>
           <div class="admin-form-row">
-            <div class="form-group">
-              <label>Payment Date *</label>
-              <input type="date" id="fDate" />
+            <div class="form-group"><label>Subject *</label>
+              <select id="rSubject">
+                <option value="">Select Subject</option>
+                <option>Mathematics</option><option>Science</option><option>English</option>
+                <option>Social Science</option><option>Hindi / Marathi</option>
+                <option>General Ability (GAT)</option><option>General Knowledge</option>
+                <option>Logical Reasoning</option><option>Overall / Full Test</option>
+              </select>
             </div>
-            <div class="form-group">
-              <label>Due Date</label>
-              <input type="date" id="fDueDate" />
-            </div>
+            <div class="form-group"><label>Marks Obtained *</label><input type="number" id="rMarks" placeholder="e.g. 78" min="0" /></div>
           </div>
           <div class="admin-form-row">
-            <div class="form-group">
-              <label>Status *</label>
-              <select id="fStatus">
-                <option value="paid">Paid</option>
-                <option value="pending">Pending</option>
-                <option value="overdue">Overdue</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Payment Method</label>
-              <select id="fMethod">
-                <option>Cash</option>
-                <option>UPI / PhonePe</option>
-                <option>Bank Transfer</option>
-                <option>Cheque</option>
-              </select>
-            </div>
+            <div class="form-group"><label>Total Marks *</label><input type="number" id="rTotal" placeholder="e.g. 100" min="1" /></div>
+            <div class="form-group"><label>Test Date</label><input type="date" id="rDate" /></div>
           </div>
-          <div class="form-group">
-            <label>Notes (optional)</label>
-            <input type="text" id="fNotes" placeholder="Any additional notes..." />
-          </div>
-          <div style="display:flex;gap:1rem;margin-top:0.5rem;">
-            <button class="btn-admin-primary" onclick="addFeeRecord()">✅ Record Payment</button>
-            <button class="btn-admin-secondary" onclick="toggleAddFee()">Cancel</button>
+          <div class="form-group"><label>Remarks (optional)</label><input type="text" id="rRemarks" placeholder="e.g. Excellent improvement, needs work on algebra" /></div>
+          <div style="display:flex;gap:1rem;margin-top:.5rem;">
+            <button class="btn-admin-primary" onclick="addResult()">✅ Save Result</button>
+            <button class="btn-admin-secondary" onclick="toggleForm()">Cancel</button>
           </div>
         </div>
-        <div id="feeMsg" style="display:none;margin-top:1rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green);padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:600;">
-          ✅ Payment recorded successfully!
-        </div>
+        <div id="resultMsg" style="display:none;margin-top:1rem;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--green);padding:.75rem 1rem;border-radius:10px;font-size:.88rem;font-weight:600;">✅ Result saved!</div>
       </div>
 
-      <!-- FILTER -->
+      <!-- FILTERS -->
       <div class="admin-card" style="padding:1.25rem 1.75rem;margin-bottom:1rem;">
         <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
-          <select id="monthFilter" onchange="renderFees()"
-            style="padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;">
-          </select>
-          <select id="statusFilter" onchange="renderFees()"
-            style="padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;">
-            <option value="all">All Statuses</option>
-            <option value="paid">Paid</option>
-            <option value="pending">Pending</option>
-            <option value="overdue">Overdue</option>
+          <input type="text" id="searchResults" oninput="renderResults()" placeholder="🔍 Search student or test..."
+            style="flex:1;min-width:180px;padding:.65rem 1rem;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.88rem;color:white;outline:none;" />
+          <select id="subjectFilter" onchange="renderResults()" style="padding:.65rem 1rem;">
+            <option value="all">All Subjects</option>
+            <option>Mathematics</option><option>Science</option><option>English</option>
+            <option>Social Science</option><option>General Ability (GAT)</option><option>Overall / Full Test</option>
           </select>
         </div>
       </div>
 
-      <!-- FEE TABLE -->
+      <!-- RESULTS TABLE -->
       <div class="admin-card">
         <table class="admin-table">
           <thead>
-            <tr>
-              <th>Student</th>
-              <th>Amount</th>
-              <th>Date</th>
-              <th>Due Date</th>
-              <th>Method</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
+            <tr><th>Student</th><th>Test</th><th>Subject</th><th>Score</th><th>Percentage</th><th>Grade</th><th>Date</th><th>Action</th></tr>
           </thead>
-          <tbody id="feesBody">
-            <tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No fee records yet. Click "Record Payment" to start.</td></tr>
+          <tbody id="resultsBody">
+            <tr><td colspan="8" style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No results yet. Click "Add Result" to start tracking.</td></tr>
           </tbody>
         </table>
       </div>
-
     </div>
   </main>
 </div>
+<div class="save-toast" id="saveToast"></div>
 
 <script>
   if (!sessionStorage.getItem('zest_admin_auth')) window.location.href = 'index.html';
 
-  let fees = JSON.parse(localStorage.getItem('zest_fees') || '[]');
-  let students = JSON.parse(localStorage.getItem('zest_students') || '[]');
-  const now = new Date();
-
-  // Init month filter
-  const monthSelect = document.getElementById('monthFilter');
-  for (let i = 0; i < 12; i++) {
-    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-    const val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-    const opt = document.createElement('option');
-    opt.value = val;
-    opt.textContent = d.toLocaleDateString('en-IN', {month:'long', year:'numeric'});
-    if (i === 0) opt.selected = true;
-    monthSelect.appendChild(opt);
-  }
-
-  // Set default date
-  document.getElementById('fDate').value = now.toISOString().split('T')[0];
-  document.getElementById('fMonthLabel') && (document.getElementById('fMonthLabel').textContent = now.toLocaleDateString('en-IN', {month:'long',year:'numeric'}));
-  document.getElementById('feeMonthLabel').textContent = now.toLocaleDateString('en-IN', {month:'long',year:'numeric'});
+  let results = JSON.parse(localStorage.getItem('zest_results') || '[]');
+  const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
 
   // Populate student dropdown
-  function populateStudentDropdown() {
-    const sel = document.getElementById('fStudentName');
-    sel.innerHTML = '<option value="">Select Student</option>';
-    students.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.name;
-      opt.dataset.grade = s.grade || '';
-      opt.dataset.fee = s.fee || '';
-      opt.textContent = `${s.name} · ${s.grade || 'N/A'}`;
-      sel.appendChild(opt);
-    });
-    sel.addEventListener('change', function() {
-      const sel = this;
-      const opt = sel.options[sel.selectedIndex];
-      if (opt.dataset.fee) document.getElementById('fAmount').value = opt.dataset.fee;
-    });
-  }
-  populateStudentDropdown();
+  const sel = document.getElementById('rStudent');
+  students.forEach(s => {
+    const o = document.createElement('option');
+    o.value = s.id; o.textContent = `${s.name} · ${s.grade || 'N/A'}`;
+    sel.appendChild(o);
+  });
+  document.getElementById('rDate').value = new Date().toISOString().split('T')[0];
 
-  function toggleAddFee() {
-    const form = document.getElementById('addFeeForm');
-    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  function toggleForm() {
+    const f = document.getElementById('addResultForm');
+    f.style.display = f.style.display === 'none' ? 'block' : 'none';
   }
 
-  function addFeeRecord() {
-    const studentName = document.getElementById('fStudentName').value;
-    const amount = document.getElementById('fAmount').value;
-    const date = document.getElementById('fDate').value;
-    const dueDate = document.getElementById('fDueDate').value;
-    const status = document.getElementById('fStatus').value;
-    const method = document.getElementById('fMethod').value;
-    const notes = document.getElementById('fNotes').value;
-
-    if (!studentName || !amount || !date) { alert('Please fill Student, Amount and Date'); return; }
-
-    const record = { id: 'F' + Date.now(), studentName, amount, date, dueDate, status, method, notes, grade: '' };
-    // attach grade
-    const stu = students.find(s => s.name === studentName);
-    if (stu) record.grade = stu.grade || '';
-
-    fees.push(record);
-    localStorage.setItem('zest_fees', JSON.stringify(fees));
-
-    document.getElementById('feeMsg').style.display = 'block';
-    setTimeout(() => document.getElementById('feeMsg').style.display = 'none', 3000);
-    renderFees();
+  function gradeFromPct(pct) {
+    if (pct >= 85) return {g:'A+', cls:'grade-A'};
+    if (pct >= 70) return {g:'A',  cls:'grade-A'};
+    if (pct >= 55) return {g:'B',  cls:'grade-B'};
+    if (pct >= 40) return {g:'C',  cls:'grade-C'};
+    return {g:'D', cls:'grade-D'};
   }
 
-  function renderFees() {
-    const [year, month] = (document.getElementById('monthFilter').value || '').split('-').map(Number);
-    const statusFilter = document.getElementById('statusFilter').value;
+  function addResult() {
+    const studentId = document.getElementById('rStudent').value;
+    const test = document.getElementById('rTest').value.trim();
+    const subject = document.getElementById('rSubject').value;
+    const marks = parseFloat(document.getElementById('rMarks').value);
+    const total = parseFloat(document.getElementById('rTotal').value);
+    const date = document.getElementById('rDate').value;
+    const remarks = document.getElementById('rRemarks').value.trim();
 
-    let filtered = fees.filter(f => {
-      const d = new Date(f.date);
-      const matchMonth = !year || (d.getFullYear() === year && d.getMonth() + 1 === month);
-      const matchStatus = statusFilter === 'all' || f.status === statusFilter;
-      return matchMonth && matchStatus;
-    });
-
-    // Stats for current month
-    const curMonthFees = fees.filter(f => {
-      const d = new Date(f.date);
-      return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
-    });
-    const collected = curMonthFees.filter(f => f.status === 'paid').reduce((s,f) => s + parseFloat(f.amount||0), 0);
-    const pending = curMonthFees.filter(f => f.status === 'pending').reduce((s,f) => s + parseFloat(f.amount||0), 0);
-    const overdue = fees.filter(f => f.status === 'overdue').length;
-    document.getElementById('totalCollected').textContent = '₹' + collected.toLocaleString('en-IN');
-    document.getElementById('totalPending').textContent = '₹' + pending.toLocaleString('en-IN');
-    document.getElementById('totalOverdue').textContent = overdue;
-
-    const tbody = document.getElementById('feesBody');
-    if (filtered.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No records for this period.</td></tr>';
-      return;
+    if (!studentId || !test || !subject || isNaN(marks) || isNaN(total)) {
+      alert('Please fill Student, Test Name, Subject, Marks and Total.'); return;
     }
-    tbody.innerHTML = filtered.reverse().map(f => `
-      <tr>
-        <td><div style="font-weight:600;">${f.studentName}</div><div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${f.grade}</div></td>
-        <td style="font-weight:700;color:var(--green);">₹${parseFloat(f.amount||0).toLocaleString('en-IN')}</td>
-        <td>${f.date || '—'}</td>
-        <td>${f.dueDate || '—'}</td>
-        <td style="font-size:0.82rem;">${f.method || '—'}</td>
-        <td><span class="status-badge ${f.status}">${f.status}</span></td>
+    if (marks > total) { alert('Marks cannot exceed Total marks.'); return; }
+
+    const student = students.find(s => s.id === studentId);
+    const pct = Math.round((marks / total) * 100);
+    const result = {
+      id: 'R' + Date.now(), studentId, studentName: student ? student.name : '', grade: student ? student.grade : '',
+      test, subject, marks, total, pct, date, remarks
+    };
+    results.push(result);
+    localStorage.setItem('zest_results', JSON.stringify(results));
+
+    document.getElementById('rTest').value = '';
+    document.getElementById('rMarks').value = '';
+    document.getElementById('rTotal').value = '';
+    document.getElementById('rRemarks').value = '';
+    document.getElementById('resultMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('resultMsg').style.display = 'none', 2500);
+    renderResults();
+  }
+
+  function deleteResult(id) {
+    if (!confirm('Delete this result?')) return;
+    results = results.filter(r => r.id !== id);
+    localStorage.setItem('zest_results', JSON.stringify(results));
+    renderResults();
+  }
+
+  function renderResults() {
+    const search = (document.getElementById('searchResults').value || '').toLowerCase();
+    const subF = document.getElementById('subjectFilter').value;
+    let filtered = results.filter(r => {
+      const ms = !search || (r.studentName || '').toLowerCase().includes(search) || (r.test || '').toLowerCase().includes(search);
+      const mj = subF === 'all' || r.subject === subF;
+      return ms && mj;
+    });
+    const tbody = document.getElementById('resultsBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="8" style="color:rgba(255,255,255,.3);text-align:center;padding:3rem;">No results found.</td></tr>'; return;
+    }
+    tbody.innerHTML = [...filtered].reverse().map(r => {
+      const {g, cls} = gradeFromPct(r.pct);
+      const barColor = r.pct >= 70 ? '#10B981' : r.pct >= 40 ? '#EBA821' : '#EF4444';
+      return `<tr>
+        <td><div style="font-weight:600;">${r.studentName}</div><div style="font-size:.75rem;color:rgba(255,255,255,.4);">${r.grade}</div></td>
+        <td style="font-weight:600;color:#fff;">${r.test}</td>
+        <td style="font-size:.83rem;">${r.subject}</td>
+        <td style="font-weight:700;color:var(--gold);">${r.marks} / ${r.total}</td>
         <td>
-          <button onclick="deleteFee('${f.id}')" style="background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);padding:0.3rem 0.7rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">Delete</button>
+          <div style="display:flex;align-items:center;gap:.6rem;">
+            <div class="score-bar-wrap"><div class="score-bar" style="width:${r.pct}%;background:${barColor};"></div></div>
+            <span style="font-size:.82rem;font-weight:600;">${r.pct}%</span>
+          </div>
         </td>
-      </tr>
-    `).join('');
+        <td><span class="grade-badge ${cls}">${g}</span></td>
+        <td style="font-size:.82rem;">${r.date || '—'}</td>
+        <td><button onclick="deleteResult('${r.id}')" style="background:rgba(239,68,68,.1);color:#EF4444;border:1px solid rgba(239,68,68,.2);padding:.3rem .7rem;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">Delete</button></td>
+      </tr>`;
+    }).join('');
   }
 
-  function deleteFee(id) {
-    if (!confirm('Delete this fee record?')) return;
-    fees = fees.filter(f => f.id !== id);
-    localStorage.setItem('zest_fees', JSON.stringify(fees));
-    renderFees();
-  }
-
-  function exportFeeCSV() {
-    if (fees.length === 0) { alert('No fee records to export'); return; }
-    const headers = ['Student','Grade','Amount','Date','Due Date','Method','Status','Notes'];
-    const rows = fees.map(f => [f.studentName, f.grade, f.amount, f.date, f.dueDate, f.method, f.status, f.notes]);
-    const csv = [headers,...rows].map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
-    const blob = new Blob([csv], {type:'text/csv'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `zest-fees-${new Date().toISOString().split('T')[0]}.csv`;
-    a.click();
+  function exportResultsCSV() {
+    if (results.length === 0) { alert('No results to export'); return; }
+    const h = ['Student','Grade','Test','Subject','Marks','Total','Percentage','Date','Remarks'];
+    const rows = results.map(r => [r.studentName, r.grade, r.test, r.subject, r.marks, r.total, r.pct+'%', r.date, r.remarks]);
+    const csv = [h,...rows].map(r => r.map(v => `"${v||''}"`).join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download = `zest-results-${new Date().toISOString().split('T')[0]}.csv`; a.click();
   }
 
   function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
-  renderFees();
+  renderResults();
 </script>
 <script src="zest-sync.js"></script>
 </body>
