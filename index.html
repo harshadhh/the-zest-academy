@@ -1,484 +1,257 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Zest Classes | Best Coaching in Dighi, Pune</title>
-  <meta name="description" content="Premium coaching for 8th–10th Board & Defense aspirants in Dighi, Pune. NDA | CDS | AFCAT | INET. Free Assessment Available." />
-  <meta name="keywords" content="best coaching classes Dighi Pune, defense academy Dighi, 10th board tuition Dighi, NDA coaching Pune, The Zest Classes" />
-  <link rel="icon" href="images/favicon.png" type="image/png" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
-</head>
-<body>
+// ═══════════════════════════════════════════════════════════════════════
+//  THE ZEST CLASSES — Google Apps Script Backend  (Code.gs)
+//  1. Go to script.google.com → New Project → paste this entire file
+//  2. Click Deploy → New Deployment → Web App
+//     Execute as: Me  |  Access: Anyone
+//  3. Copy the Web App URL and paste it in Admin → Settings → Sync
+// ═══════════════════════════════════════════════════════════════════════
 
-  <!-- ANNOUNCEMENT BANNER - slides in after 3s, hides after 5s -->
-  <style>
-    #annBanner {
-      background: linear-gradient(90deg,#1B365D,#0F2847);
-      border-bottom: 1px solid rgba(235,168,33,.25);
-      overflow: hidden;
-      position: relative;
-      z-index: 1001;
-      max-height: 0;
-      opacity: 0;
-      transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+// ── DEFAULT PASSWORD HASH ───────────────────────────────────────────────
+// SHA-256 of "ZestAdmin2025" — change via Settings → Change Password
+const DEFAULT_HASH = '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+
+// ── SHEET NAMES ────────────────────────────────────────────────────────
+const SHEET = {
+  students:      'Students',
+  attendance:    'Attendance',
+  fees:          'Fees',
+  results:       'Results',
+  announcements: 'Announcements',
+  enquiries:     'Enquiries',
+  batches:       'Batches',
+};
+
+// ═══════════════════════════════════════════════════════════════════════
+//  MAIN ENTRY POINTS
+// ═══════════════════════════════════════════════════════════════════════
+function doPost(e) {
+  try {
+    const body = JSON.parse(e.postData.contents);
+    const { action, token, data } = body;
+
+    if (action !== 'login' && !validateToken(token)) {
+      return out({ ok: false, error: 'Session expired. Please log in again.' });
     }
-    #annBanner.visible {
-      max-height: 60px;
-      opacity: 1;
+
+    if (action === 'login')           return doLogin(data);
+    if (action === 'changePassword')  return doChangePassword(data, token);
+    if (action === 'get')             return doGet(data);
+    if (action === 'set')             return doSet(data);
+    if (action === 'append')          return doAppend(data);
+    if (action === 'delete')          return doDelete(data);
+    if (action === 'dashboard')       return doDashboard();
+    if (action === 'logout')          return doLogout(token);
+
+    return out({ ok: false, error: 'Unknown action: ' + action });
+  } catch(err) {
+    return out({ ok: false, error: 'Server error: ' + err.message });
+  }
+}
+
+function doGet(e) {
+  return out({ ok: true, service: 'Zest Admin API', version: '2.0' });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  AUTH — secure token-based sessions
+// ═══════════════════════════════════════════════════════════════════════
+function doLogin({ hash }) {
+  const stored = PropertiesService.getScriptProperties().getProperty('pw_hash') || DEFAULT_HASH;
+  if (!hash || hash !== stored) {
+    Utilities.sleep(1200); // Slow brute-force
+    return out({ ok: false, error: 'Incorrect password' });
+  }
+  const token = genToken();
+  const exp   = String(Date.now() + 12 * 3600 * 1000); // 12h
+  PropertiesService.getScriptProperties().setProperty('tok_' + token, exp);
+  return out({ ok: true, token });
+}
+
+function validateToken(token) {
+  if (!token || typeof token !== 'string') return false;
+  const exp = PropertiesService.getScriptProperties().getProperty('tok_' + token);
+  if (!exp) return false;
+  if (Date.now() > parseInt(exp, 10)) {
+    PropertiesService.getScriptProperties().deleteProperty('tok_' + token);
+    return false;
+  }
+  return true;
+}
+
+function doLogout(token) {
+  if (token) PropertiesService.getScriptProperties().deleteProperty('tok_' + token);
+  return out({ ok: true });
+}
+
+function doChangePassword({ newHash }, currentToken) {
+  if (!newHash || newHash.length !== 64) return out({ ok: false, error: 'Invalid hash format' });
+  PropertiesService.getScriptProperties().setProperty('pw_hash', newHash);
+  // Expire all OTHER sessions
+  const all = PropertiesService.getScriptProperties().getProperties();
+  Object.keys(all).forEach(k => {
+    if (k.startsWith('tok_') && k !== 'tok_' + currentToken) {
+      PropertiesService.getScriptProperties().deleteProperty(k);
     }
-    #annBanner.hiding {
-      max-height: 0;
-      opacity: 0;
+  });
+  return out({ ok: true });
+}
+
+function genToken() {
+  const c = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let t = '';
+  for (let i = 0; i < 56; i++) t += c[Math.floor(Math.random() * c.length)];
+  return t;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SPREADSHEET HELPERS
+// ═══════════════════════════════════════════════════════════════════════
+function getSpreadsheet() {
+  const id = PropertiesService.getScriptProperties().getProperty('sheet_id');
+  if (id) return SpreadsheetApp.openById(id);
+  return SpreadsheetApp.getActiveSpreadsheet(); // fallback: script-bound sheet
+}
+
+function getTab(name) {
+  const ss = getSpreadsheet();
+  let tab = ss.getSheetByName(name);
+  if (!tab) {
+    tab = ss.insertSheet(name);
+  }
+  return tab;
+}
+
+function setSheetId(id) {
+  PropertiesService.getScriptProperties().setProperty('sheet_id', id);
+}
+
+function headerStyle(range) {
+  range.setFontWeight('bold')
+       .setBackground('#1B365D')
+       .setFontColor('#EBA821')
+       .setVerticalAlignment('middle');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  GET — read all rows of a collection as JSON array
+// ═══════════════════════════════════════════════════════════════════════
+function doGet({ collection }) {
+  if (!SHEET[collection]) return out({ ok: false, error: 'Unknown: ' + collection });
+  const tab  = getTab(SHEET[collection]);
+  const vals = tab.getDataRange().getValues();
+  if (vals.length <= 1) return out({ ok: true, rows: [] });
+  const hdrs = vals[0];
+  const rows = vals.slice(1).map(row => {
+    const o = {};
+    hdrs.forEach((h, i) => { o[h] = row[i]; });
+    return o;
+  });
+  return out({ ok: true, rows });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SET — replace entire collection (full sync from localStorage)
+// ═══════════════════════════════════════════════════════════════════════
+function doSet({ collection, rows, headers }) {
+  if (!SHEET[collection]) return out({ ok: false, error: 'Unknown: ' + collection });
+  const tab = getTab(SHEET[collection]);
+  tab.clearContents();
+  const keys = headers || (rows && rows.length ? Object.keys(rows[0]) : []);
+  if (!keys.length) return out({ ok: true, written: 0 });
+  const hdrRange = tab.getRange(1, 1, 1, keys.length);
+  hdrRange.setValues([keys]);
+  headerStyle(hdrRange);
+  tab.setFrozenRows(1);
+  if (rows && rows.length) {
+    const vals = rows.map(r => keys.map(k => (r[k] !== undefined && r[k] !== null) ? r[k] : ''));
+    tab.getRange(2, 1, vals.length, keys.length).setValues(vals);
+    for (let i = 1; i <= keys.length; i++) tab.autoResizeColumn(i);
+  }
+  return out({ ok: true, written: rows ? rows.length : 0 });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  APPEND — add single row (faster than full SET for one-off adds)
+// ═══════════════════════════════════════════════════════════════════════
+function doAppend({ collection, row, headers }) {
+  if (!SHEET[collection]) return out({ ok: false, error: 'Unknown: ' + collection });
+  const tab  = getTab(SHEET[collection]);
+  const keys = headers || Object.keys(row);
+  // Ensure headers exist
+  const existing = tab.getRange(1, 1, 1, keys.length).getValues()[0];
+  if (!existing[0] || existing[0] !== keys[0]) {
+    const hr = tab.getRange(1, 1, 1, keys.length);
+    hr.setValues([keys]); headerStyle(hr); tab.setFrozenRows(1);
+  }
+  tab.appendRow(keys.map(k => (row[k] !== undefined && row[k] !== null) ? row[k] : ''));
+  return out({ ok: true });
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DELETE — remove a row by matching ID
+// ═══════════════════════════════════════════════════════════════════════
+function doDelete({ collection, idField, idValue }) {
+  if (!SHEET[collection]) return out({ ok: false, error: 'Unknown: ' + collection });
+  const tab  = getTab(SHEET[collection]);
+  const data = tab.getDataRange().getValues();
+  if (data.length <= 1) return out({ ok: true });
+  const hdrs   = data[0];
+  const colIdx = hdrs.indexOf(idField);
+  if (colIdx === -1) return out({ ok: false, error: idField + ' column not found' });
+  for (let i = data.length - 1; i >= 1; i--) {
+    if (String(data[i][colIdx]) === String(idValue)) {
+      tab.deleteRow(i + 1);
+      break;
     }
-  </style>
-  <div id="annBanner">
-    <div style="display:flex;align-items:center;max-width:100%;overflow:hidden;">
-      <div style="background:rgba(235,168,33,.15);padding:.5rem 1rem;flex-shrink:0;border-right:1px solid rgba(235,168,33,.2);">
-        <span style="font-size:.68rem;font-weight:800;color:#EBA821;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;">📢 Notice</span>
-      </div>
-      <div style="overflow:hidden;flex:1;">
-        <div id="annTicker" style="display:flex;align-items:center;gap:1.5rem;padding:.45rem 1.25rem;overflow-x:auto;white-space:nowrap;"></div>
-      </div>
-      <button onclick="hideBanner()" style="background:none;border:none;color:rgba(255,255,255,.3);padding:.5rem .75rem;cursor:pointer;font-size:.95rem;flex-shrink:0;" title="Dismiss">✕</button>
-    </div>
-  </div>
-  <script>
-    (function(){
-      try {
-        var a = JSON.parse(localStorage.getItem('zest_announcements') || '[]');
-        if (!a.length) return;
-        var s = a.slice().reverse().slice(0, 6);
-        var t = document.getElementById('annTicker');
-        var b = document.getElementById('annBanner');
-        if (!t || !b) return;
-        t.innerHTML = s.map(function(x){
-          var hi = x.priority === 'high';
-          return '<span style="font-size:.78rem;font-weight:'+(hi?700:500)+';color:'+(hi?'#FCD34D':'rgba(255,255,255,.82)')+';white-space:nowrap;">'+(hi?'\u26a0 ':'')+x.text+' <span style="color:rgba(255,255,255,.25);font-size:.7rem;">['+x.category+']</span></span><span style="color:rgba(235,168,33,.25);margin:0 .5rem;">|</span>';
-        }).join('');
+  }
+  return out({ ok: true });
+}
 
-        // Slide IN after 3 seconds
-        setTimeout(function(){
-          b.classList.add('visible');
-          // Slide OUT after 3s visible (total 8s from page load)
-          setTimeout(function(){
-            hideBanner();
-          }, 5000);
-        }, 3000);
+// ═══════════════════════════════════════════════════════════════════════
+//  DASHBOARD — aggregated live stats
+// ═══════════════════════════════════════════════════════════════════════
+function doDashboard() {
+  const s = {};
 
-      } catch(e) {}
-    })();
+  try { s.totalStudents = Math.max(0, getTab(SHEET.students).getLastRow() - 1); }
+  catch(e) { s.totalStudents = 0; }
 
-    function hideBanner(){
-      var b = document.getElementById('annBanner');
-      if (!b) return;
-      b.classList.remove('visible');
-      b.classList.add('hiding');
-    }
-  </script>
-<!-- ═══════════════════════════════════════════════
-       STICKY NAVIGATION
-  ═══════════════════════════════════════════════ -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <a href="index.html" class="nav-logo">
-        <div class="logo-shield" style="background: transparent; box-shadow: none;">
-          <img src="images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
-        </div>
-        <div class="logo-text">
-          <span class="logo-main">THE ZEST</span>
-          <span class="logo-sub">Classes & Academy</span>
-        </div>
-      </a>
+  try {
+    const fd = getTab(SHEET.fees).getDataRange().getValues();
+    if (fd.length > 1) {
+      const h = fd[0];
+      const ai = h.indexOf('Amount'), si = h.indexOf('Status');
+      let c = 0, p = 0;
+      fd.slice(1).forEach(r => {
+        const amt = parseFloat(r[ai]) || 0;
+        if (r[si] === 'Paid') c += amt; else p += amt;
+      });
+      s.feesCollected = c; s.feesPending = p;
+    } else { s.feesCollected = 0; s.feesPending = 0; }
+  } catch(e) { s.feesCollected = 0; s.feesPending = 0; }
 
-      <ul class="nav-links" id="navLinks">
-        <li><a href="index.html" class="active">Home</a></li>
-        <li><a href="school-wing.html">School Wing</a></li>
-        <li><a href="defense-academy.html">The Armour</a></li>
-        <li><a href="faculty.html">Faculty</a></li>
-        <li><a href="admissions.html">Admissions</a></li>
-        <li><a href="admissions.html" class="btn-nav-cta">Free Assessment</a></li>
-      </ul>
+  try { s.announcements = Math.max(0, getTab(SHEET.announcements).getLastRow() - 1); }
+  catch(e) { s.announcements = 0; }
 
-      <button class="hamburger" id="hamburger" aria-label="Menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </nav>
+  try { s.enquiries = Math.max(0, getTab(SHEET.enquiries).getLastRow() - 1); }
+  catch(e) { s.enquiries = 0; }
 
-  <!-- ═══════════════════════════════════════════════
-       HERO SECTION
-  ═══════════════════════════════════════════════ -->
-  <section class="hero" id="hero">
-    <div class="hero-container">
-      <div class="hero-left">
-        <div class="hero-badge">
-          <span class="badge-dot"></span>
-          Admissions Open · Batch 2025–26
-        </div>
-        <h1 class="hero-headline">
-          Educate.<br />
-          <em>Encourage.</em><br />
-          Empower.
-        </h1>
-        <p class="hero-subtext">
-          From 8th standard to NDA uniform — we build the mindset, discipline, and knowledge that transforms ordinary students into extraordinary achievers.
-        </p>
-        <div class="hero-cta-group">
-          <a href="admissions.html" class="btn-primary">Free Assessment →</a>
-          <a href="tel:+919XXXXXXXXX" class="btn-secondary">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.07 12a19.79 19.79 0 01-3.07-8.67A2 2 0 013 1.26h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L7.09 9a16 16 0 006.29 6.29l1.1-1.1a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
-            Call Now
-          </a>
-        </div>
-        <div class="hero-trust-strip">
-          <div class="trust-item">
-            <span class="trust-num">1100+</span>
-            <span class="trust-label">Students Mentored</span>
-          </div>
-          <div class="trust-divider"></div>
-          <div class="trust-item">
-            <span class="trust-num">4.9★</span>
-            <span class="trust-label">Google Rating</span>
-          </div>
-          <div class="trust-divider"></div>
-          <div class="trust-item">
-            <span class="trust-num">5 AM</span>
-            <span class="trust-label">Morning Batches</span>
-          </div>
-        </div>
-      </div>
+  try {
+    const today = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd');
+    const ad    = getTab(SHEET.attendance).getDataRange().getValues();
+    if (ad.length > 1) {
+      const h = ad[0];
+      const di = h.indexOf('Date'), sti = h.indexOf('Status');
+      const todayRows = ad.slice(1).filter(r => String(r[di]).startsWith(today));
+      s.attendance = { total: todayRows.length, present: todayRows.filter(r => r[sti] === 'present').length };
+    } else { s.attendance = { total: 0, present: 0 }; }
+  } catch(e) { s.attendance = { total: 0, present: 0 }; }
 
-      <div class="hero-right">
-        <div class="hero-image-stack">
-          <div class="hero-img-main">
-            <img src="images/hero-main.jpg" alt="Ashish Sir Teaching" onerror="this.style.display='none'" />
-            <div class="hero-img-placeholder">
-              <div class="placeholder-icon">📚</div>
-              <p>Your Photo Here</p>
-            </div>
-          </div>
-          <div class="hero-img-float hero-img-float--1">
-            <img src="images/hero-students.jpg" alt="Students" onerror="this.style.display='none'" />
-            <div class="hero-float-placeholder">
-              <span>🎖️</span>
-            </div>
-          </div>
-          <div class="hero-card-float">
-            <div class="float-card">
-              <div class="float-card-icon">🌅</div>
-              <div>
-                <strong>5 AM Batch</strong>
-                <p>Exclusive for 10th Std</p>
-              </div>
-            </div>
-          </div>
-          <div class="hero-shield-watermark">⚔️</div>
-        </div>
-      </div>
-    </div>
+  return out({ ok: true, stats: s });
+}
 
-    <div class="hero-scroll-hint">
-      <span>Scroll to explore</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════
-       PROGRAMS — BENTO GRID
-  ═══════════════════════════════════════════════ -->
-  <section class="programs" id="programs">
-    <div class="section-container">
-      <div class="section-header">
-        <p class="section-eyebrow">Our Programs</p>
-        <h2 class="section-title">Two Paths. One <em>Purpose.</em></h2>
-        <p class="section-desc">Whether your child aims for board excellence or a defense career — The Zest has the precise program, the right mentor, and the proven system.</p>
-      </div>
-
-      <div class="bento-grid">
-        <!-- Card 1 — School Wing -->
-        <div class="bento-card bento-card--large bento-card--school">
-          <div class="bento-card-inner">
-            <div class="bento-badge">School Excellence Wing</div>
-            <h3>State & CBSE Board Mastery</h3>
-            <p>Structured coaching for 8th, 9th & 10th standard students with individual attention, concept clarity, and exam strategy.</p>
-            <ul class="bento-features">
-              <li>✦ 8th, 9th & 10th Standard</li>
-              <li>✦ State Board & CBSE</li>
-              <li>✦ Exclusive 5 AM Morning Batch (10th)</li>
-              <li>✦ Individual Progress Tracking</li>
-              <li>✦ Monthly Parent Reports</li>
-            </ul>
-            <a href="school-wing.html" class="btn-bento">Explore School Wing →</a>
-          </div>
-          <div class="bento-card-accent"></div>
-        </div>
-
-        <!-- Card 2 — Armour Academy -->
-        <div class="bento-card bento-card--large bento-card--defense">
-          <div class="bento-card-inner">
-            <div class="bento-badge bento-badge--gold">The Armour Academy</div>
-            <h3>Path to Glory in Defense</h3>
-            <p>Comprehensive preparation for NDA, CDS, AFCAT & INET examinations with strategy-first coaching and career counseling.</p>
-            <ul class="bento-features">
-              <li>✦ NDA · CDS · AFCAT · INET</li>
-              <li>✦ SSB Interview Guidance</li>
-              <li>✦ Current Affairs & GK</li>
-              <li>✦ Mock Tests & Analysis</li>
-              <li>✦ Defense Career Counseling</li>
-            </ul>
-            <a href="defense-academy.html" class="btn-bento btn-bento--gold">Explore The Armour →</a>
-          </div>
-          <div class="bento-card-accent bento-card-accent--gold"></div>
-        </div>
-
-        <!-- Card 3 — Morning Batch Highlight -->
-        <div class="bento-card bento-card--feature bento-card--morning">
-          <div class="bento-morning-icon">🌅</div>
-          <h4>5 AM Morning Batch</h4>
-          <p>Our signature batch for 10th standard students. Discipline before dawn. Results that shine.</p>
-          <span class="bento-tag">Limited Seats</span>
-        </div>
-
-        <!-- Card 4 — Free Counseling -->
-        <div class="bento-card bento-card--feature bento-card--counseling">
-          <div class="bento-morning-icon">🎯</div>
-          <h4>Free Career Counseling</h4>
-          <p>Not sure which path? Book a free 1-on-1 session with Ashish Sir.</p>
-          <a href="admissions.html" class="bento-link">Book Now →</a>
-        </div>
-
-        <!-- Card 5 — Results -->
-        <div class="bento-card bento-card--stat">
-          <div class="stat-number">92%</div>
-          <div class="stat-label">Students show<br />significant improvement</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════
-       WHY ZEST — DIFFERENTIATORS
-  ═══════════════════════════════════════════════ -->
-  <section class="why-zest">
-    <div class="section-container">
-      <div class="why-grid">
-        <div class="why-left">
-          <p class="section-eyebrow">Why Choose The Zest</p>
-          <h2 class="section-title">Where Discipline<br /><em>Meets Dedication</em></h2>
-          <p style="color: rgba(255,255,255,0.75); font-size: 1rem; line-height: 1.7; margin-top: 1rem;">We don't just teach subjects — we shape the habits, mindset, and systems that make students consistently excel.</p>
-          <a href="faculty.html" class="btn-primary" style="margin-top: 2rem; display: inline-block;">Meet Our Faculty →</a>
-        </div>
-        <div class="why-right">
-          <div class="why-card">
-            <div class="why-icon">🧑‍🏫</div>
-            <div>
-              <h4>Individual Attention</h4>
-              <p>Small batches ensure every student gets focused time with the mentor — no child gets left behind.</p>
-            </div>
-          </div>
-          <div class="why-card">
-            <div class="why-icon">📊</div>
-            <div>
-              <h4>Progress Tracking</h4>
-              <p>Monthly performance reports and parent communication keep everyone aligned and motivated.</p>
-            </div>
-          </div>
-          <div class="why-card">
-            <div class="why-icon">🌅</div>
-            <div>
-              <h4>5 AM Discipline Culture</h4>
-              <p>Our early morning batches instill military-grade discipline — the secret weapon of board toppers.</p>
-            </div>
-          </div>
-          <div class="why-card">
-            <div class="why-icon">🛡️</div>
-            <div>
-              <h4>Defense-Ready Curriculum</h4>
-              <p>The Armour Academy's curriculum is built around actual exam patterns, not theory alone.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════
-       TESTIMONIALS
-  ═══════════════════════════════════════════════ -->
-  <section class="testimonials">
-    <div class="section-container">
-      <div class="section-header">
-        <p class="section-eyebrow">Student Stories</p>
-        <h2 class="section-title">Voices of <em>Glory</em></h2>
-      </div>
-      <div class="testimonial-grid">
-        <div class="testimonial-card">
-          <div class="testi-stars">★★★★★</div>
-          <p class="testi-text">"My son went from 58% to 84% in just one semester. The individual attention here is unlike any other coaching class in Dighi."</p>
-          <div class="testi-author">
-            <div class="testi-avatar">P</div>
-            <div>
-              <strong>Priya Kulkarni</strong>
-              <span>Parent · 10th Standard Student</span>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card testimonial-card--featured">
-          <div class="testi-stars">★★★★★</div>
-          <p class="testi-text">"The Armour Academy's NDA coaching is exceptional. Ashish Sir's strategic approach and SSB guidance gave me the edge I needed. Selected in NDA 150th Course."</p>
-          <div class="testi-author">
-            <div class="testi-avatar testi-avatar--gold">R</div>
-            <div>
-              <strong>Rohit Patil</strong>
-              <span>NDA Selected · The Armour Academy</span>
-            </div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testi-stars">★★★★★</div>
-          <p class="testi-text">"The 5 AM morning batch changed my routine entirely. I topped my class this year. Best decision we made for our daughter's education."</p>
-          <div class="testi-author">
-            <div class="testi-avatar">S</div>
-            <div>
-              <strong>Sunita Mane</strong>
-              <span>Parent · 5 AM Morning Batch</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="google-rating-strip">
-        <span>★ 4.9 on Google Reviews</span>
-        <span>|</span>
-        <span>1100+ Students Mentored</span>
-        <span>|</span>
-        <span>Dighi's Most Trusted Coaching</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════
-       CTA BANNER
-  ═══════════════════════════════════════════════ -->
-  <section class="cta-banner">
-    <div class="section-container">
-      <div class="cta-banner-inner">
-        <div>
-          <h2>Start Your <em>Path to Glory</em></h2>
-          <p>Seats are limited. Book your Free Assessment or Career Counseling session today.</p>
-        </div>
-        <div class="cta-banner-buttons">
-          <a href="admissions.html" class="btn-primary">Get Free Assessment</a>
-          <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%27m%20interested%20in%20admission%20at%20The%20Zest%20Classes" class="btn-whatsapp" target="_blank" rel="noopener">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.112 1.525 5.84L.057 23.488l5.805-1.524A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.909 0-3.693-.497-5.24-1.367l-.376-.223-3.444.904.92-3.352-.245-.389A10 10 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
-            WhatsApp
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════
-       LOCATION
-  ═══════════════════════════════════════════════ -->
-  <section class="location-section">
-    <div class="section-container">
-      <div class="section-header">
-        <p class="section-eyebrow">Find Us</p>
-        <h2 class="section-title">Visit <em>The Zest</em></h2>
-      </div>
-      <div class="location-grid">
-        <div class="location-info">
-          <div class="location-detail">
-            <div class="loc-icon">📍</div>
-            <div>
-              <strong>Address</strong>
-              <p>The Zest Classes, Dighi, Pune – 411015, Maharashtra</p>
-            </div>
-          </div>
-          <div class="location-detail">
-            <div class="loc-icon">⏰</div>
-            <div>
-              <strong>Batch Timings</strong>
-              <p>5:00 AM – 7:00 AM (Morning Batch · 10th Std)<br />7:00 AM – 9:00 AM (Regular Morning)<br />4:00 PM – 8:00 PM (Evening Batches)</p>
-            </div>
-          </div>
-          <div class="location-detail">
-            <div class="loc-icon">📞</div>
-            <div>
-              <strong>Contact</strong>
-              <p><a href="tel:+919XXXXXXXXX">+91 9X-XXXX-XXXX</a></p>
-            </div>
-          </div>
-          <div class="location-actions">
-            <a href="tel:+919XXXXXXXXX" class="btn-primary">Call Now</a>
-            <a href="https://maps.google.com/?q=Dighi+Pune" target="_blank" class="btn-secondary">Get Directions</a>
-          </div>
-        </div>
-        <div class="location-map">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3781.0!2d73.85!3d18.62!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDM3JzEyLjAiTiA3M8KwNTEnMDAuMCJF!5e0!3m2!1sen!2sin!4v1600000000000!5m2!1sen!2sin"
-            width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
-            title="The Zest Classes Location">
-          </iframe>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═══════════════════════════════════════════════
-       FOOTER
-  ═══════════════════════════════════════════════ -->
-  <footer class="footer">
-    <div class="section-container">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <div class="nav-logo">
-            <div class="logo-shield" style="background: transparent; box-shadow: none;">
-             <img src="images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
-            </div>
-            <div class="logo-text">
-              <span class="logo-main">THE ZEST</span>
-              <span class="logo-sub">Classes & Academy</span>
-            </div>
-          </div>
-          <p>Educate. Encourage. Empower.<br />Dighi's premier coaching for school excellence and defense glory.</p>
-        </div>
-        <div class="footer-col">
-          <h5>Quick Links</h5>
-          <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="school-wing.html">School Wing</a></li>
-            <li><a href="defense-academy.html">The Armour Academy</a></li>
-            <li><a href="faculty.html">Faculty</a></li>
-            <li><a href="admissions.html">Admissions</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h5>Programs</h5>
-          <ul>
-            <li><a href="school-wing.html">8th, 9th, 10th Board</a></li>
-            <li><a href="defense-academy.html">NDA Coaching</a></li>
-            <li><a href="defense-academy.html">CDS Preparation</a></li>
-            <li><a href="defense-academy.html">AFCAT & INET</a></li>
-            <li><a href="admissions.html">Free Assessment</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h5>Contact</h5>
-          <ul>
-            <li><a href="tel:+919XXXXXXXXX">+91 9X-XXXX-XXXX</a></li>
-            <li><a href="/cdn-cgi/l/email-protection#3c48545946594f485f505d4f4f594f7c5b515d5550125f5351"><span class="__cf_email__" data-cfemail="f4809c918e91878097989587879187b49399959d98da979b99">[email&#160;protected]</span></a></li>
-            <li>Dighi, Pune – 411015</li>
-          </ul>
-          <div class="footer-social">
-            <a href="#" aria-label="Instagram">📷</a>
-            <a href="#" aria-label="YouTube">▶️</a>
-            <a href="#" aria-label="WhatsApp">💬</a>
-          </div>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>© 2025 The Zest Classes. All rights reserved. | Dighi, Pune</p>
-        <a href=
+function out(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}

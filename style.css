@@ -1,0 +1,237 @@
+// ═══════════════════════════════════════════════════════════════════════
+//  zest-sync.js — Central data layer for The Zest Admin Panel
+//  Handles: API calls, localStorage fallback, real-time sync indicator
+// ═══════════════════════════════════════════════════════════════════════
+
+window.ZestSync = (function() {
+
+  // ── Get API URL and session token ──────────────────────────────────
+  function apiUrl()   { return localStorage.getItem('zest_api_url') || ''; }
+  function token()    { return sessionStorage.getItem('zest_token') || ''; }
+  function isLive()   { return !!apiUrl() && sessionStorage.getItem('zest_auth_mode') === 'live'; }
+
+  // ── SHA-256 ────────────────────────────────────────────────────────
+  async function sha256(str) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  // ── Core API call ──────────────────────────────────────────────────
+  async function api(action, data) {
+    const url = apiUrl();
+    if (!url) throw new Error('No API URL configured');
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, token: token(), data })
+    });
+    if (!res.ok) throw new Error('Network error: ' + res.status);
+    const json = await res.json();
+    if (!json.ok) {
+      if (json.error && json.error.includes('Session expired')) {
+        sessionStorage.clear();
+        window.location.href = 'index.html';
+        throw new Error('Session expired');
+      }
+      throw new Error(json.error || 'API error');
+    }
+    return json;
+  }
+
+  // ── Get all rows of a collection ───────────────────────────────────
+  // Returns array from API (live) or localStorage (offline)
+  async function getAll(collection, localKey) {
+    if (isLive()) {
+      try {
+        const res = await api('get', { collection });
+        // Also update localStorage as cache
+        if (res.rows) localStorage.setItem(localKey, JSON.stringify(res.rows));
+        return res.rows || [];
+      } catch(e) {
+        console.warn('API get failed, using cache:', e.message);
+      }
+    }
+    // Fallback to localStorage
+    try { return JSON.parse(localStorage.getItem(localKey) || '[]'); }
+    catch(e) { return []; }
+  }
+
+  // ── Save entire collection (sync both local + API) ─────────────────
+  async function saveAll(collection, localKey, rows, headers) {
+    localStorage.setItem(localKey, JSON.stringify(rows));
+    if (isLive()) {
+      try {
+        await api('set', { collection, rows, headers });
+      } catch(e) {
+        console.warn('API sync failed (saved locally):', e.message);
+        showSyncBadge('local');
+        return false;
+      }
+    }
+    showSyncBadge(isLive() ? 'live' : 'local');
+    return true;
+  }
+
+  // ── Append a single row ────────────────────────────────────────────
+  async function appendRow(collection, localKey, row, headers) {
+    // Save to local first
+    const rows = JSON.parse(localStorage.getItem(localKey) || '[]');
+    rows.push(row);
+    localStorage.setItem(localKey, JSON.stringify(rows));
+
+    if (isLive()) {
+      try {
+        await api('append', { collection, row, headers });
+      } catch(e) {
+        console.warn('API append failed (saved locally):', e.message);
+        showSyncBadge('local');
+        return false;
+      }
+    }
+    showSyncBadge(isLive() ? 'live' : 'local');
+    return true;
+  }
+
+  // ── Delete a row ───────────────────────────────────────────────────
+  async function deleteRow(collection, localKey, idField, idValue) {
+    // Remove from local
+    const rows = JSON.parse(localStorage.getItem(localKey) || '[]');
+    const filtered = rows.filter(r => String(r[idField]) !== String(idValue));
+    localStorage.setItem(localKey, JSON.stringify(filtered));
+
+    if (isLive()) {
+      try {
+        await api('delete', { collection, idField, idValue });
+      } catch(e) {
+        console.warn('API delete failed:', e.message);
+      }
+    }
+    return true;
+  }
+
+  // ── Get dashboard stats ────────────────────────────────────────────
+  async function getDashboard() {
+    if (isLive()) {
+      try {
+        const res = await api('dashboard', {});
+        return res.stats;
+      } catch(e) {
+        console.warn('Dashboard API failed, computing locally');
+      }
+    }
+    // Compute locally
+    const students = JSON.parse(localStorage.getItem('zest_students') || '[]');
+    const fees     = JSON.parse(localStorage.getItem('zest_fees') || '[]');
+    const ann      = JSON.parse(localStorage.getItem('zest_announcements') || '[]');
+    const enq      = JSON.parse(localStorage.getItem('zest_enquiries') || '[]');
+    const today    = new Date().toISOString().split('T')[0];
+    const att      = JSON.parse(localStorage.getItem('zest_attendance') || '{}');
+    const todayAtt = att[today] || {};
+    const present  = Object.values(todayAtt).filter(v => v === 'present').length;
+    const collected = fees.filter(f => f.Status === 'Paid').reduce((s, f) => s + (parseFloat(f.Amount) || 0), 0);
+    const pending   = fees.filter(f => f.Status !== 'Paid').reduce((s, f) => s + (parseFloat(f.Amount) || 0), 0);
+    return {
+      totalStudents: students.length,
+      feesCollected: collected,
+      feesPending: pending,
+      announcements: ann.length,
+      enquiries: enq.length,
+      attendance: { total: Object.keys(todayAtt).length, present }
+    };
+  }
+
+  // ── Change password ────────────────────────────────────────────────
+  async function changePassword(newPass) {
+    const newHash = await sha256(newPass);
+    if (isLive()) {
+      await api('changePassword', { newHash });
+    }
+    // Always update local hash too
+    localStorage.setItem('zest_pw_hash', newHash);
+    return true;
+  }
+
+  // ── Full sync: push all localStorage data to Sheets ───────────────
+  async function pushAllToSheets() {
+    if (!isLive()) return { ok: false, reason: 'Not in live mode' };
+    const collections = [
+      { key: 'zest_students',      col: 'students',      headers: ['id','name','grade','batch','phone','parent','fee','board','joinDate','notes'] },
+      { key: 'zest_fees',          col: 'fees',          headers: ['id','studentId','studentName','amount','month','Status','date','notes'] },
+      { key: 'zest_announcements', col: 'announcements', headers: ['text','category','priority','date','timestamp'] },
+      { key: 'zest_enquiries',     col: 'enquiries',     headers: ['id','studentName','parentName','phone','email','interest','source','status','date','notes'] },
+      { key: 'zest_results',       col: 'results',       headers: ['id','studentName','subject','testName','obtained','total','date'] },
+      { key: 'zest_batches',       col: 'batches',       headers: ['id','name','wing','timing','days','seats','fee','subjects','active'] },
+    ];
+    let pushed = 0;
+    for (const c of collections) {
+      try {
+        const rows = JSON.parse(localStorage.getItem(c.key) || '[]');
+        await api('set', { collection: c.col, rows, headers: c.headers });
+        pushed++;
+      } catch(e) { console.warn('Push failed for', c.col, e.message); }
+    }
+    return { ok: true, pushed };
+  }
+
+  // ── Pull all data from Sheets to localStorage ──────────────────────
+  async function pullAllFromSheets() {
+    if (!isLive()) return { ok: false, reason: 'Not in live mode' };
+    const map = {
+      students: 'zest_students', fees: 'zest_fees',
+      announcements: 'zest_announcements', enquiries: 'zest_enquiries',
+      results: 'zest_results', batches: 'zest_batches',
+    };
+    let pulled = 0;
+    for (const [col, lk] of Object.entries(map)) {
+      try {
+        const res = await api('get', { collection: col });
+        if (res.rows) { localStorage.setItem(lk, JSON.stringify(res.rows)); pulled++; }
+      } catch(e) { console.warn('Pull failed for', col, e.message); }
+    }
+    return { ok: true, pulled };
+  }
+
+  // ── Logout (invalidate server session) ────────────────────────────
+  async function logout() {
+    if (isLive()) {
+      try { await api('logout', {}); } catch(e) {}
+    }
+    sessionStorage.clear();
+    window.location.href = 'index.html';
+  }
+
+  // ── Sync status badge ──────────────────────────────────────────────
+  function showSyncBadge(mode) {
+    const el = document.getElementById('syncStatusBadge');
+    if (!el) return;
+    if (mode === 'live') {
+      el.textContent = '🟢 Live Sync';
+      el.style.color = 'rgba(16,185,129,.8)';
+    } else {
+      el.textContent = '🟡 Local Only';
+      el.style.color = 'rgba(235,168,33,.7)';
+    }
+  }
+
+  function initSyncBadge() {
+    showSyncBadge(isLive() ? 'live' : 'local');
+  }
+
+  // ── Auth guard ─────────────────────────────────────────────────────
+  function requireAuth() {
+    if (!sessionStorage.getItem('zest_admin_auth')) {
+      window.location.href = 'index.html';
+      return false;
+    }
+    return true;
+  }
+
+  return {
+    sha256, apiUrl, token, isLive,
+    getAll, saveAll, appendRow, deleteRow,
+    getDashboard, changePassword,
+    pushAllToSheets, pullAllFromSheets,
+    logout, initSyncBadge, requireAuth
+  };
+
+})();

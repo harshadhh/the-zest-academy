@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admissions | The Zest Classes Dighi Pune</title>
+  <meta name="description" content="Admission open at The Zest Classes, Dighi Pune. Book your free assessment for school coaching or defense academy preparation." />
+  <link rel="icon" href="images/favicon.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <!-- ANNOUNCEMENT BANNER - slides in after 3s, hides after 5s -->
+  <style>
+    #annBanner {
+      background: linear-gradient(90deg,#1B365D,#0F2847);
+      border-bottom: 1px solid rgba(235,168,33,.25);
+      overflow: hidden;
+      position: relative;
+      z-index: 1001;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.5s cubic-bezier(0.4,0,0.2,1), opacity 0.5s ease;
+    }
+    #annBanner.visible {
+      max-height: 60px;
+      opacity: 1;
+    }
+    #annBanner.hiding {
+      max-height: 0;
+      opacity: 0;
+    }
+  </style>
+  <div id="annBanner">
+    <div style="display:flex;align-items:center;max-width:100%;overflow:hidden;">
+      <div style="background:rgba(235,168,33,.15);padding:.5rem 1rem;flex-shrink:0;border-right:1px solid rgba(235,168,33,.2);">
+        <span style="font-size:.68rem;font-weight:800;color:#EBA821;letter-spacing:.12em;text-transform:uppercase;white-space:nowrap;">📢 Notice</span>
+      </div>
+      <div style="overflow:hidden;flex:1;">
+        <div id="annTicker" style="display:flex;align-items:center;gap:1.5rem;padding:.45rem 1.25rem;overflow-x:auto;white-space:nowrap;"></div>
+      </div>
+      <button onclick="hideBanner()" style="background:none;border:none;color:rgba(255,255,255,.3);padding:.5rem .75rem;cursor:pointer;font-size:.95rem;flex-shrink:0;" title="Dismiss">✕</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      try {
+        var a = JSON.parse(localStorage.getItem('zest_announcements') || '[]');
+        if (!a.length) return;
+        var s = a.slice().reverse().slice(0, 6);
+        var t = document.getElementById('annTicker');
+        var b = document.getElementById('annBanner');
+        if (!t || !b) return;
+        t.innerHTML = s.map(function(x){
+          var hi = x.priority === 'high';
+          return '<span style="font-size:.78rem;font-weight:'+(hi?700:500)+';color:'+(hi?'#FCD34D':'rgba(255,255,255,.82)')+';white-space:nowrap;">'+(hi?'\u26a0 ':'')+x.text+' <span style="color:rgba(255,255,255,.25);font-size:.7rem;">['+x.category+']</span></span><span style="color:rgba(235,168,33,.25);margin:0 .5rem;">|</span>';
+        }).join('');
+
+        // Slide IN after 3 seconds
+        setTimeout(function(){
+          b.classList.add('visible');
+          // Slide OUT after 3s visible (total 8s from page load)
+          setTimeout(function(){
+            hideBanner();
+          }, 5000);
+        }, 3000);
+
+      } catch(e) {}
+    })();
+
+    function hideBanner(){
+      var b = document.getElementById('annBanner');
+      if (!b) return;
+      b.classList.remove('visible');
+      b.classList.add('hiding');
+    }
+  </script>
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <div class="logo-shield" style="background: transparent; box-shadow: none;">
+  <img src="images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+</div>
+        <div class="logo-text">
+          <span class="logo-main">THE ZEST</span>
+          <span class="logo-sub">Classes & Academy</span>
+        </div>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="school-wing.html">School Wing</a></li>
+        <li><a href="defense-academy.html">The Armour</a></li>
+        <li><a href="faculty.html">Faculty</a></li>
+        <li><a href="admissions.html" class="active">Admissions</a></li>
+        <li><a href="admissions.html" class="btn-nav-cta">Free Assessment</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="page-hero" style="min-height: 40vh;">
+    <div class="hero-container">
+      <div class="page-hero-content">
+        <div class="hero-badge" style="display: inline-flex;">
+          <span class="badge-dot"></span>
+          Admissions Open · 2025–26
+        </div>
+        <h1>Begin Your<br /><em>Path to Glory</em></h1>
+        <p>Take the first step. Book a free assessment session with Ashish Sir and discover the right program for your goals.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="admissions-section">
+    <div class="section-container">
+      <div class="admissions-grid">
+
+        <!-- FORM SIDE -->
+        <div class="admissions-form-wrap">
+          <div class="form-card">
+            <h3>Book Your Free Assessment</h3>
+            <p>Fill in the details below and we'll reach out within 24 hours.</p>
+
+            <!-- Formspree integration — replace YOUR_FORM_ID with actual Formspree ID -->
+            <form class="admission-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" id="admissionForm">
+              <div class="form-group">
+                <label for="studentName">Student's Name *</label>
+                <input type="text" id="studentName" name="studentName" placeholder="Enter full name" required />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="grade">Standard / Grade *</label>
+                  <select id="grade" name="grade" required>
+                    <option value="">Select Grade</option>
+                    <option>8th Standard</option>
+                    <option>9th Standard</option>
+                    <option>10th Standard</option>
+                <option>11th Standard (Science)</option>
+                <option>11th Standard (Commerce)</option>
+                <option>12th Standard (Science)</option>
+                <option>12th Standard (Commerce)</option>
+                    <option>Defense Aspirant (NDA)</option>
+                    <option>Defense Aspirant (CDS)</option>
+                    <option>Defense Aspirant (AFCAT)</option>
+                    <option>Defense Aspirant (INET)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="board">Board *</label>
+                  <select id="board" name="board" required>
+                    <option value="">Select Board</option>
+                    <option>State Board</option>
+                    <option>CBSE</option>
+                    <option>Not Applicable</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="parentName">Parent / Guardian Name *</label>
+                <input type="text" id="parentName" name="parentName" placeholder="Parent's full name" required />
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone">Phone Number *</label>
+                  <input type="tel" id="phone" name="phone" placeholder="+91 XXXXX XXXXX" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address</label>
+                  <input type="email" id="email" name="email" placeholder="your@email.com" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="interest">Interested Batch</label>
+                <select id="interest" name="interest">
+                  <option value="">Select Preference</option>
+                  <option>5 AM Morning Batch (10th Only)</option>
+                  <option>Regular Morning Batch</option>
+                  <option>Evening Batch</option>
+                  <option>Flexible / Discuss</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="message">Additional Message</label>
+                <textarea id="message" name="message" rows="3" placeholder="Tell us anything specific about your requirements..."></textarea>
+              </div>
+              <input type="hidden" name="_subject" value="New Admission Enquiry — The Zest Classes" />
+              <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; display: flex; gap: 0.5rem;">
+                Submit Enquiry →
+              </button>
+              <p class="form-note">* We respond within 24 hours. Your information is kept strictly confidential.</p>
+            </form>
+            <div class="form-success" id="formSuccess" style="display:none;">
+              <div class="success-icon">✅</div>
+              <h4>Enquiry Submitted!</h4>
+              <p>Thank you! Ashish Sir or our team will contact you within 24 hours.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- INFO SIDE -->
+        <div class="admissions-info">
+          <div class="admission-info-card">
+            <h4>🎯 Free Assessment Includes</h4>
+            <ul>
+              <li>1-on-1 session with Ashish Sir</li>
+              <li>Current academic level evaluation</li>
+              <li>Program & batch recommendation</li>
+              <li>Study plan overview</li>
+              <li>Q&A with parent/student</li>
+            </ul>
+          </div>
+
+          <div class="admission-info-card">
+            <h4>⏰ Batch Timings</h4>
+            <ul>
+              <li><strong>5 AM Batch</strong> — 5:00–7:00 AM (10th Std)</li>
+              <li><strong>Morning Batch</strong> — 7:00–9:00 AM</li>
+              <li><strong>Evening I</strong> — 4:00–6:00 PM</li>
+              <li><strong>Evening II</strong> — 6:00–8:00 PM</li>
+            </ul>
+          </div>
+
+          <div class="admission-info-card admission-info-card--cta">
+            <h4>💬 Quick Contact</h4>
+            <p>Prefer to connect directly?</p>
+            <a href="tel:+919XXXXXXXXX" class="btn-primary" style="display: block; text-align: center; margin-bottom: 0.75rem;">📞 Call Now</a>
+            <a href="https://wa.me/919XXXXXXXXX?text=Hi%2C%20I%20want%20to%20enquire%20about%20admission%20at%20The%20Zest%20Classes" class="btn-whatsapp" style="display: block; text-align: center;" target="_blank">💬 WhatsApp</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="section-container">
+      <div class="footer-bottom" style="border-top:none; padding-top: 2rem;">
+        <p>© 2025 The Zest Classes | Dighi, Pune</p>
+        
+      
+        <a href="admin/index.html" style="opacity:0.15;font-size:0.7rem;color:rgba(255,255,255,0.4);text-decoration:none;letter-spacing:0.05em;transition:opacity 0.2s;" onmouseover="this.style.opacity=0.5" onmouseout="this.style.opacity=0.15">⚙ admin</a></div>
+    </div>
+  </footer>
+  <script src="js/script.js"></script>
+</body>
+</html>

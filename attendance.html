@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Logs | Zest Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    select { appearance: none; -webkit-appearance: none; background-color: #0F1E3D !important; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 0.9rem center !important; background-size: 12px !important; padding-right: 2.5rem !important; color: #fff !important; border: 1.5px solid rgba(255,255,255,0.12) !important; border-radius: 10px !important; font-family: Outfit,sans-serif !important; cursor: pointer; }
+    select option { background: #0F1E3D !important; color: #fff !important; }
+    select:focus { border-color: #EBA821 !important; outline: none !important; }
+  </style>
+</head>
+<body class="admin-body">
+
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="logo-shield" style="background: transparent; box-shadow: none;">
+  <img src="../images/zestlogo.jpg" alt="The Zest Logo" style="width: 40px; height: 40px; object-fit: contain;" />
+</div>
+      <div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;letter-spacing:0.08em;">THE ZEST</div>
+        <div class="admin-logo-text">Command Center</div>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Main</div>
+      <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
+      <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
+      <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
+      <a href="students.html" class="admin-nav-item active"><span class="admin-nav-icon">🎓</span> Student Logs</a>
+      <div class="admin-nav-section">Settings</div>
+      <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
+      <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
+      <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-header">
+      <div>
+        <div class="admin-page-title">Student Logs</div>
+        <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);margin-top:0.15rem;" id="studentCount">Loading...</div>
+      </div>
+      <div class="admin-header-right">
+        <button class="btn-admin-secondary" onclick="exportCSV()" style="padding:0.6rem 1rem;font-size:0.82rem;">📥 Export CSV</button>
+        <button class="btn-admin-primary" onclick="showAddForm()" style="padding:0.6rem 1.25rem;font-size:0.85rem;">➕ Add Student</button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+
+      <!-- ADD STUDENT FORM (hidden by default) -->
+      <div class="admin-card" id="addStudentForm" style="display:none; margin-bottom: 1.5rem; border-color: rgba(235,168,33,0.3);">
+        <div class="admin-card-header">
+          <div>
+            <div class="admin-card-title">Register New Student</div>
+            <div class="admin-card-subtitle">Fill all required fields</div>
+          </div>
+          <button onclick="hideAddForm()" style="color: rgba(255,255,255,0.4); font-size: 1.2rem; background:none; border:none; cursor:pointer;">✕</button>
+        </div>
+        <div class="admin-form">
+          <div class="admin-form-row">
+            <div class="form-group"><label>Student's Full Name *</label><input type="text" id="sName" placeholder="Enter full name" /></div>
+            <div class="form-group"><label>Parent's Name *</label><input type="text" id="sParent" placeholder="Parent / guardian name" /></div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Grade / Standard *</label>
+              <select id="sGrade">
+                <option value="">Select Grade</option>
+                <option>8th Standard</option>
+                <option>9th Standard</option>
+                <option>10th Standard</option>
+                <option>11th Standard (Science)</option>
+                <option>11th Standard (Commerce)</option>
+                <option>12th Standard (Science)</option>
+                <option>12th Standard (Commerce)</option>
+                <option>NDA Aspirant</option>
+                <option>CDS Aspirant</option>
+                <option>AFCAT Aspirant</option>
+                <option>INET Aspirant</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Board</label>
+              <select id="sBoard">
+                <option value="">Select Board</option>
+                <option>State Board</option>
+                <option>CBSE</option>
+                <option>N/A</option>
+              </select>
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group">
+              <label>Batch *</label>
+              <select id="sBatch">
+                <option value="">Select Batch</option>
+                <option>5 AM Morning Batch</option>
+                <option>Regular Morning</option>
+                <option>Evening I</option>
+                <option>Evening II</option>
+                <option>11th / 12th Batch (Coming Soon)</option>
+                <option>Defense / Armour Batch</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Monthly Fee (₹) *</label>
+              <input type="number" id="sFee" placeholder="e.g. 2500" />
+            </div>
+          </div>
+          <div class="admin-form-row">
+            <div class="form-group"><label>Phone Number *</label><input type="tel" id="sPhone" placeholder="+91 XXXXX XXXXX" /></div>
+            <div class="form-group">
+              <label>Fee Status</label>
+              <select id="sFeeStatus">
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group"><label>Address / Area</label><input type="text" id="sAddress" placeholder="Area in Pune" /></div>
+          <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+            <button class="btn-admin-primary" onclick="addStudent()">✅ Register Student</button>
+            <button class="btn-admin-secondary" onclick="hideAddForm()">Cancel</button>
+          </div>
+        </div>
+        <div id="addStudentMsg" style="display:none;margin-top:1rem;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--green);padding:0.75rem 1rem;border-radius:10px;font-size:0.88rem;font-weight:600;">
+          ✅ Student registered successfully!
+        </div>
+      </div>
+
+      <!-- SEARCH + FILTER -->
+      <div class="admin-card" style="padding:1.25rem 1.75rem; margin-bottom:1rem;">
+        <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="searchInput" placeholder="🔍  Search by name, grade, or phone..." oninput="renderStudents()"
+            style="flex:1;min-width:200px;padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;" />
+          <select id="gradeFilter" onchange="renderStudents()"
+            style="padding:0.65rem 1rem;background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;font-family:'Outfit',sans-serif;font-size:0.88rem;color:white;outline:none;">
+            <option value="all">All Grades</option>
+            <option>8th Standard</option>
+            <option>9th Standard</option>
+            <option>10th Standard</option>
+            <option>NDA Aspirant</option>
+            <option>CDS Aspirant</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- STUDENTS TABLE -->
+      <div class="admin-card">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Student</th>
+              <th>Grade</th>
+              <th>Batch</th>
+              <th>Phone</th>
+              <th>Fee / Month</th>
+              <th>Fee Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="studentsBody">
+            <tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No students yet. Click "Add Student" to get started.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+  if (!sessionStorage.getItem('zest_admin_auth')) window.location.href = 'index.html';
+
+  let students = JSON.parse(localStorage.getItem('zest_students') || '[]');
+
+  function renderStudents() {
+    const search = (document.getElementById('searchInput').value || '').toLowerCase();
+    const grade  = document.getElementById('gradeFilter').value;
+
+    let filtered = students.filter(s => {
+      const matchSearch = !search || s.name.toLowerCase().includes(search) || (s.grade || '').toLowerCase().includes(search) || (s.phone || '').includes(search);
+      const matchGrade = grade === 'all' || s.grade === grade;
+      return matchSearch && matchGrade;
+    });
+
+    document.getElementById('studentCount').textContent = `${students.length} total students · ${filtered.length} shown`;
+
+    const tbody = document.getElementById('studentsBody');
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="color:rgba(255,255,255,0.3);text-align:center;padding:3rem;">No students found.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = filtered.map((s, i) => `
+      <tr>
+        <td>
+          <div style="font-weight:600;color:white;">${s.name}</div>
+          <div style="font-size:0.75rem;color:rgba(255,255,255,0.4);">${s.parent || ''} · ${s.address || ''}</div>
+        </td>
+        <td>${s.grade || '—'}</td>
+        <td>${s.batch || '—'}</td>
+        <td><a href="tel:${s.phone}" style="color:rgba(235,168,33,0.8);">${s.phone || '—'}</a></td>
+        <td>₹${parseFloat(s.fee || 0).toLocaleString('en-IN')}</td>
+        <td><span class="status-badge ${s.feeStatus || 'pending'}">${s.feeStatus || 'Pending'}</span></td>
+        <td>
+          <button onclick="deleteStudent('${s.id}')" style="background:rgba(239,68,68,0.1);color:#EF4444;border:1px solid rgba(239,68,68,0.2);padding:0.3rem 0.7rem;border-radius:6px;font-size:0.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">Delete</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function showAddForm() {
+    document.getElementById('addStudentForm').style.display = 'block';
+    document.getElementById('sName').focus();
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+  function hideAddForm() {
+    document.getElementById('addStudentForm').style.display = 'none';
+    document.getElementById('addStudentMsg').style.display = 'none';
+  }
+
+  function addStudent() {
+    const name = document.getElementById('sName').value.trim();
+    const parent = document.getElementById('sParent').value.trim();
+    const grade = document.getElementById('sGrade').value;
+    const board = document.getElementById('sBoard').value;
+    const batch = document.getElementById('sBatch').value;
+    const fee = document.getElementById('sFee').value;
+    const phone = document.getElementById('sPhone').value.trim();
+    const feeStatus = document.getElementById('sFeeStatus').value;
+    const address = document.getElementById('sAddress').value.trim();
+
+    if (!name || !grade || !phone) {
+      alert('Please fill Name, Grade and Phone Number');
+      return;
+    }
+
+    const student = {
+      id: 'S' + Date.now(),
+      name, parent, grade, board, batch, fee, phone, feeStatus, address,
+      joinDate: new Date().toISOString().split('T')[0]
+    };
+
+    students.push(student);
+    localStorage.setItem('zest_students', JSON.stringify(students));
+
+    // Clear form
+    ['sName','sParent','sPhone','sFee','sAddress'].forEach(id => document.getElementById(id).value = '');
+    ['sGrade','sBoard','sBatch','sFeeStatus'].forEach(id => document.getElementById(id).selectedIndex = 0);
+
+    document.getElementById('addStudentMsg').style.display = 'block';
+    setTimeout(() => document.getElementById('addStudentMsg').style.display = 'none', 3000);
+
+    renderStudents();
+  }
+
+  function deleteStudent(id) {
+    if (!confirm('Are you sure you want to delete this student?')) return;
+    students = students.filter(s => s.id !== id);
+    localStorage.setItem('zest_students', JSON.stringify(students));
+    renderStudents();
+  }
+
+  function exportCSV() {
+    if (students.length === 0) { alert('No students to export'); return; }
+    const headers = ['Name','Parent','Grade','Board','Batch','Phone','Fee','Fee Status','Join Date','Address'];
+    const rows = students.map(s => [s.name, s.parent, s.grade, s.board, s.batch, s.phone, s.fee, s.feeStatus, s.joinDate, s.address]);
+    const csv = [headers, ...rows].map(r => r.map(v => `"${v || ''}"`).join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `zest-students-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  }
+
+  function logout(e) { e.preventDefault(); sessionStorage.removeItem('zest_admin_auth'); window.location.href = 'index.html'; }
+
+  renderStudents();
+</script>
+<script src="zest-sync.js"></script>
+</body>
+</html>

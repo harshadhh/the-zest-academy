@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Categories | Zest Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    select{appearance:none;-webkit-appearance:none;background-color:#0F1E3D!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23EBA821' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right .9rem center!important;background-size:12px!important;padding-right:2.5rem!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.12)!important;border-radius:10px!important;font-family:'Outfit',sans-serif!important;cursor:pointer;}
+    select option{background:#0F1E3D!important;color:#fff!important;}
+    select:focus{border-color:#EBA821!important;outline:none!important;}
+    .toast{position:fixed;bottom:2rem;right:2rem;padding:.85rem 1.5rem;border-radius:12px;font-size:.9rem;font-weight:600;z-index:9999;display:none;}
+    .toast.ok{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);color:#6EE7B7;}
+    .toast.err{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#FCA5A5;}
+
+    /* Category cards in sidebar panel */
+    .cat-item{display:flex;align-items:center;gap:.75rem;padding:.7rem .9rem;border-radius:10px;cursor:pointer;transition:all .2s;margin-bottom:.35rem;border:1px solid transparent;}
+    .cat-item:hover{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08);}
+    .cat-item.active{background:rgba(235,168,33,.1);border-color:rgba(235,168,33,.25);}
+    .cat-icon-badge{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;background:rgba(255,255,255,.07);}
+    .cat-name{font-weight:600;font-size:.88rem;color:#fff;}
+    .cat-count{font-size:.72rem;color:rgba(255,255,255,.38);}
+
+    /* Column builder */
+    .col-row{display:flex;gap:.6rem;align-items:center;margin-bottom:.6rem;padding:.6rem .75rem;background:rgba(255,255,255,.03);border-radius:8px;border:1px solid rgba(255,255,255,.06);}
+    .col-row input{flex:1;padding:.45rem .75rem;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:#fff;font-family:'Outfit',sans-serif;font-size:.85rem;outline:none;}
+    .col-row input:focus{border-color:#EBA821;}
+    .col-row select{padding:.45rem .5rem;font-size:.8rem!important;}
+    .col-del-btn{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#EF4444;border-radius:6px;padding:.3rem .55rem;font-size:.8rem;cursor:pointer;flex-shrink:0;font-family:'Outfit',sans-serif;}
+
+    /* Data entry & display */
+    .data-cell{padding:.55rem .75rem;font-size:.85rem;}
+    .data-input{width:100%;padding:.35rem .6rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:6px;color:#fff;font-family:'Outfit',sans-serif;font-size:.83rem;outline:none;min-width:80px;}
+    .data-input:focus{border-color:#EBA821;}
+    .empty-state{text-align:center;padding:3rem;color:rgba(255,255,255,.3);}
+
+    /* Layout: two panels side by side */
+    .cc-layout{display:grid;grid-template-columns:260px 1fr;gap:1.5rem;align-items:start;}
+    @media(max-width:900px){.cc-layout{grid-template-columns:1fr;}}
+
+    .panel-cats{position:sticky;top:1.5rem;}
+  </style>
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-logo">
+      <div class="logo-shield" style="background:transparent;box-shadow:none;"><img src="../images/zestlogo.jpg" alt="Logo" style="width:40px;height:40px;object-fit:contain;"/></div>
+      <div>
+        <div class="logo-main" style="color:white;font-family:'Playfair Display',serif;font-size:.95rem;font-weight:700;letter-spacing:.08em;">THE ZEST</div>
+        <div class="admin-logo-text">Command Center</div>
+      </div>
+    </div>
+    <nav class="admin-nav">
+      <div class="admin-nav-section">Main</div>
+      <a href="dashboard.html" class="admin-nav-item"><span class="admin-nav-icon">📊</span> Dashboard</a>
+      <a href="attendance.html" class="admin-nav-item"><span class="admin-nav-icon">✅</span> Attendance</a>
+      <a href="fees.html" class="admin-nav-item"><span class="admin-nav-icon">💰</span> Fee Records</a>
+      <a href="students.html" class="admin-nav-item"><span class="admin-nav-icon">🎓</span> Student Logs</a>
+      <div class="admin-nav-section">Academic</div>
+      <a href="results.html" class="admin-nav-item"><span class="admin-nav-icon">📝</span> Results &amp; Marks</a>
+      <a href="batches.html" class="admin-nav-item"><span class="admin-nav-icon">🗓</span> Batch Manager</a>
+      <a href="enquiries.html" class="admin-nav-item"><span class="admin-nav-icon">📩</span> Enquiries</a>
+      <a href="custom-categories.html" class="admin-nav-item active"><span class="admin-nav-icon">🗂</span> Custom Categories</a>
+      <div class="admin-nav-section">Settings</div>
+      <a href="announcements.html" class="admin-nav-item"><span class="admin-nav-icon">📢</span> Announcements</a>
+      <a href="settings.html" class="admin-nav-item"><span class="admin-nav-icon">⚙️</span> Settings</a>
+      <a href="index.html" class="admin-nav-item" onclick="logout(event)"><span class="admin-nav-icon">🚪</span> Logout</a>
+      <div class="admin-nav-section">Site</div>
+      <a href="../index.html" target="_blank" class="admin-nav-item"><span class="admin-nav-icon">🌐</span> View Website</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <header class="admin-header">
+      <div>
+        <div class="admin-page-title">Custom Categories</div>
+        <div style="font-size:.75rem;color:rgba(255,255,255,.4);margin-top:.15rem;">Create custom data tables with any columns you need</div>
+      </div>
+      <div class="admin-header-right">
+        <button class="btn-admin-primary" onclick="showCreateModal()" style="padding:.6rem 1.25rem;font-size:.85rem;">➕ New Category</button>
+      </div>
+    </header>
+
+    <div class="admin-content">
+      <div id="noCatsMsg" style="display:none;" class="admin-card" >
+        <div class="empty-state">
+          <div style="font-size:3rem;margin-bottom:1rem;">🗂</div>
+          <div style="font-size:1rem;font-weight:600;color:rgba(255,255,255,.6);margin-bottom:.5rem;">No custom categories yet</div>
+          <div style="font-size:.85rem;color:rgba(255,255,255,.3);margin-bottom:1.5rem;">Create your first category to start tracking any kind of data — library books, sports records, extra classes, whatever you need.</div>
+          <button class="btn-admin-primary" onclick="showCreateModal()">➕ Create First Category</button>
+        </div>
+      </div>
+
+      <div class="cc-layout" id="ccLayout" style="display:none;">
+        <!-- LEFT: Category list -->
+        <div class="panel-cats">
+          <div class="admin-card" style="padding:1rem;">
+            <div style="font-size:.72rem;font-weight:700;color:rgba(255,255,255,.35);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;padding:0 .25rem;">Your Categories</div>
+            <div id="catList"></div>
+            <button onclick="showCreateModal()" style="width:100%;margin-top:.75rem;padding:.6rem;background:rgba(235,168,33,.08);border:1px dashed rgba(235,168,33,.3);color:rgba(235,168,33,.7);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;font-weight:600;">➕ New Category</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Active category data -->
+        <div id="catContent"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ═══════ CREATE / EDIT CATEGORY MODAL ═══════ -->
+<div id="modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:10000;align-items:center;justify-content:center;padding:1rem;">
+  <div style="background:#0F1E3D;border:1px solid rgba(235,168,33,.25);border-radius:20px;width:100%;max-width:620px;max-height:90vh;overflow-y:auto;padding:2rem;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;">
+      <div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:700;color:#fff;" id="modalTitle">Create New Category</div>
+        <div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-top:.2rem;">Define name, icon and columns (headers)</div>
+      </div>
+      <button onclick="closeModal()" style="color:rgba(255,255,255,.4);font-size:1.3rem;background:none;border:none;cursor:pointer;padding:.25rem .5rem;">✕</button>
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-bottom:1rem;">
+      <div style="flex:1;">
+        <label style="display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:.35rem;">Category Name *</label>
+        <input type="text" id="mCatName" placeholder="e.g. Library Books, Sports Records, Extra Classes" style="width:100%;padding:.75rem 1rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;font-family:'Outfit',sans-serif;font-size:.9rem;color:#fff;outline:none;"/>
+      </div>
+      <div style="width:90px;">
+        <label style="display:block;font-size:.78rem;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:.35rem;">Icon</label>
+        <input type="text" id="mCatIcon" placeholder="📚" maxlength="4" style="width:100%;padding:.75rem;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;font-family:'Outfit',sans-serif;font-size:1.3rem;color:#fff;outline:none;text-align:center;"/>
+      </div>
+    </div>
+
+    <div style="font-size:.78rem;font-weight:600;color:rgba(255,255,255,.5);margin-bottom:.6rem;margin-top:1rem;">
+      Column Headers (rows will have these fields)
+      <span style="color:rgba(255,255,255,.3);font-weight:400;margin-left:.5rem;">— add up to 12 columns</span>
+    </div>
+    <div id="colBuilder"></div>
+    <button onclick="addColRow()" style="width:100%;padding:.55rem;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.15);color:rgba(255,255,255,.5);border-radius:8px;font-family:'Outfit',sans-serif;font-size:.82rem;cursor:pointer;margin-top:.25rem;margin-bottom:1.5rem;">+ Add Column</button>
+
+    <input type="hidden" id="mEditId"/>
+    <div style="display:flex;gap:.75rem;">
+      <button class="btn-admin-primary" onclick="saveCategory()" style="flex:1;">✅ Save Category</button>
+      <button class="btn-admin-secondary" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  if(sessionStorage.getItem('zest_admin_auth')!=='true') window.location.href='index.html';
+
+  // ═══ DATA HELPERS ═══
+  const CAT_KEY = 'zest_custom_cats';
+  const DATA_KEY = id => 'zest_cc_data_'+id;
+  function getCats(){try{return JSON.parse(localStorage.getItem(CAT_KEY)||'[]');}catch(e){return[];}}
+  function saveCats(c){localStorage.setItem(CAT_KEY,JSON.stringify(c));}
+  function getCatData(id){try{return JSON.parse(localStorage.getItem(DATA_KEY(id))||'[]');}catch(e){return[];}}
+  function saveCatData(id,rows){localStorage.setItem(DATA_KEY(id),JSON.stringify(rows));}
+
+  let activeCatId = null;
+
+  // ═══ RENDER SIDEBAR LIST ═══
+  function renderCatList(){
+    const cats=getCats();
+    const list=document.getElementById('catList');
+    if(cats.length===0){list.innerHTML='<div style="color:rgba(255,255,255,.25);font-size:.8rem;text-align:center;padding:.75rem;">No categories yet</div>';return;}
+    list.innerHTML=cats.map(c=>{
+      const rowCount=getCatData(c.id).length;
+      return `<div class="cat-item ${activeCatId===c.id?'active':''}" onclick="openCat('${c.id}')">
+        <div class="cat-icon-badge">${c.icon||'📋'}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="cat-name">${c.name}</div>
+          <div class="cat-count">${rowCount} entr${rowCount===1?'y':'ies'} · ${c.columns.length} col${c.columns.length===1?'':'s'}</div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // ═══ OPEN CATEGORY ═══
+  function openCat(id){
+    activeCatId=id;
+    renderCatList();
+    renderCatContent();
+  }
+
+  // ═══ RENDER CATEGORY CONTENT ═══
+  function renderCatContent(){
+    const cats=getCats();
+    const cat=cats.find(c=>c.id===activeCatId);
+    const content=document.getElementById('catContent');
+    if(!cat){content.innerHTML='';return;}
+
+    const rows=getCatData(cat.id);
+
+    content.innerHTML=`
+      <div class="admin-card" style="margin-bottom:1rem;">
+        <div class="admin-card-header">
+          <div>
+            <div class="admin-card-title">${cat.icon||'📋'} ${cat.name}</div>
+            <div class="admin-card-subtitle">${rows.length} entr${rows.length===1?'y':'ies'} · ${cat.columns.length} column${cat.columns.length===1?'':'s'}</div>
+          </div>
+          <div style="display:flex;gap:.5rem;">
+            <button onclick="exportCatCSV('${cat.id}')" class="btn-admin-secondary" style="padding:.45rem .9rem;font-size:.78rem;">📥 Export</button>
+            <button onclick="editCat('${cat.id}')" style="padding:.45rem .9rem;font-size:.78rem;background:rgba(235,168,33,.1);color:#EBA821;border:1px solid rgba(235,168,33,.2);border-radius:8px;font-family:'Outfit',sans-serif;cursor:pointer;">✏ Edit</button>
+            <button onclick="deleteCat('${cat.id}')" style="padding:.45rem .9rem;font-size:.78rem;background:rgba(239,68,68,.1);color:#EF4444;border:1px solid rgba(239,68,68,.2);border-radius:8px;font-family:'Outfit',sans-serif;cursor:pointer;">🗑 Delete</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADD ROW FORM -->
+      <div class="admin-card" style="margin-bottom:1rem;border-color:rgba(235,168,33,.2);">
+        <div class="admin-card-header"><div class="admin-card-title">➕ Add New Entry</div></div>
+        <div id="addRowForm" style="margin-top:.5rem;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;margin-bottom:.75rem;">
+            ${cat.columns.map(col=>`
+              <div>
+                <label style="display:block;font-size:.75rem;font-weight:600;color:rgba(255,255,255,.45);margin-bottom:.3rem;">${col.name}${col.required?'  *':''}</label>
+                ${col.type==='select'&&col.options
+                  ? `<select class="row-input" data-col="${col.name}" style="width:100%;padding:.5rem .75rem;">${col.options.split(',').map(o=>`<option>${o.trim()}</option>`).join('')}</select>`
+                  : col.type==='date'
+                    ? `<input type="date" class="row-input data-input" data-col="${col.name}"/>`
+                    : col.type==='number'
+                      ? `<input type="number" class="row-input data-input" data-col="${col.name}" placeholder="${col.name}"/>`
+                      : `<input type="text" class="row-input data-input" data-col="${col.name}" placeholder="${col.name}"/>`
+                }
+              </div>`).join('')}
+          </div>
+          <button class="btn-admin-primary" onclick="addRow('${cat.id}')">✅ Add Entry</button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div class="admin-card" style="overflow-x:auto;">
+        ${rows.length===0
+          ? `<div class="empty-state"><div style="font-size:2rem;margin-bottom:.75rem;">📭</div><div style="color:rgba(255,255,255,.4);">No entries yet. Add the first one above.</div></div>`
+          : `<table class="admin-table" style="min-width:600px;">
+              <thead><tr>
+                <th style="width:36px;">#</th>
+                ${cat.columns.map(c=>`<th>${c.name}</th>`).join('')}
+                <th style="width:60px;">Del</th>
+              </tr></thead>
+              <tbody>
+                ${[...rows].reverse().map((row,ri)=>`<tr>
+                  <td style="color:rgba(255,255,255,.35);font-size:.75rem;">${rows.length-ri}</td>
+                  ${cat.columns.map(c=>`<td class="data-cell">${row[c.name]||'—'}</td>`).join('')}
+                  <td><button onclick="deleteRow('${cat.id}','${row._id}')" style="background:rgba(239,68,68,.1);color:#EF4444;border:1px solid rgba(239,68,68,.2);padding:.25rem .55rem;border-radius:6px;font-size:.75rem;cursor:pointer;font-family:'Outfit',sans-serif;">✕</button></td>
+                </tr>`).join('')}
+              </tbody>
+            </table>`
+        }
+      </div>`;
+  }
+
+  // ═══ ADD ROW ═══
+  function addRow(catId){
+    const cats=getCats();
+    const cat=cats.find(c=>c.id===catId);
+    if(!cat) return;
+
+    const inputs=document.querySelectorAll('.row-input');
+    const row={_id:'R'+Date.now(),_ts:Date.now()};
+    let valid=true;
+
+    cat.columns.forEach(col=>{
+      const inp=[...inputs].find(i=>i.dataset.col===col.name);
+      const val=inp?inp.value.trim():'';
+      if(col.required&&!val){inp&&(inp.style.borderColor='#EF4444');valid=false;}
+      else{inp&&(inp.style.borderColor='');}
+      row[col.name]=val;
+    });
+
+    if(!valid){toast('⚠ Please fill all required fields (*)','err');return;}
+
+    const rows=getCatData(catId);
+    rows.push(row);
+    saveCatData(catId,rows);
+    toast('✅ Entry added!','ok');
+    renderCatList();
+    renderCatContent();
+  }
+
+  // ═══ DELETE ROW ═══
+  function deleteRow(catId,rowId){
+    if(!confirm('Delete this entry?')) return;
+    const rows=getCatData(catId).filter(r=>r._id!==rowId);
+    saveCatData(catId,rows);
+    renderCatList();
+    renderCatContent();
+    toast('🗑 Entry deleted','ok');
+  }
+
+  // ═══ DELETE CATEGORY ═══
+  function deleteCat(catId){
+    const cats=getCats();
+    const cat=cats.find(c=>c.id===catId);
+    if(!confirm(`Delete category "${cat.name}" and ALL its data? This cannot be undone.`)) return;
+    saveCats(cats.filter(c=>c.id!==catId));
+    localStorage.removeItem(DATA_KEY(catId));
+    if(activeCatId===catId){activeCatId=null;document.getElementById('catContent').innerHTML='';}
+    renderCatList();
+    refreshLayout();
+    toast('🗑 Category deleted','ok');
+  }
+
+  // ═══ EXPORT CSV ═══
+  function exportCatCSV(catId){
+    const cats=getCats();
+    const cat=cats.find(c=>c.id===catId);
+    const rows=getCatData(catId);
+    if(rows.length===0){toast('No data to export','err');return;}
+    const headers=cat.columns.map(c=>c.name);
+    const csv=[headers,...rows.map(r=>cat.columns.map(c=>r[c.name]||''))].map(r=>r.map(v=>`"${v}"`).join(',')).join('\n');
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download=`${cat.name.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+  }
+
+  // ═══ MODAL: CREATE / EDIT ═══
+  function showCreateModal(){
+    document.getElementById('mEditId').value='';
+    document.getElementById('mCatName').value='';
+    document.getElementById('mCatIcon').value='';
+    document.getElementById('modalTitle').textContent='Create New Category';
+    document.getElementById('colBuilder').innerHTML='';
+    // Add 3 default columns
+    addColRow('Name','text',true);
+    addColRow('Notes','text',false);
+    addColRow('Date','date',false);
+    showModal();
+  }
+
+  function editCat(catId){
+    const cat=getCats().find(c=>c.id===catId);
+    if(!cat) return;
+    document.getElementById('mEditId').value=catId;
+    document.getElementById('mCatName').value=cat.name;
+    document.getElementById('mCatIcon').value=cat.icon||'';
+    document.getElementById('modalTitle').textContent='Edit Category: '+cat.name;
+    document.getElementById('colBuilder').innerHTML='';
+    cat.columns.forEach(col=>addColRow(col.name,col.type,col.required,col.options||''));
+    showModal();
+  }
+
+  function showModal(){document.getElementById('modal').style.display='flex';}
+  function closeModal(){document.getElementById('modal').style.display='none';}
+
+  let colCount=0;
+  function addColRow(name='',type='text',required=false,options=''){
+    colCount++;
+    const id='col_'+colCount;
+    const div=document.createElement('div');
+    div.className='col-row';
+    div.id=id;
+    div.innerHTML=`
+      <input type="text" placeholder="Column name*" value="${name}" class="col-name" style="flex:2;" />
+      <select class="col-type" onchange="toggleOptions(this,'${id}')">
+        <option value="text" ${type==='text'?'selected':''}>Text</option>
+        <option value="number" ${type==='number'?'selected':''}>Number</option>
+        <option value="date" ${type==='date'?'selected':''}>Date</option>
+        <option value="select" ${type==='select'?'selected':''}>Dropdown</option>
+      </select>
+      <label style="display:flex;align-items:center;gap:.3rem;font-size:.78rem;color:rgba(255,255,255,.5);white-space:nowrap;cursor:pointer;">
+        <input type="checkbox" ${required?'checked':''} class="col-req" /> Required
+      </label>
+      <input type="text" placeholder="option1,option2,..." value="${options}" class="col-opts" style="flex:2;display:${type==='select'?'block':'none'};"/>
+      <button class="col-del-btn" onclick="removeColRow('${id}')">✕</button>`;
+    document.getElementById('colBuilder').appendChild(div);
+  }
+
+  function removeColRow(id){
+    const el=document.getElementById(id);
+    const cols=document.getElementById('colBuilder').children;
+    if(cols.length<=1){toast('At least 1 column required','err');return;}
+    if(el) el.remove();
+  }
+
+  function toggleOptions(sel,rowId){
+    const row=document.getElementById(rowId);
+    const optsInput=row.querySelector('.col-opts');
+    optsInput.style.display=sel.value==='select'?'block':'none';
+  }
+
+  function saveCategory(){
+    const name=document.getElementById('mCatName').value.trim();
+    if(!name){toast('Category name is required','err');return;}
+
+    const colRows=document.querySelectorAll('#colBuilder .col-row');
+    const columns=[];
+    let colValid=true;
+    colRows.forEach(row=>{
+      const cName=row.querySelector('.col-name').value.trim();
+      if(!cName){row.querySelector('.col-name').style.borderColor='#EF4444';colValid=false;return;}
+      row.querySelector('.col-name').style.borderColor='';
+      columns.push({
+        name:cName,
+        type:row.querySelector('.col-type').value,
+        required:row.querySelector('.col-req').checked,
+        options:row.querySelector('.col-opts').value.trim()
+      });
+    });
+    if(!colValid){toast('All column names are required','err');return;}
+    if(columns.length===0){toast('Add at least 1 column','err');return;}
+
+    const editId=document.getElementById('mEditId').value;
+    const icon=document.getElementById('mCatIcon').value.trim()||'📋';
+    const cats=getCats();
+
+    if(editId){
+      const idx=cats.findIndex(c=>c.id===editId);
+      if(idx>-1){cats[idx]={...cats[idx],name,icon,columns};}
+    } else {
+      cats.push({id:'CAT'+Date.now(),name,icon,columns,created:new Date().toISOString().split('T')[0]});
+    }
+    saveCats(cats);
+    closeModal();
+    refreshLayout();
+    if(!editId && cats.length>0) openCat(cats[cats.length-1].id);
+    else if(editId) { renderCatList(); renderCatContent(); }
+    toast(editId?'✅ Category updated!':'✅ Category created!','ok');
+  }
+
+  function refreshLayout(){
+    const cats=getCats();
+    const noMsg=document.getElementById('noCatsMsg');
+    const layout=document.getElementById('ccLayout');
+    if(cats.length===0){noMsg.style.display='block';layout.style.display='none';}
+    else{noMsg.style.display='none';layout.style.display='grid';renderCatList();}
+  }
+
+  function toast(msg,type='ok'){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.className='toast '+type;t.style.display='block';
+    clearTimeout(window._tt);window._tt=setTimeout(()=>t.style.display='none',3000);
+  }
+  function logout(e){e.preventDefault();sessionStorage.removeItem('zest_admin_auth');window.location.href='index.html';}
+
+  // ── INIT ──
+  refreshLayout();
+  const cats=getCats();
+  if(cats.length>0) openCat(cats[0].id);
+</script>
+<script src="zest-sync.js"></script>
+</body>
+</html>
